@@ -8,9 +8,9 @@
     "ExecuteCommandMixin",
     "DataCommandObjectMixin",
     "EntityDataObjectMixin",
-    "EntityMixin",
-    "LivingEntityMixin",
-    "PlayerEntityMixin"
+    "entity.EntityMixin",
+    "entity.LivingEntityMixin",
+    "entity.PlayerEntityMixin"
   ],
   "client": [],
   "injectors": {

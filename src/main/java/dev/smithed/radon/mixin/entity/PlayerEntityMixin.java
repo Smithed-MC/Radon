@@ -1,4 +1,4 @@
-package dev.smithed.radon.mixin;
+package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.SharedConstants;

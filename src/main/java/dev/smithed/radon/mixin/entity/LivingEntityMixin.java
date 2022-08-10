@@ -1,4 +1,4 @@
-package dev.smithed.radon.mixin;
+package dev.smithed.radon.mixin.entity;
 
 import com.mojang.serialization.DataResult;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
