@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.Mixin;
 public class ExecuteCommandMixin {
 
     private static int countPathMatches(DataCommandObject object, NbtPathArgumentType.NbtPath path) throws CommandSyntaxException {
-        if(object instanceof IDataCommandObjectMixin) {
-            return path.count(((IDataCommandObjectMixin) object).getFilteredNbt(path));
+        if(object instanceof IDataCommandObjectMixin idcom) {
+            return path.count(idcom.getFilteredNbt(path));
         } else {
             return path.count(object.getNbt());
         }
