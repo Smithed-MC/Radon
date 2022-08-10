@@ -1,9 +1,9 @@
-# Fabric Example Mod
+# Radon
+
+## About
+This is a mod focused around minecraft command optimization of stuff like entity selectors and datamatching.
 
 ## Setup
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+Put into your fabric mods folder or just download with the [smithed client](https://smithed.dev/).
 
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
