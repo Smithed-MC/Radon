@@ -6,7 +6,8 @@
   "name": "Radon",
   "description": "Optimizes various features in commands. Currently limited to NBT lookups.",
   "authors": [
-    "ImCoolYeah105"
+    "ImCoolYeah105",
+    "dragoncommands"
   ],
   "contact": {
     "homepage": "https://smithed.dev/",
