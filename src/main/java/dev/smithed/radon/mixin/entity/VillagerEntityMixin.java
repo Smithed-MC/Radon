@@ -1,6 +1,5 @@
 package dev.smithed.radon.mixin.entity;
 
-import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -26,7 +25,7 @@ public abstract class VillagerEntityMixin extends MerchantEntityMixin {
     @Shadow
     private long lastGossipDecayTime;
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         VillagerEntity entity = ((VillagerEntity)(Object)this);
         if(!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {

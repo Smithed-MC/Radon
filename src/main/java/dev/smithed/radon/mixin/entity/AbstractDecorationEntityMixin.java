@@ -1,6 +1,5 @@
 package dev.smithed.radon.mixin.entity;
 
-import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
@@ -14,7 +13,7 @@ public abstract class AbstractDecorationEntityMixin extends EntityMixin {
     protected Direction facing;
 
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         AbstractDecorationEntity entity = ((AbstractDecorationEntity)(Object)this);
 
         BlockPos blockPos;

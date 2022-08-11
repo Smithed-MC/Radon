@@ -2,7 +2,6 @@ package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
-import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
@@ -43,13 +42,13 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     @Shadow
     protected abstract NbtList toNbtList(double... values);
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         return false;
     }
 
     @Override
-    public NbtCompound writeFilteredNbt(NbtCompound nbt, NbtPathArgumentType.NbtPath path) {
-        String topLevelNbt = path.toString().split("[\\.\\{\\[]")[0];
+    public NbtCompound writeFilteredNbt(NbtCompound nbt, String path) {
+        String topLevelNbt = path.split("[\\.\\{\\[]")[0];
         Entity entity = ((Entity)(Object)this);
 
         try {

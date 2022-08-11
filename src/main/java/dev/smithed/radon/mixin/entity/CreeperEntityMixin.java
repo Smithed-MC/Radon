@@ -18,7 +18,7 @@ public abstract class CreeperEntityMixin extends MobEntityMixin implements ICust
     private static TrackedData<Boolean> CHARGED;
 
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         CreeperEntity entity = ((CreeperEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {

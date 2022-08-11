@@ -1,7 +1,6 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -24,7 +23,7 @@ public abstract class ArmorStandEntityMixin extends LivingEntityMixin implements
     private DefaultedList<ItemStack> armorItems;
 
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ArmorStandEntity entity = ((ArmorStandEntity)(Object)this);
 
         switch (topLevelNbt) {

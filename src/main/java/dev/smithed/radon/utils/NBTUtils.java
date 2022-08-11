@@ -22,4 +22,8 @@ public class NBTUtils {
         return -1;
     }
 
+    public static String[] getTopLevelPaths(String nbt) {
+        nbt = nbt.substring(1,nbt.length()-1) + ",";
+        return nbt.split(":(\\[(.*?)\\])*(\\{(.*?)\\})*(.*?),");
+    }
 }

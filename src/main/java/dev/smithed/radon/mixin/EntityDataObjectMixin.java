@@ -29,7 +29,7 @@ public class EntityDataObjectMixin {
                 nbtCompound.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
             }
         } else if(RadonCommand.getIsEnabled() && entity instanceof IEntityMixin) {
-            NbtCompound check = ((IEntityMixin)entity).writeFilteredNbt(nbtCompound, path);
+            NbtCompound check = ((IEntityMixin)entity).writeFilteredNbt(nbtCompound, path.toString());
             if(check == null)
                 entity.writeNbt(nbtCompound);
         } else {

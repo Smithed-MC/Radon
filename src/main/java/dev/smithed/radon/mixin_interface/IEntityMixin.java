@@ -5,6 +5,6 @@ import net.minecraft.nbt.NbtCompound;
 
 public interface IEntityMixin {
 
-    NbtCompound writeFilteredNbt(NbtCompound nbt, NbtPathArgumentType.NbtPath path);
+    NbtCompound writeFilteredNbt(NbtCompound nbt, String path);
 
 }

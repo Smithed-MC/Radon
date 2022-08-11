@@ -1,6 +1,5 @@
 package dev.smithed.radon.mixin.entity;
 
-import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
@@ -15,7 +14,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntityMixin {
     @Shadow
     private int despawnDelay;
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         WanderingTraderEntity entity = ((WanderingTraderEntity)(Object)this);
         if(!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {

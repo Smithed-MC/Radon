@@ -2,7 +2,6 @@ package dev.smithed.radon.mixin.entity;
 
 import com.mojang.serialization.DataResult;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.effect.StatusEffect;
@@ -30,7 +29,7 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
     protected Brain<?> brain;
 
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         LivingEntity entity = ((LivingEntity)(Object)this);
 
         switch (topLevelNbt) {
