@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Mixin(LivingEntity.class)
-public class LivingEntityMixin implements ICustomNBTMixin {
+public abstract class LivingEntityMixin extends EntityMixin implements ICustomNBTMixin {
     @Shadow
     private static Logger field_36332;
     @Shadow
@@ -28,6 +28,7 @@ public class LivingEntityMixin implements ICustomNBTMixin {
     private Map<StatusEffect, StatusEffectInstance> activeStatusEffects;
     @Shadow
     protected Brain<?> brain;
+
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
         LivingEntity entity = ((LivingEntity)(Object)this);

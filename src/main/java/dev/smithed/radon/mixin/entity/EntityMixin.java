@@ -4,6 +4,7 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
@@ -22,6 +23,8 @@ import java.util.Set;
 public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
 
     @Shadow
+    protected DataTracker dataTracker;
+    @Shadow
     private Entity vehicle;
     @Shadow
     private int fireTicks;
@@ -39,8 +42,6 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     private Set<String> scoreboardTags;
     @Shadow
     protected abstract NbtList toNbtList(double... values);
-    @Shadow
-    protected abstract void writeCustomDataToNbt(NbtCompound nbt);
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
         return false;
