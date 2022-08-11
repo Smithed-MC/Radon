@@ -7,11 +7,17 @@ import net.minecraft.command.DataCommandObject;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.server.command.ExecuteCommand;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(ExecuteCommand.class)
 public class ExecuteCommandMixin {
 
-    //TODO: remove override?
+    /**
+     * @author ImCoolYeah105
+     * @reason rapid testing
+     * TODO: remove method override
+     */
+    @Overwrite
     private static int countPathMatches(DataCommandObject object, NbtPathArgumentType.NbtPath path) throws CommandSyntaxException {
         if(RadonCommand.getIsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
             return path.count(mixin.getFilteredNbt(path));

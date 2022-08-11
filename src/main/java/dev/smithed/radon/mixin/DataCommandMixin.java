@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.commands.RadonCommand;
 import dev.smithed.radon.mixin_interface.IDataCommandObjectMixin;
 import net.minecraft.command.DataCommandObject;
@@ -15,6 +16,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.DataCommand;
 import net.minecraft.server.command.ServerCommandSource;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Collection;
@@ -35,7 +37,12 @@ public class DataCommandMixin {
     @Shadow
     private static int executeModify(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType, DataCommand.ModifyOperation modifier, List<NbtElement> elements) { return 0; }
 
-    //TODO: remove method override
+    /**
+     * @author ImCoolYeah105
+     * @reason rapid testing
+     * TODO: remove method override
+     */
+    @Overwrite
     private static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
         Collection<NbtElement> collection;
         if(RadonCommand.getIsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
@@ -53,7 +60,12 @@ public class DataCommandMixin {
         }
     }
 
-    //TODO: remove method override
+    /**
+     * @author ImCoolYeah105
+     * @reason rapid testing
+     * TODO: remove method override
+     */
+    @Overwrite
     private static ArgumentBuilder<ServerCommandSource, ?> addModifyArgument(BiConsumer<ArgumentBuilder<ServerCommandSource, ?>, DataCommand.ModifyArgumentCreator> subArgumentAdder) {
         LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder = CommandManager.literal("modify");
         Iterator var2 = TARGET_OBJECT_TYPES.iterator();

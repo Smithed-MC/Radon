@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin;
 
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.commands.RadonCommand;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import dev.smithed.radon.utils.NBTUtils;
