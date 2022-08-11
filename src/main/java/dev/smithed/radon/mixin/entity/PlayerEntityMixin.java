@@ -4,7 +4,6 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IFilteredNbtList;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.entity.SculkShriekerWarningManager;
-import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,7 +32,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
     protected EnderChestInventory enderChestInventory;
 
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PlayerEntity entity = ((PlayerEntity)(Object)this);
 
         if(!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {

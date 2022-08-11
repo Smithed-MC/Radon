@@ -1,7 +1,6 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,7 +11,7 @@ public abstract class ItemFrameMixin extends AbstractDecorationEntityMixin imple
     private boolean fixed;
 
     @Override
-    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt) {
+    public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ItemFrameEntity entity = ((ItemFrameEntity)(Object)this);
 
         switch (topLevelNbt) {

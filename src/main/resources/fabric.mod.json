@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "radon",
-  "version": "0.0.2",
+  "version": "0.0.4",
 
   "name": "Radon",
   "description": "Optimizes various features in commands. Currently limited to NBT lookups.",
@@ -15,6 +15,7 @@
   },
 
   "license": "MIT",
+  "accessWidener": "radon.accesswidener",
 
   "environment": "*",
   "entrypoints": {

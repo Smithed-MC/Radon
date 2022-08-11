@@ -5,6 +5,6 @@ import net.minecraft.nbt.NbtCompound;
 
 public interface ICustomNBTMixin {
 
-    boolean writeCustomDataToNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path, String topLevelNbt);
+    boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt);
 
 }
