@@ -15,6 +15,7 @@
   },
 
   "license": "MIT",
+  "accessWidener": "radon.accesswidener",
 
   "environment": "*",
   "entrypoints": {

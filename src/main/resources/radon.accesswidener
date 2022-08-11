@@ -1,0 +1,4 @@
+accessWidener v1 named
+
+accessible class net/minecraft/server/command/DataCommand$ModifyOperation
+accessible class net/minecraft/server/command/DataCommand$ModifyArgumentCreator

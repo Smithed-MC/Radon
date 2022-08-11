@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(ExecuteCommand.class)
 public class ExecuteCommandMixin {
 
+    //TODO: remove override?
     private static int countPathMatches(DataCommandObject object, NbtPathArgumentType.NbtPath path) throws CommandSyntaxException {
         if(RadonCommand.getIsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
             return path.count(mixin.getFilteredNbt(path));
