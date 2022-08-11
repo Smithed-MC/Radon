@@ -8,9 +8,15 @@
     "ExecuteCommandMixin",
     "DataCommandObjectMixin",
     "EntityDataObjectMixin",
+    "misc.PlayerInventoryMixin",
+    "misc.EnderChestInventoryMixin",
     "entity.EntityMixin",
     "entity.LivingEntityMixin",
-    "entity.PlayerEntityMixin"
+    "entity.PlayerEntityMixin",
+    "entity.MobEntityMixin",
+    "entity.ZombieEntityMixin",
+    "entity.SkeletonEntityMixin",
+    "entity.CreeperEntityMixin"
   ],
   "client": [],
   "injectors": {
