@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import dev.smithed.radon.commands.RadonCommand;
 import dev.smithed.radon.mixin_interface.IDataCommandObjectMixin;
 import net.minecraft.command.DataCommandObject;
 import net.minecraft.command.argument.NbtPathArgumentType;
@@ -21,7 +22,7 @@ public class DataCommandMixin {
 
     private static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
         Collection<NbtElement> collection;
-        if(object instanceof IDataCommandObjectMixin mixin) {
+        if(RadonCommand.getIsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
             collection = path.get(mixin.getFilteredNbt(path));
         } else {
             collection = path.get(object.getNbt());

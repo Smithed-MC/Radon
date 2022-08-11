@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin;
 
+import dev.smithed.radon.commands.RadonCommand;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import net.minecraft.command.EntityDataObject;
 import net.minecraft.command.argument.NbtPathArgumentType;
@@ -22,12 +23,12 @@ public class EntityDataObjectMixin {
 
     private static NbtCompound entityToNbtFiltered(Entity entity, NbtPathArgumentType.NbtPath path) {
         NbtCompound nbtCompound = new NbtCompound();
-        if (entity instanceof PlayerEntity && path.toString().startsWith("SelectedItem")) {
+        if (RadonCommand.getIsEnabled() && entity instanceof PlayerEntity && path.toString().startsWith("SelectedItem")) {
             ItemStack itemStack = ((PlayerEntity)entity).getInventory().getMainHandStack();
             if (!itemStack.isEmpty()) {
                 nbtCompound.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
             }
-        } else if(entity instanceof IEntityMixin) {
+        } else if(RadonCommand.getIsEnabled() && entity instanceof IEntityMixin) {
             NbtCompound check = ((IEntityMixin)entity).writeFilteredNbt(nbtCompound, path);
             if(check == null)
                 entity.writeNbt(nbtCompound);
