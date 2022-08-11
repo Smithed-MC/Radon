@@ -21,8 +21,8 @@ public class DataCommandMixin {
 
     private static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
         Collection<NbtElement> collection;
-        if(object instanceof IDataCommandObjectMixin) {
-            collection = path.get(((IDataCommandObjectMixin) object).getFilteredNbt(path));
+        if(object instanceof IDataCommandObjectMixin mixin) {
+            collection = path.get(mixin.getFilteredNbt(path));
         } else {
             collection = path.get(object.getNbt());
         }

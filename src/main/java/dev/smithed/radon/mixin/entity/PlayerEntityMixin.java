@@ -1,6 +1,7 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
+import dev.smithed.radon.mixin_interface.IFilteredNbtList;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.entity.SculkShriekerWarningManager;
 import net.minecraft.command.argument.NbtPathArgumentType;
@@ -11,14 +12,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EnderChestInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
-import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PlayerEntity.class)
-public class PlayerEntityMixin extends LivingEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private static Logger field_38197;
+public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICustomNBTMixin {
     @Shadow
     private PlayerInventory inventory;
     @Shadow
@@ -44,7 +42,10 @@ public class PlayerEntityMixin extends LivingEntityMixin implements ICustomNBTMi
                     nbt.putInt("DataVersion", SharedConstants.getGameVersion().getWorldVersion());
                     break;
                 case "Inventory":
-                    nbt.put("Inventory", this.inventory.writeNbt(new NbtList()));
+                    if(this.inventory instanceof IFilteredNbtList mixin)
+                        nbt.put("Inventory", mixin.writeNbtFiltered(new NbtList(), path.toString()));
+                    else
+                        nbt.put("Inventory", this.inventory.writeNbt(new NbtList()));
                     break;
                 case "SelectedItemSlot":
                     nbt.putInt("SelectedItemSlot", this.inventory.selectedSlot);
@@ -77,7 +78,10 @@ public class PlayerEntityMixin extends LivingEntityMixin implements ICustomNBTMi
                     this.abilities.writeNbt(nbt);
                     break;
                 case "EnderItems":
-                    nbt.put("EnderItems", this.enderChestInventory.toNbtList());
+                    if(this.enderChestInventory instanceof IFilteredNbtList mixin)
+                        nbt.put("EnderItems", mixin.writeNbtFiltered(new NbtList(), path.toString()));
+                    else
+                        nbt.put("EnderItems", this.enderChestInventory.toNbtList());
                     break;
                 case "ShoulderEntityLeft":
                     if (!entity.getShoulderEntityLeft().isEmpty()) {
