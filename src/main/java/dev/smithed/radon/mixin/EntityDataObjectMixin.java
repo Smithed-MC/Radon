@@ -24,20 +24,20 @@ public class EntityDataObjectMixin implements DataCommandObjectMixin {
     }
 
     private static NbtCompound entityToNbtFiltered(Entity entity, NbtPathArgumentType.NbtPath path) {
-        NbtCompound nbtCompound = new NbtCompound();
-        if (Radon.CONFIG.getNbtOptimizationsEnabled() && entity instanceof PlayerEntity && path.toString().startsWith("SelectedItem")) {
-            ItemStack itemStack = ((PlayerEntity)entity).getInventory().getMainHandStack();
-            if (!itemStack.isEmpty()) {
-                nbtCompound.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
+        NbtCompound nbtCompound = null;
+        if (Radon.CONFIG.nbtOptimizations && entity instanceof IEntityMixin mixin) {
+            if(entity instanceof PlayerEntity && path.toString().startsWith("SelectedItem")) {
+                nbtCompound = new NbtCompound();
+                ItemStack itemStack = ((PlayerEntity) entity).getInventory().getMainHandStack();
+                if (!itemStack.isEmpty()) {
+                    nbtCompound.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
+                }
+            } else {
+                nbtCompound = mixin.writeFilteredNbt(new NbtCompound(), path.toString());
             }
-        } else if(Radon.CONFIG.getNbtOptimizationsEnabled() && entity instanceof IEntityMixin) {
-            NbtCompound check = ((IEntityMixin)entity).writeFilteredNbt(nbtCompound, path.toString());
-            if(check == null)
-                entity.writeNbt(nbtCompound);
-        } else {
-            entity.writeNbt(nbtCompound);
         }
-
+        if(nbtCompound == null)
+            nbtCompound = entity.writeNbt(new NbtCompound());
         return nbtCompound;
     }
 }

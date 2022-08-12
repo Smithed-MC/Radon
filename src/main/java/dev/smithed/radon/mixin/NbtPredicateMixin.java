@@ -26,15 +26,12 @@ public class NbtPredicateMixin {
      */
     @Overwrite
     public boolean test(Entity entity) {
-        if(nbt != null)
-            Radon.LOGGER.info(nbt.toString());
-
         NbtPredicate predicate = ((NbtPredicate)(Object)this);
         if(predicate == NbtPredicate.ANY) {
             return true;
         } else {
             NbtCompound nbt = null;
-            if(Radon.CONFIG.getNbtOptimizationsEnabled() && entity instanceof IEntityMixin mixin) {
+            if(Radon.CONFIG.nbtOptimizations && entity instanceof IEntityMixin mixin) {
                 nbt = new NbtCompound();
                 String[] topLevelNbt = NBTUtils.getTopLevelPaths(this.nbt.toString());
                 for(String topNbt: topLevelNbt) {
@@ -52,7 +49,7 @@ public class NbtPredicateMixin {
             }
             if(nbt == null)
                 nbt = NbtPredicate.entityToNbt(entity);
-            Radon.LOGGER.info(nbt.toString());
+            Radon.logDebug(nbt);
             return predicate.test(nbt);
         }
     }

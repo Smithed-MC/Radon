@@ -5,6 +5,7 @@ import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IDataCommandObjectMixin;
 import net.minecraft.command.DataCommandObject;
 import net.minecraft.command.argument.NbtPathArgumentType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.ExecuteCommand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +21,11 @@ public class ExecuteCommandMixin {
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
     private static void getNbt(DataCommandObject object, NbtPathArgumentType.NbtPath path, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
-        if(Radon.CONFIG.getNbtOptimizationsEnabled() && object instanceof IDataCommandObjectMixin mixin)
-            cir.setReturnValue(path.count(mixin.getFilteredNbt(path)));
+        if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
+            NbtCompound nbt = mixin.getFilteredNbt(path);
+            Radon.logDebug(nbt);
+            if(nbt != null)
+                cir.setReturnValue(path.count(nbt));
+        }
     }
 }

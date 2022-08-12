@@ -10,6 +10,7 @@ import dev.smithed.radon.mixin_interface.IDataCommandObjectMixin;
 import net.minecraft.command.DataCommandObject;
 import net.minecraft.command.argument.NbtElementArgumentType;
 import net.minecraft.command.argument.NbtPathArgumentType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.DataCommand;
@@ -46,12 +47,13 @@ public class DataCommandMixin {
      */
     @Overwrite
     private static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
-        Collection<NbtElement> collection;
-        if(Radon.CONFIG.getNbtOptimizationsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
-            collection = path.get(mixin.getFilteredNbt(path));
-        } else {
-            collection = path.get(object.getNbt());
-        }
+        NbtCompound nbt = null;
+        if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin)
+            nbt = mixin.getFilteredNbt(path);
+        if(nbt == null)
+            nbt = object.getNbt();
+        Radon.logDebug(nbt);
+        Collection<NbtElement> collection = path.get(nbt);
 
         Iterator<NbtElement> iterator = collection.iterator();
         NbtElement nbtElement = (NbtElement)iterator.next();
@@ -88,12 +90,13 @@ public class DataCommandMixin {
                                 DataCommandObject dataCommandObject = objectType2.getObject(context);
                                 NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "sourcePath");
 
-                                NbtElement nbt;
-                                if(Radon.CONFIG.getNbtOptimizationsEnabled() && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
+                                NbtElement nbt = null;
+                                if(Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
                                     nbt = mixin.getFilteredNbt(nbtPath);
-                                } else {
-                                    nbt = dataCommandObject.getNbt();
                                 }
+                                if(nbt == null)
+                                    nbt = dataCommandObject.getNbt();
+                                Radon.logDebug(nbt);
                                 List<NbtElement> list = nbtPath.get(nbt);
                                 return executeModify(context, objectType, modifier, list);
                             }));
