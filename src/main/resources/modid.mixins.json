@@ -8,6 +8,8 @@
     "ExecuteCommandMixin",
     "DataCommandObjectMixin",
     "EntityDataObjectMixin",
+    "BlockDataObjectMixin",
+    "StorageDataObjectMixin",
     "EntitySelectorOptionsMixin",
     "misc.PlayerInventoryMixin",
     "misc.EnderChestInventoryMixin",
