@@ -9,12 +9,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EntityDataObject.class)
-public class EntityDataObjectMixin {
-
+public class EntityDataObjectMixin implements DataCommandObjectMixin {
+    @Final
     @Shadow
     private Entity entity;
 
