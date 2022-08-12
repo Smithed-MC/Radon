@@ -11,6 +11,8 @@
     "BlockDataObjectMixin",
     "StorageDataObjectMixin",
     "EntitySelectorOptionsMixin",
+    "NbtPredicateMixin",
+
     "misc.PlayerInventoryMixin",
     "misc.EnderChestInventoryMixin",
     "entity.AbstractDecorationEntityMixin",
@@ -31,7 +33,7 @@
     "entity.TameableEntityMixin",
     "entity.VillagerEntityMixin",
     "entity.WanderingTraderEntityMixin",
-    "entity.WitherEntity",
+    "entity.WitherEntityMixin",
     "entity.WolfEntityMixin",
     "entity.ZoglinEntityMixin",
     "entity.ZombieEntityMixin",
