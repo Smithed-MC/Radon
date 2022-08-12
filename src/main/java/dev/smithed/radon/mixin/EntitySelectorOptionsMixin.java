@@ -32,7 +32,7 @@ public class EntitySelectorOptionsMixin {
             NbtCompound nbtCompound = (new StringNbtReader(reader.getReader())).parseCompound();
             reader.setPredicate((entity) -> {
                 NbtCompound nbtCompound2 = null;
-                if(RadonCommand.getIsEnabled() && entity instanceof IEntityMixin mixin) {
+                if(Radon.CONFIG.getNbtOptimizationsEnabled() && entity instanceof IEntityMixin mixin) {
                     nbtCompound2 = new NbtCompound();
                     String[] topLevelNbt = NBTUtils.getTopLevelPaths(nbtCompound.toString());
                     for(String nbt: topLevelNbt) {

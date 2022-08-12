@@ -2,8 +2,11 @@ package dev.smithed.radon.commands;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import dev.smithed.radon.Radon;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -11,41 +14,37 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class RadonCommand {
 
-    private static boolean isEnabled = true;
-
-    public static boolean getIsEnabled() {
-        return isEnabled;
-    }
 
     public static LiteralCommandNode register(CommandDispatcher<ServerCommandSource> dispatcher) { // You can also return a LiteralCommandNode for use with possible redirects
         return dispatcher.register(
                 literal("radon")
                 .requires(source -> source.hasPermissionLevel(2))
-                .then(CommandManager.literal("enable-nbt").executes((context) -> radon_enable_nbt(context)))
-                .then(CommandManager.literal("disable-nbt").executes((context) -> radon_disable_nbt(context)))
+                .then(CommandManager.literal("nbt-optimizations").executes(RadonCommand::toggle_radon_nbt)
+                        .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_radon_nbt)))
             );
     }
 
-    public static int radon_enable_nbt(CommandContext<ServerCommandSource> ctx) {
+    /*
+    Didn't need to be two different methods;
+    It takes up space and it becomes confusing to find within the command menu
+    Instead the two methods were combined with additional functionality added
+     */
+    public static int toggle_radon_nbt(CommandContext<ServerCommandSource> context) {
         Text text;
-        if(isEnabled) {
-            text = Text.literal("Radon NBT optimizations are already enabled");
+        if(Radon.CONFIG.getNbtOptimizationsEnabled()) {
+            text = Text.literal("Radon NBT optimizations are now disabled");
+            Radon.CONFIG.setNbtOptimizationsEnabled(false);
         } else {
             text = Text.literal("Enabled Radon NBT Optimizations");
-            isEnabled = true;
+            Radon.CONFIG.setNbtOptimizationsEnabled(true);
         }
-        ctx.getSource().getServer().getPlayerManager().broadcast(text, false);
+        context.getSource().getServer().getPlayerManager().broadcast(text, false);
         return Command.SINGLE_SUCCESS;
     }
 
-    public static int radon_disable_nbt(CommandContext<ServerCommandSource> ctx) {
-        Text text;
-        if(isEnabled) {
-            isEnabled = false;
-            text = Text.literal("Disabled Radon NBT Optimizations");
-        } else {
-            text = Text.literal("Radon NBT Optimizations are already disabled");
-        }
+    public static int set_radon_nbt(CommandContext<ServerCommandSource> ctx) {
+        Text text = Text.literal("Radon NBT optimizations have been set to: " + BoolArgumentType.getBool(ctx, "enabled"));
+        Radon.CONFIG.setNbtOptimizationsEnabled(BoolArgumentType.getBool(ctx, "enabled"));
         ctx.getSource().getServer().getPlayerManager().broadcast(text, false);
         return Command.SINGLE_SUCCESS;
     }

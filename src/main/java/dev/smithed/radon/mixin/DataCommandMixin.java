@@ -45,7 +45,7 @@ public class DataCommandMixin {
     @Overwrite
     private static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
         Collection<NbtElement> collection;
-        if(RadonCommand.getIsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
+        if(Radon.CONFIG.getNbtOptimizationsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
             collection = path.get(mixin.getFilteredNbt(path));
         } else {
             collection = path.get(object.getNbt());
@@ -88,7 +88,7 @@ public class DataCommandMixin {
                                 NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "sourcePath");
 
                                 NbtElement nbt;
-                                if(RadonCommand.getIsEnabled() && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
+                                if(Radon.CONFIG.getNbtOptimizationsEnabled() && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
                                     nbt = mixin.getFilteredNbt(nbtPath);
                                 } else {
                                     nbt = dataCommandObject.getNbt();

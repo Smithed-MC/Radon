@@ -1,6 +1,7 @@
 package dev.smithed.radon.mixin;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.commands.RadonCommand;
 import dev.smithed.radon.mixin_interface.IDataCommandObjectMixin;
 import net.minecraft.command.DataCommandObject;
@@ -19,7 +20,7 @@ public class ExecuteCommandMixin {
      */
     @Overwrite
     private static int countPathMatches(DataCommandObject object, NbtPathArgumentType.NbtPath path) throws CommandSyntaxException {
-        if(RadonCommand.getIsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
+        if(Radon.CONFIG.getNbtOptimizationsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
             return path.count(mixin.getFilteredNbt(path));
         } else {
             return path.count(object.getNbt());
