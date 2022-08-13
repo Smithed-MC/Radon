@@ -1,7 +1,7 @@
 # Radon
 Radon is an experimental mod designed to apply targeted optimizations for minecraft commands- especially in enviorments with many datapacks. It currently:
 * Limits serialization of NBT data to the requested data instead of all the data, saving massive time on serialization (especially for players)
-* (WIP) Caches selected tags allowing for faster @e lookups
+* (WIP) Selector tags are cached so tag= only searches entities that are known to already have the tag
 
 ## Setup
 
