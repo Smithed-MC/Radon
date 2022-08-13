@@ -20,7 +20,6 @@ import java.util.Set;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
-
     @Shadow
     protected DataTracker dataTracker;
     @Shadow

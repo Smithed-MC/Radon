@@ -6,15 +6,16 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import dev.smithed.radon.Radon;
-import dev.smithed.radon.commands.RadonCommand;
 import dev.smithed.radon.mixin_interface.IDataCommandObjectMixin;
 import net.minecraft.command.DataCommandObject;
 import net.minecraft.command.argument.NbtElementArgumentType;
 import net.minecraft.command.argument.NbtPathArgumentType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.DataCommand;
 import net.minecraft.server.command.ServerCommandSource;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,10 +29,13 @@ import java.util.function.BiConsumer;
 @Mixin(DataCommand.class)
 public class DataCommandMixin {
 
+    @Final
     @Shadow
     private static SimpleCommandExceptionType GET_MULTIPLE_EXCEPTION;
+    @Final
     @Shadow
     private static List<DataCommand.ObjectType> TARGET_OBJECT_TYPES;
+    @Final
     @Shadow
     private static List<DataCommand.ObjectType> SOURCE_OBJECT_TYPES;
     @Shadow
@@ -39,17 +43,17 @@ public class DataCommandMixin {
 
     /**
      * @author ImCoolYeah105
-     * @reason rapid testing
-     * TODO: remove method override
+     * @reason there does not appear to be a clean way to replace the getNbt() call with a getFilteredNbt(path) call
      */
     @Overwrite
     private static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
-        Collection<NbtElement> collection;
-        if(Radon.CONFIG.getNbtOptimizationsEnabled() && object instanceof IDataCommandObjectMixin mixin) {
-            collection = path.get(mixin.getFilteredNbt(path));
-        } else {
-            collection = path.get(object.getNbt());
-        }
+        NbtCompound nbt = null;
+        if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin)
+            nbt = mixin.getFilteredNbt(path);
+        if(nbt == null)
+            nbt = object.getNbt();
+        Radon.logDebug(nbt);
+        Collection<NbtElement> collection = path.get(nbt);
 
         Iterator<NbtElement> iterator = collection.iterator();
         NbtElement nbtElement = (NbtElement)iterator.next();
@@ -62,8 +66,7 @@ public class DataCommandMixin {
 
     /**
      * @author ImCoolYeah105
-     * @reason rapid testing
-     * TODO: remove method override
+     * @reason there does not appear to be a clean way to replace the getNbt() call with a getFilteredNbt(path) call
      */
     @Overwrite
     private static ArgumentBuilder<ServerCommandSource, ?> addModifyArgument(BiConsumer<ArgumentBuilder<ServerCommandSource, ?>, DataCommand.ModifyArgumentCreator> subArgumentAdder) {
@@ -87,12 +90,13 @@ public class DataCommandMixin {
                                 DataCommandObject dataCommandObject = objectType2.getObject(context);
                                 NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "sourcePath");
 
-                                NbtElement nbt;
-                                if(Radon.CONFIG.getNbtOptimizationsEnabled() && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
+                                NbtElement nbt = null;
+                                if(Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
                                     nbt = mixin.getFilteredNbt(nbtPath);
-                                } else {
-                                    nbt = dataCommandObject.getNbt();
                                 }
+                                if(nbt == null)
+                                    nbt = dataCommandObject.getNbt();
+                                Radon.logDebug(nbt);
                                 List<NbtElement> list = nbtPath.get(nbt);
                                 return executeModify(context, objectType, modifier, list);
                             }));

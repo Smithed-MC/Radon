@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockDataObject.class)
-public class BlockDataObjectMixin {
+public class BlockDataObjectMixin implements DataCommandObjectMixin {
     @Final
     @Shadow
     private BlockEntity blockEntity;

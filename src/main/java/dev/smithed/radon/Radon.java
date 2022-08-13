@@ -17,27 +17,16 @@ public class Radon implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> RadonCommand.register(dispatcher));
     }
 
-    /*
-    It's better to have the config located in a central area like the main radon class
-    rather than a command class
-    ofc the class below can be split into a new class however i was lazy in porting this change over
-     */
+    public static void logDebug(Object obj) {
+        if(CONFIG.debug && obj != null)
+            LOGGER.info(obj.toString());
+    }
+
     public static class RadonConfig {
 
-        /*
-        Yes i know this method naming is stupid however,
-        i literally just ported them over exactly
-        also i suck at naming
-         */
-
-        private boolean NbtOptimizations = true; // All optimizations that run well(ish) may as well default to true
-        public boolean getNbtOptimizationsEnabled() {return this.NbtOptimizations;}
-        public void setNbtOptimizationsEnabled(boolean enabled) {this.NbtOptimizations = enabled;}
-
-
-        private boolean EntitySelectorOptimizations = true;
-        public boolean getEntitySelectorOptimizations() { return this.EntitySelectorOptimizations; }
-        public void setEntitySelectorOptimizations(boolean enabled) { this.EntitySelectorOptimizations = enabled; }
+        public boolean debug = false;
+        public boolean nbtOptimizations = true;
+        public boolean entitySelectorOptimizations = true;
 
     }
 
