@@ -16,6 +16,11 @@
     "misc.PlayerInventoryMixin",
     "misc.EnderChestInventoryMixin",
 
+    "block_entity.BlockEntityMixin",
+    "block_entity.ChestBlockEntityMixin",
+    "block_entity.LockableContainerBlockEntityMixin",
+    "block_entity.LootableContainerBlockEntityMixin",
+
     "entity.AbstractDecorationEntityMixin",
     "entity.AbstractDonkeyEntityMixin",
     "entity.AbstractHorseEntityMixin",

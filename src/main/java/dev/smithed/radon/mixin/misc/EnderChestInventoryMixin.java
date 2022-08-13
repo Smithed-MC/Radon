@@ -19,18 +19,16 @@ public abstract class EnderChestInventoryMixin extends SimpleInventory implement
     @Override
     public NbtList writeNbtFiltered(NbtList nbtList, String nbt) {
         int slot = NBTUtils.getSlot(nbt);
-        if(slot == -1) {
-            nbtList = this.toNbtList();
-        } else {
-            if(slot >= 0 && slot <= 35) {
-                ItemStack itemStack = this.getStack(slot);
-                if (!itemStack.isEmpty()) {
-                    NbtCompound nbtCompound = new NbtCompound();
-                    nbtCompound.putByte("Slot", (byte)slot);
-                    itemStack.writeNbt(nbtCompound);
-                    nbtList.add(nbtCompound);
-                }
+        if(slot >= 0 && slot <= 26) {
+            ItemStack itemStack = this.getStack(slot);
+            if (!itemStack.isEmpty()) {
+                NbtCompound nbtCompound = new NbtCompound();
+                nbtCompound.putByte("Slot", (byte)slot);
+                itemStack.writeNbt(nbtCompound);
+                nbtList.add(nbtCompound);
             }
+        } else {
+            nbtList = this.toNbtList();
         }
         return nbtList;
     }
