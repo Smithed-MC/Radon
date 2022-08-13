@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BrewingStandBlockEntity.class)
-public abstract class BrewingStandBlockEntityMixin extends LootableContainerBlockEntityMixin implements ICustomNBTMixin {
+public abstract class BrewingStandBlockEntityMixin extends LockableContainerBlockEntityMixin implements ICustomNBTMixin {
     @Shadow
     private DefaultedList<ItemStack> inventory;
     @Shadow

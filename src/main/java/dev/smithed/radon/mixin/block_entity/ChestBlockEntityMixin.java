@@ -1,6 +1,5 @@
 package dev.smithed.radon.mixin.block_entity;
 
-import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.utils.NBTUtils;
 import net.minecraft.block.entity.ChestBlockEntity;
@@ -23,7 +22,6 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
             switch (topLevelNbt) {
                 case "Items":
                     int slot = NBTUtils.getSlot(path);
-                    Radon.LOGGER.info(this.inventory.toString());
                     if (slot >= 0 && slot <= 26) {
                         ItemStack itemStack = this.inventory.get(slot);
                         if (!itemStack.isEmpty()) {
