@@ -1,23 +1,23 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.entity.passive.TraderLlamaEntity;
+import net.minecraft.entity.mob.GhastEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(TraderLlamaEntity.class)
-public abstract class TraderLlamaEntityMixin extends LlamaEntityMixin implements ICustomNBTMixin {
+@Mixin(GhastEntity.class)
+public abstract class GhastEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
     @Shadow
-    private int despawnDelay;
+    private int fireballStrength = 1;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        TraderLlamaEntity entity = ((TraderLlamaEntity) (Object) this);
+        GhastEntity entity = ((GhastEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "DespawnDelay":
-                    nbt.putInt("DespawnDelay", this.despawnDelay);
+                case "ExplosionPower":
+                    nbt.putByte("ExplosionPower", (byte)this.fireballStrength);
                     break;
                 default:
                     return false;

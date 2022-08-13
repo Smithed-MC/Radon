@@ -1,23 +1,21 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.entity.passive.TraderLlamaEntity;
+import net.minecraft.entity.passive.FrogEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(TraderLlamaEntity.class)
-public abstract class TraderLlamaEntityMixin extends LlamaEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private int despawnDelay;
+@Mixin(FrogEntity.class)
+public abstract class FrogEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        TraderLlamaEntity entity = ((TraderLlamaEntity) (Object) this);
+        FrogEntity entity = ((FrogEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "DespawnDelay":
-                    nbt.putInt("DespawnDelay", this.despawnDelay);
+                case "AngerTime":
+                    nbt.putString("variant", Registry.FROG_VARIANT.getId(entity.getVariant()).toString());
                     break;
                 default:
                     return false;

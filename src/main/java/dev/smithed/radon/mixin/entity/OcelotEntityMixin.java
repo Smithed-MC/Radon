@@ -1,23 +1,23 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.entity.passive.TraderLlamaEntity;
+import net.minecraft.entity.passive.OcelotEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(TraderLlamaEntity.class)
-public abstract class TraderLlamaEntityMixin extends LlamaEntityMixin implements ICustomNBTMixin {
+@Mixin(OcelotEntity.class)
+public abstract class OcelotEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
     @Shadow
-    private int despawnDelay;
+    abstract boolean isTrusting();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        TraderLlamaEntity entity = ((TraderLlamaEntity) (Object) this);
+        OcelotEntity entity = ((OcelotEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "DespawnDelay":
-                    nbt.putInt("DespawnDelay", this.despawnDelay);
+                case "Trusting":
+                    nbt.putBoolean("Trusting", this.isTrusting());
                     break;
                 default:
                     return false;

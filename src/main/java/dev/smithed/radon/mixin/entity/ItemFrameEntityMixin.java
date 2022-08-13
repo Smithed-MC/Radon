@@ -6,7 +6,7 @@ import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(ItemFrameEntity.class)
-public abstract class ItemFrameMixin extends AbstractDecorationEntityMixin implements ICustomNBTMixin {
+public abstract class ItemFrameEntityMixin extends AbstractDecorationEntityMixin implements ICustomNBTMixin {
     private float itemDropChance;
     private boolean fixed;
 

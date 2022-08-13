@@ -1,23 +1,26 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.entity.passive.TraderLlamaEntity;
+import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(TraderLlamaEntity.class)
-public abstract class TraderLlamaEntityMixin extends LlamaEntityMixin implements ICustomNBTMixin {
+@Mixin(RabbitEntity.class)
+public abstract class RabbitEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
     @Shadow
-    private int despawnDelay;
+    int moreCarrotTicks;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        TraderLlamaEntity entity = ((TraderLlamaEntity) (Object) this);
+        RabbitEntity entity = ((RabbitEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "DespawnDelay":
-                    nbt.putInt("DespawnDelay", this.despawnDelay);
+                case "RabbitType":
+                    nbt.putInt("RabbitType", entity.getRabbitType());
+                    break;
+                case "MoreCarrotTicks":
+                    nbt.putInt("MoreCarrotTicks", this.moreCarrotTicks);
                     break;
                 default:
                     return false;
