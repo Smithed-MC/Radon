@@ -27,7 +27,6 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
             switch (topLevelNbt) {
                 case "Items":
                     int slot = NBTUtils.getSlot(path);
-                    Radon.LOGGER.info(this.inventory.toString());
                     if (slot >= 0 && slot <= 4) {
                         ItemStack itemStack = this.inventory.get(slot);
                         if (!itemStack.isEmpty()) {

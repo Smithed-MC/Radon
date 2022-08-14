@@ -25,7 +25,6 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
             switch (topLevelNbt) {
                 case "Items":
                     int slot = NBTUtils.getSlot(path);
-                    Radon.LOGGER.info(this.inventory.toString());
                     if (slot >= 0 && slot <= 26) {
                         ItemStack itemStack = this.inventory.get(slot);
                         if (!itemStack.isEmpty()) {
