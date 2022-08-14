@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(StorageDataObject.class)
-public class StorageDataObjectMixin {
+public class StorageDataObjectMixin implements DataCommandObjectMixin {
     @Final
     @Shadow
     private DataCommandStorage storage;
