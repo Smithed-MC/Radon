@@ -13,6 +13,7 @@
     "EntitySelectorOptionsMixin",
     "EntitySelectorReaderMixin",
     "ExecuteCommandMixin",
+    "SimpleEntityLookupMixin",
     "ServerWorldMixin",
     "StorageDataObjectMixin",
     "NbtPredicateMixin",

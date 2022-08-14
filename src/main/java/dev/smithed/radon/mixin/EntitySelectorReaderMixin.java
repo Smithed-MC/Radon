@@ -7,7 +7,6 @@ import net.minecraft.command.EntitySelectorReader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntitySelectorReader.class)
@@ -25,7 +24,7 @@ public class EntitySelectorReaderMixin implements IEntitySelectorReaderExtender 
         this.ReaderTag = tag;
     }
 
-    @Inject(method = "build", at = @At("RETURN"))
+    @Inject(method = "build", at = @At("RETURN"), cancellable = true)
     private void BuildInject(CallbackInfoReturnable<EntitySelector> cir) {
         if(cir.getReturnValue() instanceof IEntitySelectorExtender extender) {
             extender.setTag(getReaderTag());

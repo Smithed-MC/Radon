@@ -1,6 +1,7 @@
 package dev.smithed.radon.mixin;
 
 import com.google.common.collect.Lists;
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
 import dev.smithed.radon.mixin_interface.ITaggedLookupMixin;
 import net.minecraft.entity.Entity;
@@ -30,7 +31,7 @@ public abstract class ServerWorldMixin implements IServerWorldExtender {
 
     @Override
     public <T extends Entity> List<? extends T> getEntitiesByTag(TypeFilter<Entity, T> filter, Predicate<? super T> predicate, String tag) {
-        if(this.getEntityLookup() instanceof ITaggedLookupMixin lookup) {
+        if(Radon.CONFIG.entitySelectorOptimizations && this.getEntityLookup() instanceof ITaggedLookupMixin lookup) {
             List<T> list = Lists.newArrayList();
             lookup.forEachTaggedEntity(filter, (entity) -> {
                 if(predicate.test((T)entity)) {

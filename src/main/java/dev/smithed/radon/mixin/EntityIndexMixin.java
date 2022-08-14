@@ -1,9 +1,9 @@
 package dev.smithed.radon.mixin;
 
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.mixin_interface.ITaggedLookupMixin;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.world.entity.*;
@@ -32,41 +32,45 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
         return this.uuidMap;
     }
     public void addEntityToTagMap(String tag, UUID uuid) {
-        List<UUID> uuids = uuidMap.get(tag);
-        uuids.add(uuid);
-        uuidMap.put(tag, uuids);
+        if(!uuidMap.containsKey(tag))
+            uuidMap.put(tag, new LinkedList<>());
+        uuidMap.get(tag).add(uuid);
     }
 
     public void removeEntityFromTagMap(String tag, UUID uuid) {
-        if(uuidMap.containsKey(tag)) {
-            List<UUID> uuids = uuidMap.get(tag);
-            uuids.remove(uuid);
-            uuidMap.put(tag, uuids);
+        List<UUID> list = uuidMap.get(tag);
+        if(list != null) {
+            list.remove(uuid);
+            if(list.size() == 0)
+                uuidMap.remove(tag);
         }
     }
 
-    @Inject(method = "add", at = @At("HEAD")) private void addInject(T entity, CallbackInfo ci) {
+    @Inject(method = "add", at = @At("HEAD"))
+    private void addInject(T entity, CallbackInfo ci) {
         if(entity instanceof Entity le && !le.getScoreboardTags().isEmpty()) {
             le.getScoreboardTags().forEach(tag -> addEntityToTagMap(tag, entity.getUuid()));
         }
     }
 
-    @Inject(method = "remove", at = @At("HEAD")) private void removeInject(T entity, CallbackInfo ci) {
+    @Inject(method = "remove", at = @At("HEAD"))
+    private void removeInject(T entity, CallbackInfo ci) {
         if(entity instanceof Entity le && !le.getScoreboardTags().isEmpty()) {
             le.getScoreboardTags().forEach(tag -> removeEntityFromTagMap(tag, entity.getUuid()));
         }
     }
 
     public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, String tag) {
-        List<T> entities = new ArrayList<>();
-        uuidMap.get(tag).forEach(uuid -> entities.add(get(uuid)));
-
-        for (T t : entities) {
-            U entityLike2 = filter.downcast(t);
-            if (entityLike2 != null) {
-                action.accept(entityLike2);
-            }
+        List<UUID> list = uuidMap.get(tag);
+        if(list != null) {
+            Radon.logDebug("@e tag size = " + list.size());
+            list.forEach(uuid -> {
+                T entityLike = get(uuid);
+                U entityLike2 = filter.downcast(entityLike);
+                if (entityLike2 != null) {
+                    action.accept(entityLike2);
+                }
+            });
         }
-
     }
 }

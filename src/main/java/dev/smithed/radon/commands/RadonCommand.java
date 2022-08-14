@@ -21,6 +21,8 @@ public class RadonCommand {
                 .requires(source -> source.hasPermissionLevel(2))
                 .then(CommandManager.literal("nbt-optimizations").executes(RadonCommand::toggle_radon_nbt)
                         .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_radon_nbt)))
+                        .then(CommandManager.literal("selector-optimizations").executes(RadonCommand::toggle_radon_selector)
+                                .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_radon_selector)))
                 .then(CommandManager.literal("debug-mode").executes(RadonCommand::toggle_debug_mode)
                         .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_debug_mode)))
             );
@@ -32,7 +34,7 @@ public class RadonCommand {
             text = Text.literal("Radon NBT optimizations are now disabled");
             Radon.CONFIG.nbtOptimizations = false;
         } else {
-            text = Text.literal("Enabled Radon NBT Optimizations");
+            text = Text.literal("Enabled Radon NBT optimizations");
             Radon.CONFIG.nbtOptimizations = true;
         }
         context.getSource().getServer().getPlayerManager().broadcast(text, false);
@@ -45,6 +47,27 @@ public class RadonCommand {
         ctx.getSource().getServer().getPlayerManager().broadcast(text, false);
         return Command.SINGLE_SUCCESS;
     }
+
+    public static int toggle_radon_selector(CommandContext<ServerCommandSource> context) {
+        Text text;
+        if(Radon.CONFIG.entitySelectorOptimizations) {
+            text = Text.literal("Radon Selector optimizations are now disabled");
+            Radon.CONFIG.entitySelectorOptimizations = false;
+        } else {
+            text = Text.literal("Enabled Radon Selector optimizations");
+            Radon.CONFIG.entitySelectorOptimizations = true;
+        }
+        context.getSource().getServer().getPlayerManager().broadcast(text, false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int set_radon_selector(CommandContext<ServerCommandSource> ctx) {
+        Text text = Text.literal("Radon Selector optimizations have been set to: " + BoolArgumentType.getBool(ctx, "enabled"));
+        Radon.CONFIG.entitySelectorOptimizations = BoolArgumentType.getBool(ctx, "enabled");
+        ctx.getSource().getServer().getPlayerManager().broadcast(text, false);
+        return Command.SINGLE_SUCCESS;
+    }
+
     public static int toggle_debug_mode(CommandContext<ServerCommandSource> context) {
         Text text;
         if(Radon.CONFIG.debug) {
