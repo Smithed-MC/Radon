@@ -32,7 +32,7 @@ public class EntitySelectorOptionsMixin {
         putOption("tag", (reader) -> {
             boolean bl = reader.readNegationCharacter();
             String string = reader.getReader().readUnquotedString();
-            if(Radon.CONFIG.entitySelectorOptimizations && reader instanceof IEntitySelectorReaderExtender entityext) {
+            if(Radon.CONFIG.entitySelectorOptimizations && reader instanceof IEntitySelectorReaderExtender entityext && !bl) {
                 // No real way to get around passage of tags to the selector so I need to chain connect it
                 entityext.setReaderTag(string);
             }
