@@ -1,6 +1,7 @@
 package dev.smithed.radon.mixin;
 
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
+import dev.smithed.radon.mixin_interface.ITaggedLookupMixin;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.entity.Entity;
@@ -18,7 +19,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 @Mixin(EntityIndex.class)
-public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T> {
+public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T>, ITaggedLookupMixin<T> {
 
     @Shadow @Final private Int2ObjectMap<T> idToEntity;
 
