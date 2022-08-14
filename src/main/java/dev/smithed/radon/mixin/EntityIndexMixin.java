@@ -28,15 +28,13 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
     private Map<String, List<UUID>> uuidMap = new HashMap<>();
 
     @Override
-    public Map<String, List<UUID>> getUUIDMap() {
-        return this.uuidMap;
-    }
     public void addEntityToTagMap(String tag, UUID uuid) {
         if(!uuidMap.containsKey(tag))
             uuidMap.put(tag, new LinkedList<>());
         uuidMap.get(tag).add(uuid);
     }
 
+    @Override
     public void removeEntityFromTagMap(String tag, UUID uuid) {
         List<UUID> list = uuidMap.get(tag);
         if(list != null) {
@@ -60,6 +58,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
         }
     }
 
+    @Override
     public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, String tag) {
         List<UUID> list = uuidMap.get(tag);
         if(list != null) {

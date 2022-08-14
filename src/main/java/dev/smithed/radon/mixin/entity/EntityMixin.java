@@ -1,7 +1,9 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
+import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
+import dev.smithed.radon.mixin_interface.IServerWorldExtender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
@@ -12,14 +14,18 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
+    @Shadow
+    public World world;
     @Shadow
     protected DataTracker dataTracker;
     @Shadow
@@ -39,9 +45,30 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     @Shadow
     private Set<String> scoreboardTags;
     @Shadow
+    protected UUID uuid;
+    @Shadow
     protected abstract NbtList toNbtList(double... values);
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        return false;
+    }
+
+
+    public boolean addScoreboardTag(String tag) {
+        if(this.scoreboardTags.size() < 1024 && this.scoreboardTags.add(tag)) {
+            if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
+                index.addEntityToTagMap(tag, this.uuid);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeScoreboardTag(String tag) {
+        if(this.scoreboardTags.remove(tag)) {
+            if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
+                index.removeEntityFromTagMap(tag, this.uuid);
+            return true;
+        }
         return false;
     }
 

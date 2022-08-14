@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin;
 
+import dev.smithed.radon.mixin_interface.ISimpleEntityLookupExtender;
 import dev.smithed.radon.mixin_interface.ITaggedLookupMixin;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.world.entity.EntityIndex;
@@ -12,7 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import java.util.function.Consumer;
 
 @Mixin(SimpleEntityLookup.class)
-public abstract class SimpleEntityLookupMixin<T extends EntityLike> implements ITaggedLookupMixin<T> {
+public abstract class SimpleEntityLookupMixin<T extends EntityLike> implements ISimpleEntityLookupExtender, ITaggedLookupMixin<T> {
     @Final
     @Shadow
     private EntityIndex<T> index;
@@ -23,6 +24,10 @@ public abstract class SimpleEntityLookupMixin<T extends EntityLike> implements I
             tagged.forEachTaggedEntity(filter, action, tag);
         else
             this.index.forEach(filter, action);
+    }
+
+    public EntityIndex<T> getIndex() {
+        return this.index;
     }
 
 }

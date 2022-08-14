@@ -12,6 +12,6 @@ public interface IEntityIndexExtender<T extends EntityLike> {
 
     void addEntityToTagMap(String tag, UUID uuid);
 
-    Map<String, List<UUID>> getUUIDMap();
+    void removeEntityFromTagMap(String tag, UUID uuid);
 
 }

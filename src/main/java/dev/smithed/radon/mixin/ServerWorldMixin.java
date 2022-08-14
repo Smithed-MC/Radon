@@ -3,11 +3,13 @@ package dev.smithed.radon.mixin;
 import com.google.common.collect.Lists;
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
+import dev.smithed.radon.mixin_interface.ISimpleEntityLookupExtender;
 import dev.smithed.radon.mixin_interface.ITaggedLookupMixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerEntityManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TypeFilter;
+import net.minecraft.world.entity.EntityIndex;
 import net.minecraft.world.entity.EntityLookup;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
@@ -41,6 +43,14 @@ public abstract class ServerWorldMixin implements IServerWorldExtender {
             return list;
         }
         return getEntitiesByType(filter, predicate);
+    }
+
+    @Override
+    public EntityIndex getEntityIndex() {
+        if(this.getEntityLookup() instanceof ISimpleEntityLookupExtender lookup)
+            return lookup.getIndex();
+        else
+            return null;
     }
 
 }
