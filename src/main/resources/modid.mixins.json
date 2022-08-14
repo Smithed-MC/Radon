@@ -9,7 +9,6 @@
     "DataCommandObjectMixin",
     "EntityDataObjectMixin",
     "EntityIndexMixin",
-    "EntityManagerMixin",
     "EntitySelectorMixin",
     "EntitySelectorOptionsMixin",
     "EntitySelectorReaderMixin",

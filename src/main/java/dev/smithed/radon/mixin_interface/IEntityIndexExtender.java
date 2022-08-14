@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 public interface IEntityIndexExtender<T extends EntityLike> {
 
     void addEntityToTagMap(String tag, UUID uuid);
-    <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, String tag);
 
     Map<String, List<UUID>> getUUIDMap();
 

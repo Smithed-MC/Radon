@@ -1,25 +1,17 @@
 package dev.smithed.radon.mixin;
 
 import com.google.common.collect.Lists;
-import dev.smithed.radon.Radon;
-import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
-import dev.smithed.radon.mixin_interface.IEntityManagerExtender;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
 import dev.smithed.radon.mixin_interface.ITaggedLookupMixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerEntityManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TypeFilter;
-import net.minecraft.world.entity.EntityLike;
 import net.minecraft.world.entity.EntityLookup;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 import java.util.UUID;
