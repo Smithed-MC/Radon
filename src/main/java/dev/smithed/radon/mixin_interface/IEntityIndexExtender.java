@@ -14,4 +14,6 @@ public interface IEntityIndexExtender<T extends EntityLike> {
 
     void removeEntityFromTagMap(String tag, UUID uuid);
 
+    <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, String tag);
+
 }

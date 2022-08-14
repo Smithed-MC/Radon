@@ -2,12 +2,9 @@ package dev.smithed.radon.mixin;
 
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
-import dev.smithed.radon.mixin_interface.ITaggedLookupMixin;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.world.entity.*;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,10 +15,10 @@ import java.util.*;
 import java.util.function.Consumer;
 
 @Mixin(EntityIndex.class)
-public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T>, ITaggedLookupMixin<T> {
+public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T> {
 
-    @Shadow @Final
-    private Int2ObjectMap<T> idToEntity;
+    @Shadow
+    public abstract T get(UUID uuid);
 
     private Map<String, List<UUID>> uuidMap = new HashMap<>();
 
