@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.world.entity.*;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,9 +20,8 @@ import java.util.function.Consumer;
 @Mixin(EntityIndex.class)
 public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T>, ITaggedLookupMixin<T> {
 
-    @Shadow @Final private Int2ObjectMap<T> idToEntity;
-
-    @Shadow @Nullable public abstract T get(UUID uuid);
+    @Shadow @Final
+    private Int2ObjectMap<T> idToEntity;
 
     private Map<String, List<UUID>> uuidMap = new HashMap<>();
 
@@ -63,13 +61,13 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
         List<UUID> list = uuidMap.get(tag);
         if(list != null) {
             Radon.logDebug("@e tag size = " + list.size());
-            list.forEach(uuid -> {
-                T entityLike = get(uuid);
+            for(UUID uuid: list) {
+                T entityLike = this.get(uuid);
                 U entityLike2 = filter.downcast(entityLike);
                 if (entityLike2 != null) {
                     action.accept(entityLike2);
                 }
-            });
+            };
         }
     }
 }
