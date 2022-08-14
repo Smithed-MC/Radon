@@ -39,13 +39,16 @@ public abstract class SignBlockEntityMixin extends BlockEntityMixin implements I
                     nbt.putString("Color", this.textColor.getName());
                     break;
                 case "Text1":
-                    writeSignLineToNbt(1, nbt);
+                    writeSignLineToNbt(0, nbt);
+                    break;
                 case "Text2":
-                    writeSignLineToNbt(2, nbt);
+                    writeSignLineToNbt(1, nbt);
+                    break;
                 case "Text3":
-                    writeSignLineToNbt(3, nbt);
+                    writeSignLineToNbt(2, nbt);
+                    break;
                 case "Text4":
-                    writeSignLineToNbt(4, nbt);
+                    writeSignLineToNbt(3, nbt);
                     break;
                 default:
                     return false;
