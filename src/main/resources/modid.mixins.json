@@ -4,13 +4,18 @@
   "package": "dev.smithed.radon.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BlockDataObjectMixin",
     "DataCommandMixin",
-    "ExecuteCommandMixin",
     "DataCommandObjectMixin",
     "EntityDataObjectMixin",
-    "BlockDataObjectMixin",
-    "StorageDataObjectMixin",
+    "EntityIndexMixin",
+    "EntitySelectorMixin",
     "EntitySelectorOptionsMixin",
+    "EntitySelectorReaderMixin",
+    "ExecuteCommandMixin",
+    "SimpleEntityLookupMixin",
+    "ServerWorldMixin",
+    "StorageDataObjectMixin",
     "NbtPredicateMixin",
 
     "misc.PlayerInventoryMixin",
@@ -139,9 +144,7 @@
     "entity.ZoglinEntityMixin",
     "entity.ZombieEntityMixin",
     "entity.ZombieVillagerEntityMixin",
-    "entity.ZombifiedPiglinEntityMixin",
-
-    "entity.MooshroomEntityMixin"
+    "entity.ZombifiedPiglinEntityMixin"
   ],
   "client": [],
   "injectors": {

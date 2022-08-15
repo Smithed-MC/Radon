@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "radon",
-  "version": "0.0.9",
+  "version": "0.1.0",
 
   "name": "Radon",
   "description": "Optimizes various features in commands. Currently limited to NBT lookups.",

@@ -22,7 +22,7 @@ public class NbtPredicateMixin {
 
     /**
      * @author ImCoolYeah105
-     * @reasaon overwrite get nbt function to add filter support
+     * @reason overwrite get nbt function to add filter support
      */
     @Overwrite
     public boolean test(Entity entity) {

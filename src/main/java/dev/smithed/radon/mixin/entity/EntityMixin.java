@@ -1,7 +1,9 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
+import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
+import dev.smithed.radon.mixin_interface.IServerWorldExtender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
@@ -12,14 +14,24 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.UUID;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
+    @Shadow
+    public World world;
     @Shadow
     protected DataTracker dataTracker;
     @Shadow
@@ -39,10 +51,58 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     @Shadow
     private Set<String> scoreboardTags;
     @Shadow
+    protected UUID uuid;
+    @Shadow
     protected abstract NbtList toNbtList(double... values);
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         return false;
+    }
+
+    /**
+     * @author ImCoolYeah105
+     * @reason 1 line overwrite
+     */
+    @Overwrite
+    public boolean addScoreboardTag(String tag) {
+        if(this.scoreboardTags.size() < 1024 && this.scoreboardTags.add(tag)) {
+            if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
+                index.addEntityToTagMap(tag, this.uuid);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @author ImCoolYeah105
+     * @reason 1 line overwrite
+     */
+    @Overwrite
+    public boolean removeScoreboardTag(String tag) {
+        if(this.scoreboardTags.remove(tag)) {
+            if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
+                index.removeEntityFromTagMap(tag, this.uuid);
+            return true;
+        }
+        return false;
+    }
+
+    @Inject(method = "readNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"))
+    private void clearTags(CallbackInfo ci) {
+        if (this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
+            this.scoreboardTags.forEach(tag -> index.removeEntityFromTagMap(tag, this.uuid));
+    }
+
+    @Inject(method = "readNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+    private void addTags(NbtCompound nbt, CallbackInfo ci) {
+        if (nbt.contains("Tags", 9) && this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index) {
+            NbtList nbtList4 = nbt.getList("Tags", 8);
+            int i = Math.min(nbtList4.size(), 1024);
+
+            for(int j = 0; j < i; ++j) {
+                index.addEntityToTagMap(nbtList4.getString(j), this.uuid);
+            }
+        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package dev.smithed.radon.mixin;
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.commands.RadonCommand;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
+import dev.smithed.radon.mixin_interface.IEntitySelectorReaderExtender;
 import dev.smithed.radon.utils.NBTUtils;
 import net.minecraft.command.EntitySelectorOptions;
 import net.minecraft.command.EntitySelectorReader;
@@ -25,8 +26,27 @@ public class EntitySelectorOptionsMixin {
     @Shadow
     private static void putOption(String id, EntitySelectorOptions.SelectorHandler handler, Predicate<EntitySelectorReader> condition, Text description) {}
 
+
     @Inject(method = "register()V", at = @At("TAIL"))
     private static void register(CallbackInfo ci) {
+        putOption("tag", (reader) -> {
+            boolean bl = reader.readNegationCharacter();
+            String string = reader.getReader().readUnquotedString();
+            if(Radon.CONFIG.entitySelectorOptimizations && reader instanceof IEntitySelectorReaderExtender entityext && !bl) {
+                // No real way to get around passage of tags to the selector so I need to chain connect it
+                entityext.setReaderTag(string);
+            }
+            reader.setPredicate((entity) -> {
+                if ("".equals(string)) {
+                    return entity.getScoreboardTags().isEmpty() != bl;
+                } else {
+                    return entity.getScoreboardTags().contains(string) != bl;
+                }
+            });
+        }, (reader) -> {
+            return true;
+        }, Text.translatable("argument.entity.options.tag.description"));
+
         putOption("nbt", (reader) -> {
             boolean bl = reader.readNegationCharacter();
             NbtCompound nbtCompound = (new StringNbtReader(reader.getReader())).parseCompound();
