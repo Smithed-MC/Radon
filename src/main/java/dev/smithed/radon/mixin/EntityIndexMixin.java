@@ -20,30 +20,19 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
     @Shadow
     public abstract T get(UUID uuid);
 
-    private Map<String, Set<UUID>> uuidMap = new HashMap<>();
+    private final Map<String, Set<UUID>> uuidMap = new HashMap<>();
 
     @Override
     public void addEntityToTagMap(String tag, UUID uuid) {
-        if(!uuidMap.containsKey(tag))
-            uuidMap.put(tag, new HashSet<>());
-        uuidMap.get(tag).add(uuid);
+        Set<UUID> set = uuidMap.computeIfAbsent(tag, k -> new HashSet<>());
+        set.add(uuid);
     }
 
     @Override
     public void removeEntityFromTagMap(String tag, UUID uuid) {
-        Set<UUID> list = uuidMap.get(tag);
-        if(list != null) {
-            list.remove(uuid);
-            if(list.size() == 0)
-                uuidMap.remove(tag);
-        }
-    }
-
-    @Inject(method = "add", at = @At("HEAD"))
-    private void addInject(T entity, CallbackInfo ci) {
-        if(entity instanceof Entity le && !le.getScoreboardTags().isEmpty()) {
-            le.getScoreboardTags().forEach(tag -> addEntityToTagMap(tag, entity.getUuid()));
-        }
+        Set<UUID> set = uuidMap.get(tag);
+        if(set != null)
+            set.remove(uuid);
     }
 
     @Inject(method = "remove", at = @At("HEAD"))
@@ -55,16 +44,17 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
 
     @Override
     public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, String tag) {
-        Set<UUID> list = uuidMap.get(tag);
-        if(list != null) {
-            Radon.logDebug("@e tag size = " + list.size());
-            for(UUID uuid: list) {
+        Set<UUID> set = uuidMap.get(tag);
+        if(set != null) {
+            if(Radon.CONFIG.debug)
+                Radon.logDebug("@e tag = " + tag + ", size = " + set.size());
+            set.forEach(uuid -> {
                 T entityLike = this.get(uuid);
                 U entityLike2 = filter.downcast(entityLike);
                 if (entityLike2 != null) {
                     action.accept(entityLike2);
                 }
-            };
+            });
         }
     }
 }

@@ -59,6 +59,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
         return false;
     }
 
+
     /**
      * @author ImCoolYeah105
      * @reason 1 line overwrite
