@@ -20,18 +20,20 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
     @Shadow
     public abstract T get(UUID uuid);
 
-    private Map<String, List<UUID>> uuidMap = new HashMap<>();
+    private Map<String, Set<UUID>> uuidMap = new HashMap<>();
 
     @Override
     public void addEntityToTagMap(String tag, UUID uuid) {
+        Radon.LOGGER.info("adding " + tag + " with " + uuid);
         if(!uuidMap.containsKey(tag))
-            uuidMap.put(tag, new LinkedList<>());
+            uuidMap.put(tag, new HashSet<>());
         uuidMap.get(tag).add(uuid);
     }
 
     @Override
     public void removeEntityFromTagMap(String tag, UUID uuid) {
-        List<UUID> list = uuidMap.get(tag);
+        Radon.LOGGER.info("removing " + tag + " with " + uuid);
+        Set<UUID> list = uuidMap.get(tag);
         if(list != null) {
             list.remove(uuid);
             if(list.size() == 0)
@@ -55,7 +57,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
 
     @Override
     public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, String tag) {
-        List<UUID> list = uuidMap.get(tag);
+        Set<UUID> list = uuidMap.get(tag);
         if(list != null) {
             Radon.logDebug("@e tag size = " + list.size());
             for(UUID uuid: list) {
