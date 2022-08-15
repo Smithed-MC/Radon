@@ -24,7 +24,6 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
 
     @Override
     public void addEntityToTagMap(String tag, UUID uuid) {
-        Radon.LOGGER.info("adding " + tag + " with " + uuid);
         if(!uuidMap.containsKey(tag))
             uuidMap.put(tag, new HashSet<>());
         uuidMap.get(tag).add(uuid);
@@ -32,7 +31,6 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
 
     @Override
     public void removeEntityFromTagMap(String tag, UUID uuid) {
-        Radon.LOGGER.info("removing " + tag + " with " + uuid);
         Set<UUID> list = uuidMap.get(tag);
         if(list != null) {
             list.remove(uuid);
