@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.Set;
 import java.util.function.Consumer;
 
 @Mixin(SimpleEntityLookup.class)
@@ -19,9 +20,9 @@ public abstract class SimpleEntityLookupMixin<T extends EntityLike> implements I
     private EntityIndex<T> index;
 
     @Override
-    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, String tag) {
+    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, Set<String> tags) {
         if(this.index instanceof IEntityIndexExtender tagged)
-            tagged.forEachTaggedEntity(filter, action, tag);
+            tagged.forEachTaggedEntity(filter, action, tags);
         else
             this.index.forEach(filter, action);
     }

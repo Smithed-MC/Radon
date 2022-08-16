@@ -5,34 +5,42 @@ import dev.smithed.radon.mixin_interface.IEntitySelectorExtender;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.predicate.NumberRange;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Mixin(EntitySelector.class)
 public class EntitySelectorMixin implements IEntitySelectorExtender {
 
-    private String entityTag = null;
+    private Set<String> tags = null;
     @Shadow private Box box;
     @Shadow private TypeFilter<Entity, ?> entityFilter;
 
     @Override
-    public String getTag() {
-        return entityTag;
+    public Set<String> getTags() {
+        return tags;
     }
 
     @Override
-    public void setTag(String tag) {
-        this.entityTag = tag;
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
     }
 
     /*
@@ -41,8 +49,8 @@ public class EntitySelectorMixin implements IEntitySelectorExtender {
      */
     @Inject(method = "appendEntitiesFromWorld", at=@At("HEAD"), cancellable = true)
     void appendEntitiesFromWorldInject(List<Entity> result, ServerWorld world, Vec3d pos, Predicate<Entity> predicate, CallbackInfo ci) {
-        if(Radon.CONFIG.entitySelectorOptimizations && getTag() != null && world instanceof IServerWorldExtender extender) {
-            result.addAll(extender.getEntitiesByTag(entityFilter, predicate, getTag()));
+        if(Radon.CONFIG.entitySelectorOptimizations && getTags() != null && getTags().size() > 0 && world instanceof IServerWorldExtender extender) {
+            result.addAll(extender.getEntitiesByTag(entityFilter, predicate, getTags()));
         } else if (this.box != null) {
             result.addAll(world.getEntitiesByType(this.entityFilter, this.box.offset(pos), predicate));
         } else {
@@ -51,6 +59,5 @@ public class EntitySelectorMixin implements IEntitySelectorExtender {
         // don't want to append twice
         ci.cancel();
     }
-
 
 }

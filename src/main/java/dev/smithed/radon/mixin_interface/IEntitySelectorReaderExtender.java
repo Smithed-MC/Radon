@@ -1,8 +1,10 @@
 package dev.smithed.radon.mixin_interface;
 
+import java.util.Set;
+
 public interface IEntitySelectorReaderExtender {
 
-    String getReaderTag();
-    void setReaderTag(String tag);
+    Set<String> getReaderTags();
+    void addReaderTag(String tag);
 
 }

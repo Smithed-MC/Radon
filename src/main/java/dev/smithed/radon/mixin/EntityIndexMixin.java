@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin;
 
+import com.google.common.collect.Sets;
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import net.minecraft.entity.Entity;
@@ -43,11 +44,26 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
     }
 
     @Override
-    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, String tag) {
-        Set<UUID> set = uuidMap.get(tag);
+    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, Set<String> tags) {
+        Set<UUID> set = null;
+        for(String tag: tags) {
+            Set<UUID> interSet = this.uuidMap.get(tag);
+            if(interSet == null)
+                return;
+            if(set == null)
+                set = this.uuidMap.get(tag);
+            else
+                set = Sets.intersection(set, interSet);
+        }
+
         if(set != null) {
-            if(Radon.CONFIG.debug)
-                Radon.logDebug("@e tag = " + tag + ", size = " + set.size());
+            if(Radon.CONFIG.debug) {
+                StringBuilder tagNames = new StringBuilder();
+                for (String tag : tags) {
+                    tagNames.append(tag).append(", ");
+                }
+                Radon.logDebug("@e tag = " + tagNames + " size = " + set.size());
+            }
             set.forEach(uuid -> {
                 T entityLike = this.get(uuid);
                 U entityLike2 = filter.downcast(entityLike);

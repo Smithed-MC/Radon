@@ -5,20 +5,29 @@ import dev.smithed.radon.commands.RadonCommand;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import dev.smithed.radon.mixin_interface.IEntitySelectorReaderExtender;
 import dev.smithed.radon.utils.NBTUtils;
+import net.minecraft.command.CommandSource;
 import net.minecraft.command.EntitySelectorOptions;
 import net.minecraft.command.EntitySelectorReader;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.tag.EntityTypeTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 @Mixin(EntitySelectorOptions.class)
@@ -34,7 +43,7 @@ public class EntitySelectorOptionsMixin {
             String string = reader.getReader().readUnquotedString();
             if(Radon.CONFIG.entitySelectorOptimizations && reader instanceof IEntitySelectorReaderExtender entityext && !bl) {
                 // No real way to get around passage of tags to the selector so I need to chain connect it
-                entityext.setReaderTag(string);
+                entityext.addReaderTag(string);
             }
             reader.setPredicate((entity) -> {
                 if ("".equals(string)) {

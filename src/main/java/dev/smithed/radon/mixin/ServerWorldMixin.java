@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -31,14 +32,14 @@ public abstract class ServerWorldMixin implements IServerWorldExtender {
     protected abstract EntityLookup<Entity> getEntityLookup();
 
     @Override
-    public <T extends Entity> List<? extends T> getEntitiesByTag(TypeFilter<Entity, T> filter, Predicate<? super T> predicate, String tag) {
+    public <T extends Entity> List<? extends T> getEntitiesByTag(TypeFilter<Entity, T> filter, Predicate<? super T> predicate, Set<String> tags) {
         if(Radon.CONFIG.entitySelectorOptimizations && this.getEntityLookup() instanceof ISimpleEntityLookupExtender lookup) {
             List<T> list = Lists.newArrayList();
             lookup.forEachTaggedEntity(filter, (entity) -> {
                 if(predicate.test((T)entity)) {
                     list.add((T)entity);
                 }
-            }, tag);
+            }, tags);
             return list;
         }
         return getEntitiesByType(filter, predicate);
