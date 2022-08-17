@@ -3,6 +3,7 @@ package dev.smithed.radon.mixin;
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntitySelectorExtender;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
+import dev.smithed.radon.utils.SelectorContainer;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -29,19 +30,8 @@ import java.util.function.Predicate;
 @Mixin(EntitySelector.class)
 public class EntitySelectorMixin implements IEntitySelectorExtender {
 
-    private Set<String> tags = null;
     @Shadow private Box box;
     @Shadow private TypeFilter<Entity, ?> entityFilter;
-
-    @Override
-    public Set<String> getTags() {
-        return tags;
-    }
-
-    @Override
-    public void setTags(Set<String> tags) {
-        this.tags = tags;
-    }
 
     /*
     @Author dragoncommands
@@ -49,8 +39,8 @@ public class EntitySelectorMixin implements IEntitySelectorExtender {
      */
     @Inject(method = "appendEntitiesFromWorld", at=@At("HEAD"), cancellable = true)
     void appendEntitiesFromWorldInject(List<Entity> result, ServerWorld world, Vec3d pos, Predicate<Entity> predicate, CallbackInfo ci) {
-        if(Radon.CONFIG.entitySelectorOptimizations && getTags() != null && getTags().size() > 0 && world instanceof IServerWorldExtender extender) {
-            result.addAll(extender.getEntitiesByTag(entityFilter, predicate, getTags()));
+        if(Radon.CONFIG.entitySelectorOptimizations && world instanceof IServerWorldExtender extender) {
+            result.addAll(extender.getEntitiesByTag(entityFilter, predicate, this.container));
         } else if (this.box != null) {
             result.addAll(world.getEntitiesByType(this.entityFilter, this.box.offset(pos), predicate));
         } else {
@@ -60,4 +50,15 @@ public class EntitySelectorMixin implements IEntitySelectorExtender {
         ci.cancel();
     }
 
+    private SelectorContainer container;
+
+    @Override
+    public void setContainer(SelectorContainer container) {
+        this.container = container;
+    }
+
+    @Override
+    public SelectorContainer getContainer(SelectorContainer container) {
+        return this.container;
+    }
 }

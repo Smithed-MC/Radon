@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin_interface;
 
+import dev.smithed.radon.utils.SelectorContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerEntityManager;
 import net.minecraft.util.TypeFilter;
@@ -12,7 +13,7 @@ import java.util.function.Predicate;
 
 public interface IServerWorldExtender {
 
-    <T extends Entity> List<? extends T> getEntitiesByTag(TypeFilter<Entity, T> filter, Predicate<? super T> predicate, Set<String> tags);
+    <T extends Entity> List<? extends T> getEntitiesByTag(TypeFilter<Entity, T> filter, Predicate<? super T> predicate, SelectorContainer selector);
 
     EntityIndex getEntityIndex();
 

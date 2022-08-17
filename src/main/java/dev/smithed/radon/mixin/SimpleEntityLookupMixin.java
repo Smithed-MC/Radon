@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin;
 
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.mixin_interface.ISimpleEntityLookupExtender;
+import dev.smithed.radon.utils.SelectorContainer;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.world.entity.EntityIndex;
 import net.minecraft.world.entity.EntityLike;
@@ -20,9 +21,9 @@ public abstract class SimpleEntityLookupMixin<T extends EntityLike> implements I
     private EntityIndex<T> index;
 
     @Override
-    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, Set<String> tags) {
+    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, SelectorContainer container) {
         if(this.index instanceof IEntityIndexExtender tagged)
-            tagged.forEachTaggedEntity(filter, action, tags);
+            tagged.forEachTaggedEntity(filter, action, container);
         else
             this.index.forEach(filter, action);
     }

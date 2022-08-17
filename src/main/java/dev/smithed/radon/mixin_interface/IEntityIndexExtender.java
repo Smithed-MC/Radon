@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin_interface;
 
+import dev.smithed.radon.utils.SelectorContainer;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.world.entity.EntityLike;
 
@@ -15,6 +16,6 @@ public interface IEntityIndexExtender<T extends EntityLike> {
 
     void removeEntityFromTagMap(String tag, UUID uuid);
 
-    <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, Set<String> tags);
+    <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, SelectorContainer container);
 
 }
