@@ -12,9 +12,9 @@ import java.util.function.Consumer;
 
 public interface IEntityIndexExtender<T extends EntityLike> {
 
-    void addEntityToTagMap(String tag, UUID uuid);
+    void addEntityToTagMap(String tag, EntityLike entity);
 
-    void removeEntityFromTagMap(String tag, UUID uuid);
+    void removeEntityFromTagMap(String tag, EntityLike entity);
 
     <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, SelectorContainer container);
 
