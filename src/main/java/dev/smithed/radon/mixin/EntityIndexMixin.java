@@ -22,6 +22,8 @@ import java.util.function.Consumer;
 @Mixin(EntityIndex.class)
 public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T> {
 
+    private static final int REASONABLESEARCHSIZE = 100;
+
     @Shadow
     public abstract T get(UUID uuid);
     @Final
@@ -30,17 +32,17 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
     @Shadow
     abstract <U extends T> void forEach(TypeFilter<T, U> filter, Consumer<U> action);
 
-    private final Map<String, Set<EntityLike>> entityMap = new HashMap<>();
+    private final Map<String, List<EntityLike>> entityMap = new HashMap<>();
 
     @Override
     public void addEntityToTagMap(String tag, EntityLike entity) {
-        Set<EntityLike> set = entityMap.computeIfAbsent(tag, k -> new HashSet<>());
+        List<EntityLike> set = entityMap.computeIfAbsent(tag, k -> new ArrayList<>());
         set.add(entity);
     }
 
     @Override
     public void removeEntityFromTagMap(String tag, EntityLike entity) {
-        Set<EntityLike> set = entityMap.get(tag);
+        List<EntityLike> set = entityMap.get(tag);
         if(set != null)
             set.remove(entity);
     }
@@ -68,51 +70,71 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
 
     @Override
     public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, SelectorContainer container) {
-        Set<EntityLike> set = null;
+        List<EntityLike> set = null;
+        List<List<EntityLike>> list = null;
+        int size = Integer.MAX_VALUE;
 
-        if(container.type.length() > 0 && !container.isNotType) {
-            if (container.isTypeTag) {
-                set = new HashSet<>();
-                for(String type: container.entityTypes) {
-                    Set<EntityLike> entries = this.entityMap.get(type);
-                    if(entries != null)
-                        set = Sets.union(set, entries);
-                }
-            } else {
-                set = this.entityMap.get(container.type);
+        for (String tag : container.selectorTags) {
+            List<EntityLike> result = this.entityMap.get(tag);
+            if (result != null && result.size() < size) {
+                set = result;
+                size = result.size();
+
+                if(size < REASONABLESEARCHSIZE)
+                    break;
             }
-
-            if(set == null || set.size() == 0)
-                return;
         }
 
-        for(String tag: container.selectorTags) {
-            Set<EntityLike> interSet = this.entityMap.get(tag);
-            if(interSet == null)
-                return;
-            if(set == null)
-                set = this.entityMap.get(tag);
-            else
-                set = Sets.intersection(set, interSet);
-        }
-
-        if(set == null) {
-            this.forEach(filter, action);
+        if (size == 0)
             return;
-        }
 
-        for(String tag: container.notSelectorTags) {
-            Set<EntityLike> interSet = this.entityMap.get(tag);
-            if(interSet != null)
-                set = Sets.difference(set, interSet);
-        }
-
-        set.forEach(entity -> {
-            T entityLike = (T) entity;
-            U entityLike2 = filter.downcast(entityLike);
-            if (entityLike2 != null) {
-                action.accept(entityLike2);
+        if(size >= REASONABLESEARCHSIZE) {
+            if (!container.isNotType && !container.type.isBlank()) {
+                if (container.isTypeTag) {
+                    list = new LinkedList<>();
+                    int mergeSize = 0;
+                    for (String type : container.entityTypes) {
+                        List<EntityLike> result = this.entityMap.get(type);
+                        if (result != null) {
+                            mergeSize += result.size();
+                            list.add(result);
+                        }
+                    }
+                    if (mergeSize < size) {
+                        size = mergeSize;
+                        set = null;
+                    }
+                } else {
+                    List<EntityLike> result = this.entityMap.get(container.type);
+                    if (result != null && result.size() < size) {
+                        set = result;
+                        size = result.size();
+                    }
+                }
             }
-        });
+        }
+
+        if (size == 0)
+            return;
+
+        if (set != null) {
+            set.forEach(entity -> {
+                T entityLike = (T) entity;
+                U entityLike2 = filter.downcast(entityLike);
+                if (entityLike2 != null) {
+                    action.accept(entityLike2);
+                }
+            });
+        } else if (list != null) {
+            list.forEach(iset -> iset.forEach(entity -> {
+                T entityLike = (T) entity;
+                U entityLike2 = filter.downcast(entityLike);
+                if (entityLike2 != null) {
+                    action.accept(entityLike2);
+                }
+            }));
+        } else {
+            this.forEach(filter, action);
+        }
     }
 }
