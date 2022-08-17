@@ -26,4 +26,11 @@ public class NBTUtils {
         nbt = nbt.substring(1,nbt.length()-1) + ",";
         return nbt.split(":(\\[(.*?)\\])*(\\{(.*?)\\})*(.*?),");
     }
+
+    public static String translationToTypeName(String name) {
+        String[] split = name.split("\\.");
+        if(split.length > 2)
+            return split[1] + ":" + split[2];
+        return "";
+    }
 }

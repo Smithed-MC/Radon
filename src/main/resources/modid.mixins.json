@@ -17,6 +17,7 @@
     "ServerWorldMixin",
     "StorageDataObjectMixin",
     "NbtPredicateMixin",
+    "MinecraftServerMixin",
 
     "misc.PlayerInventoryMixin",
     "misc.EnderChestInventoryMixin",

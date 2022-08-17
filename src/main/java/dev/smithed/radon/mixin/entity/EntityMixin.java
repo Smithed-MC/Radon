@@ -68,7 +68,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     public boolean addScoreboardTag(String tag) {
         if(this.scoreboardTags.size() < 1024 && this.scoreboardTags.add(tag)) {
             if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
-                index.addEntityToTagMap(tag, this.uuid);
+                index.addEntityToTagMap(tag, (Entity)(Object)this);
             return true;
         }
         return false;
@@ -82,7 +82,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     public boolean removeScoreboardTag(String tag) {
         if(this.scoreboardTags.remove(tag)) {
             if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
-                index.removeEntityFromTagMap(tag, this.uuid);
+                index.removeEntityFromTagMap(tag, (Entity)(Object)this);
             return true;
         }
         return false;
@@ -91,7 +91,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     @Inject(method = "readNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"))
     private void clearTags(CallbackInfo ci) {
         if (this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
-            this.scoreboardTags.forEach(tag -> index.removeEntityFromTagMap(tag, this.uuid));
+            this.scoreboardTags.forEach(tag -> index.removeEntityFromTagMap(tag, (Entity)(Object)this));
     }
 
     @Inject(method = "readNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
@@ -101,7 +101,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
             int i = Math.min(nbtList4.size(), 1024);
 
             for(int j = 0; j < i; ++j) {
-                index.addEntityToTagMap(nbtList4.getString(j), this.uuid);
+                index.addEntityToTagMap(nbtList4.getString(j), (Entity)(Object)this);
             }
         }
     }
