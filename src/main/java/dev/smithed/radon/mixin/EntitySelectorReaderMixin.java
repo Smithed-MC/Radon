@@ -13,8 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EntitySelectorReader.class)
 public class EntitySelectorReaderMixin implements IEntitySelectorReaderExtender {
 
+    /**
+     * @author ImCoolYeah105
+     * get the constructed return value and inject additional data
+     */
     @Inject(method = "build", at = @At("RETURN"), cancellable = true)
-    private void BuildInject(CallbackInfoReturnable<EntitySelector> cir) {
+    private void radon_buildInject(CallbackInfoReturnable<EntitySelector> cir) {
         if(cir.getReturnValue() instanceof IEntitySelectorExtender extender) {
             extender.setContainer(this.container);
             cir.setReturnValue((EntitySelector) extender);

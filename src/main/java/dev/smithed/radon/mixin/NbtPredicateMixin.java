@@ -16,9 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(NbtPredicate.class)
 public class NbtPredicateMixin {
 
-    @Final
-    @Shadow
-    private NbtCompound nbt;
+    @Shadow @Final private NbtCompound nbt;
 
     /**
      * @author ImCoolYeah105

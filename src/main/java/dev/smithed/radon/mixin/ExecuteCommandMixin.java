@@ -16,11 +16,15 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(ExecuteCommand.class)
 public class ExecuteCommandMixin {
 
+    /**
+     * @author ImCoolYeah105
+     * reroute getNbt() -> getNbtFiltered(path), then cancel main function is successful.
+     */
     @Inject(
             method = "countPathMatches(Lnet/minecraft/command/DataCommandObject;Lnet/minecraft/command/argument/NbtPathArgumentType$NbtPath;)I",
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
-    private static void getNbt(DataCommandObject object, NbtPathArgumentType.NbtPath path, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
+    private static void radon_getNbt(DataCommandObject object, NbtPathArgumentType.NbtPath path, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
         if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
             NbtCompound nbt = mixin.getNbtFiltered(path);
             Radon.logDebug(nbt);

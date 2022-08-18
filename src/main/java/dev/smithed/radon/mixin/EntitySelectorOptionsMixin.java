@@ -31,7 +31,11 @@ public class EntitySelectorOptionsMixin {
     @Shadow
     private static void putOption(String id, EntitySelectorOptions.SelectorHandler handler, Predicate<EntitySelectorReader> condition, Text description) {}
 
-
+    /**
+     * @author ImCoolYeah105, dragoncommands
+     * This inject overwrites statically registered selector options to wrap extra data.
+     * It may be better to inject data directly, but lambda support is suspect.
+     */
     @Inject(method = "register()V", at = @At("TAIL"))
     private static void register(CallbackInfo ci) {
         putOption("tag", (reader) -> {

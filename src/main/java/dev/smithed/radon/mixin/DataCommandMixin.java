@@ -89,7 +89,7 @@ public class DataCommandMixin {
                                 DataCommandObject dataCommandObject = objectType2.getObject(context);
                                 NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "sourcePath");
 
-                                //object.getNbt() -> getFilteredNbt(path)
+                                //inject getNbt() -> getFilteredNbt(path)
                                 NbtElement nbt = null;
                                 if(Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
                                     nbt = mixin.getNbtFiltered(nbtPath);
@@ -118,6 +118,7 @@ public class DataCommandMixin {
     }
 
     /**
+     * @author ImCoolYeah105
      * Overrides default method. Reads filtered data and cancels main function if successful.
      * Otherwise, main function runs normally.
      */
