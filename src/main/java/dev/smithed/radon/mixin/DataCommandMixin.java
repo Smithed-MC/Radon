@@ -19,6 +19,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -29,17 +33,10 @@ import java.util.function.BiConsumer;
 @Mixin(DataCommand.class)
 public class DataCommandMixin {
 
-    @Final
-    @Shadow
-    private static SimpleCommandExceptionType GET_MULTIPLE_EXCEPTION;
-    @Final
-    @Shadow
-    private static List<DataCommand.ObjectType> TARGET_OBJECT_TYPES;
-    @Final
-    @Shadow
-    private static List<DataCommand.ObjectType> SOURCE_OBJECT_TYPES;
-    @Shadow
-    private static int executeModify(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType, DataCommand.ModifyOperation modifier, List<NbtElement> elements) { return 0; }
+    @Final @Shadow private static SimpleCommandExceptionType GET_MULTIPLE_EXCEPTION;
+    @Final @Shadow private static List<DataCommand.ObjectType> TARGET_OBJECT_TYPES;
+    @Final @Shadow private static List<DataCommand.ObjectType> SOURCE_OBJECT_TYPES;
+    @Shadow private static int executeModify(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType, DataCommand.ModifyOperation modifier, List<NbtElement> elements) { return 0; }
 
     /**
      * @author ImCoolYeah105
@@ -47,13 +44,15 @@ public class DataCommandMixin {
      */
     @Overwrite
     private static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
+        //inject getNbt() -> getFilteredNbt(path)
         NbtCompound nbt = null;
         if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin)
-            nbt = mixin.getFilteredNbt(path);
+            nbt = mixin.getNbtFiltered(path);
         if(nbt == null)
             nbt = object.getNbt();
         Radon.logDebug(nbt);
         Collection<NbtElement> collection = path.get(nbt);
+        //END
 
         Iterator<NbtElement> iterator = collection.iterator();
         NbtElement nbtElement = (NbtElement)iterator.next();
@@ -90,14 +89,16 @@ public class DataCommandMixin {
                                 DataCommandObject dataCommandObject = objectType2.getObject(context);
                                 NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "sourcePath");
 
+                                //object.getNbt() -> getFilteredNbt(path)
                                 NbtElement nbt = null;
                                 if(Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
-                                    nbt = mixin.getFilteredNbt(nbtPath);
+                                    nbt = mixin.getNbtFiltered(nbtPath);
                                 }
                                 if(nbt == null)
                                     nbt = dataCommandObject.getNbt();
                                 Radon.logDebug(nbt);
                                 List<NbtElement> list = nbtPath.get(nbt);
+                                // END
                                 return executeModify(context, objectType, modifier, list);
                             }));
                         });
@@ -113,8 +114,31 @@ public class DataCommandMixin {
                 return builder.then(argumentBuilder);
             });
         }
-
         return literalArgumentBuilder;
+    }
+
+    /**
+     * Overrides default method. Reads filtered data and cancels main function if successful.
+     * Otherwise, main function runs normally.
+     */
+    @Inject(
+            method = "executeModify(Lcom/mojang/brigadier/context/CommandContext;Lnet/minecraft/server/command/DataCommand$ObjectType;Lnet/minecraft/server/command/ModifyOperation;Ljava/util/List;)I",
+            at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
+    )
+    private static void radon_executeModify(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType, DataCommand.ModifyOperation modifier, List<NbtElement> elements, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
+        DataCommandObject dataCommandObject = objectType.getObject(context);
+        if(Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
+            NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "targetPath");
+            NbtCompound nbtCompound = new NbtCompound();
+            int i = modifier.modify(context, nbtCompound, nbtPath, elements);
+            if (i != 0) {
+                Radon.logDebug(nbtCompound);
+                if(mixin.setNbtFiltered(nbtCompound, nbtPath)) {
+                    context.getSource().sendFeedback(dataCommandObject.feedbackModify(), true);
+                    cir.setReturnValue(i);
+                }
+            }
+        }
     }
 
 }

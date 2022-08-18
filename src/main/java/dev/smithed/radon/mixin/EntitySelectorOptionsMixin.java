@@ -68,7 +68,7 @@ public class EntitySelectorOptionsMixin {
                                 nbtCompound2.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
                             }
                         } else {
-                            nbtCompound2 = mixin.writeFilteredNbt(nbtCompound2, nbt);
+                            nbtCompound2 = mixin.writeNbtFiltered(nbtCompound2, nbt);
                             if (nbtCompound2 == null)
                                 break;
                         }

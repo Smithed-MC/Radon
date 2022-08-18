@@ -41,7 +41,7 @@ public class NbtPredicateMixin {
                             nbt.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
                         }
                     } else {
-                        nbt = mixin.writeFilteredNbt(nbt, topNbt);
+                        nbt = mixin.writeNbtFiltered(nbt, topNbt);
                         if (nbt == null)
                             break;
                     }

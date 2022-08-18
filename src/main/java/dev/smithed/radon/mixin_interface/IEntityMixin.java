@@ -4,7 +4,7 @@ import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.nbt.NbtCompound;
 
 public interface IEntityMixin {
-
-    NbtCompound writeFilteredNbt(NbtCompound nbt, String path);
+    NbtCompound writeNbtFiltered(NbtCompound nbt, String path);
+    boolean readNbtFiltered(NbtCompound nbt, String path);
 
 }

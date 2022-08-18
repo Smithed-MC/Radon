@@ -6,6 +6,7 @@ import net.minecraft.nbt.NbtCompound;
 
 public interface IDataCommandObjectMixin {
 
-    NbtCompound getFilteredNbt(NbtPathArgumentType.NbtPath path) throws CommandSyntaxException;
+    NbtCompound getNbtFiltered(NbtPathArgumentType.NbtPath path) throws CommandSyntaxException;
+    boolean setNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path) throws CommandSyntaxException;
 
 }

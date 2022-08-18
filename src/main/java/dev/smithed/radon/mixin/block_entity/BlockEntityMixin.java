@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockEntity.class)
-public class BlockEntityMixin implements ICustomNBTMixin, IEntityMixin {
+public abstract class BlockEntityMixin implements IEntityMixin, ICustomNBTMixin {
+
     @Final
     @Shadow
     protected BlockPos pos;
@@ -23,7 +24,12 @@ public class BlockEntityMixin implements ICustomNBTMixin, IEntityMixin {
     }
 
     @Override
-    public NbtCompound writeFilteredNbt(NbtCompound nbt, String path) {
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        return false;
+    }
+
+    @Override
+    public NbtCompound writeNbtFiltered(NbtCompound nbt, String path) {
         String topLevelNbt = path.split("[\\.\\{\\[]")[0];
         BlockEntity entity = ((BlockEntity) (Object) this);
 
@@ -52,5 +58,10 @@ public class BlockEntityMixin implements ICustomNBTMixin, IEntityMixin {
                     return null;
         }
         return nbt;
+    }
+
+    @Override
+    public boolean readNbtFiltered(NbtCompound nbt, String path) {
+        return false;
     }
 }

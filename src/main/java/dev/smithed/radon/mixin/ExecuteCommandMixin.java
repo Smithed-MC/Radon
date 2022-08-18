@@ -22,7 +22,7 @@ public class ExecuteCommandMixin {
     )
     private static void getNbt(DataCommandObject object, NbtPathArgumentType.NbtPath path, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
         if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
-            NbtCompound nbt = mixin.getFilteredNbt(path);
+            NbtCompound nbt = mixin.getNbtFiltered(path);
             Radon.logDebug(nbt);
             if(nbt != null)
                 cir.setReturnValue(path.count(nbt));
