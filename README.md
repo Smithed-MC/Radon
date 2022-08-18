@@ -1,7 +1,7 @@
 # Radon
 Radon is an experimental no-compromises drop-in fabric mod designed to apply targeted optimizations for minecraft commands-- especially in environments with many datapacks. It currently:
-* Limits serialization of NBT data to the requested data instead of all the data, saving massive time on serialization (especially for players)
-* Entities are cached based on their type and thier selector tags. When using @e, the search function will check the caches for valid types (entity type tags are supported) and tags and use the smallest cache to search for. That is, if you @e[type=marker,tag=my_tag] and there are 100 markers and 50 my_tag, then the @e will only search the 50 entities with my_tag. Currently, this does not support type=! and tag=!.
+* Limits serialization of NBT data to the requested data instead of all the data, saving massive time on serialization. For example, if you do `data get entity @s Health` on a player, normally minecraft would copy & send *all* of the player NBT data, including the +1000 long array of unlocked recipes. With Radon, it will copy and send only Health and nothing more.
+* Entities are cached based on their type and their selector tags. When using @e, the search function will check the caches for valid types (entity type tags are supported) and tags, and will perform the @e search only on the smallest cache. That is, if you @e[type=marker,tag=my_tag] and there are 100 markers and 50 my_tag, then the @e will only search the 50 entities with my_tag. Currently, this does not support type=! and tag=!.
 
 ## Setup
 
