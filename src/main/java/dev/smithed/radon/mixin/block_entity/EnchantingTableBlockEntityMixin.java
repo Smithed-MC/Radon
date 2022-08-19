@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EnchantingTableBlockEntity.class)
 public abstract class EnchantingTableBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private Text customName;
+
+    @Shadow Text customName;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -21,6 +21,23 @@ public abstract class EnchantingTableBlockEntityMixin extends BlockEntityMixin i
                 case "CustomName":
                     if (entity.hasCustomName())
                         nbt.putString("CustomName", Text.Serializer.toJson(this.customName));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "CustomName":
+                    if (nbt.contains("CustomName", 8))
+                        this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
                     break;
                 default:
                     return false;

@@ -255,7 +255,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
 
     @Override
     public boolean readNbtFiltered(NbtCompound nbt, String path) {
-        String topLevelNbt = path.split("[\\.\\{\\[]")[0];
+        String topLevelNbt = path.split("[\\[.{]")[0];
         Entity entity = ((Entity)(Object)this);
 
         try {

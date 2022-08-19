@@ -11,12 +11,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BeehiveBlockEntity.class)
 public abstract class BeehiveBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private BlockPos flowerPos;
-    @Shadow
-    abstract NbtList getBees();
-    @Shadow
-    abstract boolean hasFlowerPos();
+
+    @Shadow BlockPos flowerPos;
+    @Shadow abstract NbtList getBees();
+    @Shadow abstract boolean hasFlowerPos();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -28,6 +26,23 @@ public abstract class BeehiveBlockEntityMixin extends BlockEntityMixin implement
                 case "FlowerPos":
                     if (this.hasFlowerPos())
                         nbt.put("FlowerPos", NbtHelper.fromBlockPos(this.flowerPos));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "FlowerPos":
+                    this.flowerPos = null;
+                    this.flowerPos = NbtHelper.toBlockPos(nbt.getCompound("FlowerPos"));
                     break;
                 default:
                     return false;

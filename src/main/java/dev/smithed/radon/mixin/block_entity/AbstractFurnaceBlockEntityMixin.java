@@ -14,17 +14,15 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerBlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private DefaultedList<ItemStack> inventory;
-    @Final
-    @Shadow
-    private Object2IntOpenHashMap<Identifier> recipesUsed;
-    @Shadow
-    int burnTime;
-    @Shadow
-    int cookTime;
-    @Shadow
-    int cookTimeTotal;
+
+    @Shadow @Final Object2IntOpenHashMap<Identifier> recipesUsed;
+    @Shadow DefaultedList<ItemStack> inventory;
+    @Shadow int burnTime;
+    @Shadow int cookTime;
+    @Shadow int cookTimeTotal;
+    @Shadow int fuelTime;
+    @Shadow abstract int getFuelTime(ItemStack fuel);
+    @Shadow abstract int size();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -48,6 +46,38 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
                         nbtCompound.putInt(identifier.toString(), count);
                     });
                     nbt.put("RecipesUsed", nbtCompound);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Items":
+                    this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+                    Inventories.readNbt(nbt, this.inventory);
+                    this.fuelTime = this.getFuelTime(this.inventory.get(1));
+                    break;
+                case "BurnTime":
+                    this.burnTime = nbt.getShort("BurnTime");
+                    break;
+                case "CookTime":
+                    this.cookTime = nbt.getShort("CookTime");
+                    break;
+                case "CookTimeTotal":
+                    this.cookTimeTotal = nbt.getShort("CookTimeTotal");
+                    break;
+                case "Tag":
+                    NbtCompound nbtCompound = nbt.getCompound("RecipesUsed");
+                    for (String string : nbtCompound.getKeys())
+                        this.recipesUsed.put(new Identifier(string), nbtCompound.getInt(string));
                     break;
                 default:
                     return false;

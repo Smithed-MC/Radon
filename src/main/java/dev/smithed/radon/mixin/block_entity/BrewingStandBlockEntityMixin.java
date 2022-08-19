@@ -14,12 +14,11 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BrewingStandBlockEntity.class)
 public abstract class BrewingStandBlockEntityMixin extends LockableContainerBlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private DefaultedList<ItemStack> inventory;
-    @Shadow
-    int brewTime;
-    @Shadow
-    int fuel;
+
+    @Shadow DefaultedList<ItemStack> inventory;
+    @Shadow int brewTime;
+    @Shadow int fuel;
+    @Shadow abstract int size();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -46,6 +45,29 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
                     break;
                 case "Fuel":
                     nbt.putByte("Fuel", (byte)this.fuel);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Items":
+                    this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+                    Inventories.readNbt(nbt, this.inventory);
+                    break;
+                case "BrewTime":
+                    this.brewTime = nbt.getShort("BrewTime");
+                    break;
+                case "Fuel":
+                    this.fuel = nbt.getByte("Fuel");
                     break;
                 default:
                     return false;

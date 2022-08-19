@@ -7,40 +7,31 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(StructureBlockBlockEntity.class)
 public abstract class StructureBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private String author = "";
-    @Shadow
-    private String metadata = "";
-    @Shadow
-    private BlockPos offset = new BlockPos(0, 1, 0);
-    @Shadow
-    private Vec3i size;
-    @Shadow
-    private BlockMirror mirror;
-    @Shadow
-    private BlockRotation rotation;
-    @Shadow
-    private StructureBlockMode mode;
-    @Shadow
-    private boolean ignoreEntities;
-    @Shadow
-    private boolean powered;
-    @Shadow
-    private boolean showAir;
-    @Shadow
-    private boolean showBoundingBox;
-    @Shadow
-    private float integrity;
-    @Shadow
-    private long seed;
-    @Shadow
-    abstract String getTemplateName();
+
+    @Shadow String author = "";
+    @Shadow String metadata = "";
+    @Shadow BlockPos offset = new BlockPos(0, 1, 0);
+    @Shadow Vec3i size;
+    @Shadow BlockMirror mirror;
+    @Shadow BlockRotation rotation;
+    @Shadow StructureBlockMode mode;
+    @Shadow boolean ignoreEntities;
+    @Shadow boolean powered;
+    @Shadow boolean showAir;
+    @Shadow boolean showBoundingBox;
+    @Shadow float integrity;
+    @Shadow long seed;
+    @Shadow abstract String getTemplateName();
+    @Shadow abstract void setTemplateName(@Nullable String templateName);
+    @Shadow abstract void updateBlockMode();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -103,6 +94,88 @@ public abstract class StructureBlockEntityMixin extends BlockEntityMixin impleme
                 default:
                     return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "name":
+                    this.setTemplateName(nbt.getString("name"));
+                    break;
+                case "author":
+                    this.author = nbt.getString("author");
+                    break;
+                case "metadata":
+                    this.metadata = nbt.getString("metadata");
+                    break;
+                case "posX":
+                case "posY":
+                case "posZ":
+                    int i = nbt.contains("posX") ? MathHelper.clamp(nbt.getInt("posX"), -48, 48) : this.offset.getX();
+                    int j = nbt.contains("posY") ? MathHelper.clamp(nbt.getInt("posY"), -48, 48) : this.offset.getY();
+                    int k = nbt.contains("posZ") ? MathHelper.clamp(nbt.getInt("posZ"), -48, 48) : this.offset.getZ();
+                    this.offset = new BlockPos(i, j, k);
+                    break;
+                case "sizeX":
+                case "sizeY":
+                case "sizeZ":
+                    int l = nbt.contains("posX") ? MathHelper.clamp(nbt.getInt("posX"), 0, 48) : this.size.getX();
+                    int m = nbt.contains("posY") ? MathHelper.clamp(nbt.getInt("posY"), 0, 48) : this.size.getY();
+                    int n = nbt.contains("posZ") ? MathHelper.clamp(nbt.getInt("posZ"), 0, 48) : this.size.getZ();
+                    this.size = new Vec3i(l, m, n);
+                    break;
+                case "rotation":
+                    try {
+                        this.rotation = BlockRotation.valueOf(nbt.getString("rotation"));
+                    } catch (IllegalArgumentException var11) {
+                        this.rotation = BlockRotation.NONE;
+                    }
+                    break;
+                case "mirror":
+                    try {
+                        this.mirror = BlockMirror.valueOf(nbt.getString("mirror"));
+                    } catch (IllegalArgumentException var10) {
+                        this.mirror = BlockMirror.NONE;
+                    }
+                    break;
+                case "mode":
+                    try {
+                        this.mode = StructureBlockMode.valueOf(nbt.getString("mode"));
+                    } catch (IllegalArgumentException var9) {
+                        this.mode = StructureBlockMode.DATA;
+                    }
+                    break;
+                case "ignoreEntities":
+                    this.ignoreEntities = nbt.getBoolean("ignoreEntities");
+                    break;
+                case "powered":
+                    this.powered = nbt.getBoolean("powered");
+                    break;
+                case "showair":
+                    this.showAir = nbt.getBoolean("showair");
+                    break;
+                case "showboundingbox":
+                    this.showBoundingBox = nbt.getBoolean("showboundingbox");
+                    break;
+                case "integrity":
+                    if (nbt.contains("integrity")) {
+                        this.integrity = nbt.getFloat("integrity");
+                    } else {
+                        this.integrity = 1.0F;
+                    }
+                    break;
+                case "seed":
+                    this.seed = nbt.getLong("seed");
+                    break;
+                default:
+                    return false;
+            }
+            this.updateBlockMode();
         }
         return true;
     }
