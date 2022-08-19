@@ -17,17 +17,17 @@ public abstract class BlockDataObjectMixin implements IDataCommandObjectMixin {
     @Shadow abstract void setNbt(NbtCompound nbt);
 
     @Override
-    public NbtCompound getNbtFiltered(NbtPathArgumentType.NbtPath path) {
+    public NbtCompound getNbtFiltered(String path) {
         NbtCompound nbtCompound = null;
         if (Radon.CONFIG.nbtOptimizations && this.blockEntity instanceof IEntityMixin mixin)
-            nbtCompound = mixin.writeNbtFiltered(new NbtCompound(), path.toString());
+            nbtCompound = mixin.writeNbtFiltered(new NbtCompound(), path);
         if(nbtCompound == null)
             nbtCompound = this.blockEntity.createNbtWithIdentifyingData();
         return nbtCompound;
     }
 
     @Override
-    public boolean setNbtFiltered(NbtCompound nbt, NbtPathArgumentType.NbtPath path) {
+    public boolean setNbtFiltered(NbtCompound nbt, String path) {
         return false;
     }
 

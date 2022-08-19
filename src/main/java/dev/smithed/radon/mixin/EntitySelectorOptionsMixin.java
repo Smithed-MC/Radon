@@ -64,7 +64,7 @@ public class EntitySelectorOptionsMixin {
                 NbtCompound nbtCompound2 = null;
                 if(Radon.CONFIG.nbtOptimizations && entity instanceof IEntityMixin mixin) {
                     nbtCompound2 = new NbtCompound();
-                    String[] topLevelNbt = NBTUtils.getTopLevelPaths(nbtCompound.toString());
+                    String[] topLevelNbt = NBTUtils.getTopLevelPaths(nbtCompound);
                     for(String nbt: topLevelNbt) {
                         if (entity instanceof ServerPlayerEntity player && nbt.equals("SelectedItem")) {
                             ItemStack itemStack = player.getInventory().getMainHandStack();

@@ -31,7 +31,7 @@ public class NbtPredicateMixin {
             NbtCompound nbt = null;
             if(Radon.CONFIG.nbtOptimizations && entity instanceof IEntityMixin mixin) {
                 nbt = new NbtCompound();
-                String[] topLevelNbt = NBTUtils.getTopLevelPaths(this.nbt.toString());
+                String[] topLevelNbt = NBTUtils.getTopLevelPaths(this.nbt);
                 for(String topNbt: topLevelNbt) {
                     if (entity instanceof ServerPlayerEntity player && topNbt.equals("SelectedItem")) {
                         ItemStack itemStack = player.getInventory().getMainHandStack();

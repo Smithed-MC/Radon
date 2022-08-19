@@ -1,12 +1,15 @@
 package dev.smithed.radon.mixin.entity;
 
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
@@ -38,6 +41,7 @@ import java.util.UUID;
 public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
 
     @Shadow @Final static Logger LOGGER;
+    @Shadow @Final static TrackedData<EntityPose> POSE;
     @Shadow @Final Random random;
     @Shadow World world;
     @Shadow DataTracker dataTracker;
@@ -52,10 +56,12 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     @Shadow UUID uuid;
     @Shadow float fallDistance;
     @Shadow String uuidString;
+    @Shadow boolean firstUpdate;
     @Shadow abstract void refreshPosition();
     @Shadow abstract void setRotation(float yaw, float pitch);
     @Shadow abstract boolean shouldSetPositionOnLoad();
     @Shadow abstract NbtList toNbtList(double... values);
+    @Shadow abstract void setFlag(int index, boolean value);
 
     /**
      * @author ImCoolYeah105
