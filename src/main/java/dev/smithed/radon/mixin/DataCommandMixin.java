@@ -130,13 +130,15 @@ public class DataCommandMixin {
         DataCommandObject dataCommandObject = objectType.getObject(context);
         if(Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
             NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "targetPath");
-            NbtCompound nbtCompound = new NbtCompound();
-            int i = modifier.modify(context, nbtCompound, nbtPath, elements);
-            if (i != 0) {
-                Radon.logDebug(nbtCompound);
-                if(mixin.setNbtFiltered(nbtCompound, nbtPath)) {
-                    context.getSource().sendFeedback(dataCommandObject.feedbackModify(), true);
-                    cir.setReturnValue(i);
+            NbtCompound nbtCompound = mixin.getNbtFiltered(nbtPath);
+            if(nbtCompound != null) {
+                int i = modifier.modify(context, nbtCompound, nbtPath, elements);
+                if (i != 0) {
+                    Radon.logDebug(nbtCompound);
+                    if (mixin.setNbtFiltered(nbtCompound, nbtPath)) {
+                        context.getSource().sendFeedback(dataCommandObject.feedbackModify(), true);
+                        cir.setReturnValue(i);
+                    }
                 }
             }
         }

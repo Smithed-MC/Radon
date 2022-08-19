@@ -9,12 +9,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(VexEntity.class)
 public abstract class VexEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private BlockPos bounds;
-    @Shadow
-    private boolean alive;
-    @Shadow
-    private int lifeTicks;
+
+    @Shadow BlockPos bounds;
+    @Shadow boolean alive;
+    @Shadow int lifeTicks;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -36,6 +34,35 @@ public abstract class VexEntityMixin extends MobEntityMixin implements ICustomNB
                 case "LifeTicks":
                     if (this.alive)
                         nbt.putInt("LifeTicks", this.lifeTicks);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        VexEntity entity = ((VexEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "LifeTicks":
+                    entity.setLifeTicks(nbt.getInt("LifeTicks"));
+                    break;
+                case "BoundX":
+                    int i = nbt.getInt("BoundX");
+                    this.bounds = new BlockPos(i, this.bounds.getY(), this.bounds.getZ());
+                    break;
+                case "BoundY":
+                    int j = nbt.getInt("BoundY");
+                    this.bounds = new BlockPos(this.bounds.getX(), j, this.bounds.getZ());
+                    break;
+                case "BoundZ":
+                    int k = nbt.getInt("BoundZ");
+                    this.bounds = new BlockPos(this.bounds.getX(), this.bounds.getY(), k);
                     break;
                 default:
                     return false;

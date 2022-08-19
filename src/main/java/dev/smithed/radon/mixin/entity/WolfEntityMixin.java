@@ -3,6 +3,7 @@ package dev.smithed.radon.mixin.entity;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.DyeColor;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(WolfEntity.class)
@@ -17,8 +18,30 @@ public abstract class WolfEntityMixin extends TameableEntityMixin implements ICu
                     nbt.putByte("CollarColor", (byte)entity.getCollarColor().getId());
                     break;
                 case "AngryAt":
-                    if (entity.getAngryAt() != null)
-                        nbt.putUuid("AngryAt", entity.getAngryAt());
+                case "AngerTime":
+                    entity.writeAngerToNbt(nbt);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        WolfEntity entity = ((WolfEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "CollarColor":
+                    if (nbt.contains("CollarColor", 99))
+                        entity.setCollarColor(DyeColor.byId(nbt.getInt("CollarColor")));
+                    break;
+                case "AngryAt":
+                case "AngerTime":
+                    entity.readAngerFromNbt(this.world, nbt);
                     break;
                 default:
                     return false;

@@ -19,24 +19,17 @@ import java.util.Iterator;
 import java.util.UUID;
 @Mixin(MobEntity.class)
 public abstract class MobEntityMixin extends LivingEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private boolean persistent;
-    @Shadow
-    private DefaultedList<ItemStack> armorItems;
-    @Shadow
-    private DefaultedList<ItemStack> handItems;
-    @Shadow
-    protected float[] handDropChances;
-    @Shadow
-    protected float[] armorDropChances;
-    @Shadow
-    private Entity holdingEntity;
-    @Shadow
-    private NbtCompound leashNbt;
-    @Shadow
-    private Identifier lootTable;
-    @Shadow
-    private long lootTableSeed;
+
+    @Shadow boolean persistent;
+    @Shadow DefaultedList<ItemStack> armorItems;
+    @Shadow DefaultedList<ItemStack> handItems;
+    @Shadow float[] handDropChances;
+    @Shadow float[] armorDropChances;
+    @Shadow Entity holdingEntity;
+    @Shadow NbtCompound leashNbt;
+    @Shadow Identifier lootTable;
+    @Shadow long lootTableSeed;
+
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         MobEntity entity = ((MobEntity)(Object)this);
@@ -128,6 +121,77 @@ public abstract class MobEntityMixin extends LivingEntityMixin implements ICusto
                     if (entity.isAiDisabled()) {
                         nbt.putBoolean("NoAI", entity.isAiDisabled());
                     }
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        MobEntity entity = ((MobEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            NbtList nbtList;
+            switch (topLevelNbt) {
+                case "CanPickUpLoot":
+                    if (nbt.contains("CanPickUpLoot", 1))
+                        entity.setCanPickUpLoot(nbt.getBoolean("CanPickUpLoot"));
+                    break;
+                case "PersistenceRequired":
+                    this.persistent = nbt.getBoolean("PersistenceRequired");
+                    break;
+                case "ArmorItems":
+                    if (nbt.contains("ArmorItems", 9)) {
+                        nbtList = nbt.getList("ArmorItems", 10);
+                        for(int i = 0; i < this.armorItems.size(); ++i) {
+                            this.armorItems.set(i, ItemStack.fromNbt(nbtList.getCompound(i)));
+                        }
+                    }
+                    break;
+                case "HandItems":
+                    if (nbt.contains("HandItems", 9)) {
+                        nbtList = nbt.getList("HandItems", 10);
+                        for(int i = 0; i < this.handItems.size(); ++i) {
+                            this.handItems.set(i, ItemStack.fromNbt(nbtList.getCompound(i)));
+                        }
+                    }
+                    break;
+                case "ArmorDropChances":
+                    if (nbt.contains("ArmorDropChances", 9)) {
+                        nbtList = nbt.getList("ArmorDropChances", 5);
+                        for(int i = 0; i < nbtList.size(); ++i) {
+                            this.armorDropChances[i] = nbtList.getFloat(i);
+                        }
+                    }
+                    break;
+                case "HandDropChances":
+                    if (nbt.contains("HandDropChances", 9)) {
+                        nbtList = nbt.getList("HandDropChances", 5);
+                        for(int i = 0; i < nbtList.size(); ++i) {
+                            this.handDropChances[i] = nbtList.getFloat(i);
+                        }
+                    }
+                    break;
+                case "Leash":
+                    if (nbt.contains("Leash", 10))
+                        this.leashNbt = nbt.getCompound("Leash");
+                    break;
+                case "LeftHanded":
+                    entity.setLeftHanded(nbt.getBoolean("LeftHanded"));
+                    break;
+                case "Tag":
+                    if (nbt.contains("DeathLootTable", 8))
+                        this.lootTable = new Identifier(nbt.getString("DeathLootTable"));
+                    break;
+                case "DeathLootTableSeed":
+                    this.lootTableSeed = nbt.getLong("DeathLootTableSeed");
+                    break;
+                case "NoAI":
+                    entity.setAiDisabled(nbt.getBoolean("NoAI"));
                     break;
                 default:
                     return false;

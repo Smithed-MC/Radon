@@ -8,14 +8,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ExperienceOrbEntity.class)
 public abstract class ExperienceOrbEntityMixin extends EntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private int orbAge;
-    @Shadow
-    private int health;
-    @Shadow
-    private int amount;
-    @Shadow
-    private int pickingCount;
+    @Shadow int orbAge;
+    @Shadow int health;
+    @Shadow int amount;
+    @Shadow int pickingCount;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -33,6 +29,32 @@ public abstract class ExperienceOrbEntityMixin extends EntityMixin implements IC
                     break;
                 case "Count":
                     nbt.putInt("Count", this.pickingCount);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        ExperienceOrbEntity entity = ((ExperienceOrbEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Health":
+                    this.health = nbt.getShort("Health");
+                    break;
+                case "Age":
+                    this.orbAge = nbt.getShort("Age");
+                    break;
+                case "Value":
+                    this.amount = nbt.getShort("Value");
+                    break;
+                case "Count":
+                    this.pickingCount = Math.max(nbt.getInt("Count"), 1);
                     break;
                 default:
                     return false;

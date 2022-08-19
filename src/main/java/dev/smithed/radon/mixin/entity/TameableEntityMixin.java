@@ -3,13 +3,16 @@ package dev.smithed.radon.mixin.entity;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.ServerConfigHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.UUID;
+
 @Mixin(TameableEntity.class)
 public abstract class TameableEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private boolean sitting;
+
+    @Shadow boolean sitting;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -23,6 +26,40 @@ public abstract class TameableEntityMixin extends AnimalEntityMixin implements I
                     if (entity.getOwnerUuid() != null)
                         nbt.putUuid("Owner", entity.getOwnerUuid());
                     break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        TameableEntity entity = ((TameableEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Owner":
+                    UUID uUID;
+                    if (nbt.containsUuid("Owner")) {
+                        uUID = nbt.getUuid("Owner");
+                    } else {
+                        String string = nbt.getString("Owner");
+                        uUID = ServerConfigHandler.getPlayerUuidByName(entity.getServer(), string);
+                    }
+                    if (uUID != null) {
+                        try {
+                            entity.setOwnerUuid(uUID);
+                            entity.setTamed(true);
+                        } catch (Throwable var4) {
+                            entity.setTamed(false);
+                        }
+                    }
+                    break;
+                case "Sitting":
+                    this.sitting = nbt.getBoolean("Sitting");
+                    entity.setInSittingPose(this.sitting);
                 default:
                     return false;
             }

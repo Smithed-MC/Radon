@@ -5,6 +5,7 @@ import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
@@ -15,6 +16,7 @@ import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -34,7 +36,9 @@ import java.util.UUID;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
+
     @Shadow @Final static Logger LOGGER;
+    @Shadow @Final Random random;
     @Shadow World world;
     @Shadow DataTracker dataTracker;
     @Shadow Entity vehicle;

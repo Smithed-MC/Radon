@@ -23,4 +23,22 @@ public abstract class ZoglinEntityMixin extends MobEntityMixin implements ICusto
         }
         return true;
     }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        ZoglinEntity entity = ((ZoglinEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "IsBaby":
+                    if (nbt.getBoolean("IsBaby"))
+                        entity.setBaby(true);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
 }

@@ -1,26 +1,30 @@
 package dev.smithed.radon.mixin.entity;
 
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.village.VillagerData;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Mixin(ZombieVillagerEntity.class)
 public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private int conversionTimer;
-    @Shadow
-    private UUID converter;
-    @Shadow
-    private NbtElement gossipData;
-    @Shadow
-    private NbtCompound offerData;
-    @Shadow
-    private int xp;
+
+    @Shadow int conversionTimer;
+    @Shadow UUID converter;
+    @Shadow NbtElement gossipData;
+    @Shadow NbtCompound offerData;
+    @Shadow int xp;
+    @Shadow abstract void setConverting(@Nullable UUID uuid, int delay);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -52,6 +56,40 @@ public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implem
                 default:
                     return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        ZombieVillagerEntity entity = ((ZombieVillagerEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Offers":
+                    if (nbt.contains("Offers", 10))
+                        this.offerData = nbt.getCompound("Offers");
+                    break;
+                case "Gossips":
+                    if (nbt.contains("Gossips", 10))
+                        this.gossipData = nbt.getList("Gossips", 10);
+                    break;
+                case "ConversionTime":
+                    if (nbt.contains("ConversionTime", 99) && nbt.getInt("ConversionTime") > -1)
+                        this.setConverting(nbt.containsUuid("ConversionPlayer") ? nbt.getUuid("ConversionPlayer") : null, nbt.getInt("ConversionTime"));
+                    break;
+                case "Xp":
+                    if (nbt.contains("Xp", 3))
+                        this.xp = nbt.getInt("Xp");
+                    break;
+                default:
+                    return false;
+            }
+
+
+
+
         }
         return true;
     }

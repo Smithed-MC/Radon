@@ -11,14 +11,27 @@ public abstract class TntEntityMixin extends EntityMixin implements ICustomNBTMi
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TntEntity entity = ((TntEntity) (Object) this);
-        if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "AngerTime":
-                    nbt.putShort("Fuse", (short)entity.getFuse());
-                    break;
-                default:
-                    return false;
-            }
+        switch (topLevelNbt) {
+            case "Fuse":
+                nbt.putShort("Fuse", (short)entity.getFuse());
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        TntEntity entity = ((TntEntity)(Object)this);
+        if(!nbt.contains(topLevelNbt))
+            return false;
+        switch (topLevelNbt) {
+            case "Fuse":
+                entity.setFuse(nbt.getShort("Fuse"));
+                break;
+            default:
+                return false;
         }
         return true;
     }

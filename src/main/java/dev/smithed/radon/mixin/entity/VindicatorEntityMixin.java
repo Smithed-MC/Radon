@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(VindicatorEntity.class)
 public abstract class VindicatorEntityMixin extends RaiderEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    boolean johnny;
+
+    @Shadow boolean johnny;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -19,6 +19,24 @@ public abstract class VindicatorEntityMixin extends RaiderEntityMixin implements
                 case "Johnny":
                     if (this.johnny)
                         nbt.putBoolean("Johnny", true);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        VindicatorEntity entity = ((VindicatorEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Johnny":
+                    if (nbt.contains("Johnny", 99))
+                        this.johnny = nbt.getBoolean("Johnny");
                     break;
                 default:
                     return false;

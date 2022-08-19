@@ -26,4 +26,22 @@ public abstract class ZombifiedPiglinEntityMixin extends ZombieEntityMixin imple
         }
         return true;
     }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        ZombifiedPiglinEntity entity = ((ZombifiedPiglinEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "AngerAt":
+                case "AngerTime":
+                    entity.readAngerFromNbt(this.world, nbt);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
 }

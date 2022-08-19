@@ -8,10 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(AbstractPiglinEntity.class)
 public abstract class AbstractPiglinEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    protected int timeInOverworld;
-    @Shadow
-    protected abstract boolean isImmuneToZombification();
+    @Shadow int timeInOverworld;
+    @Shadow abstract boolean isImmuneToZombification();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -24,6 +22,26 @@ public abstract class AbstractPiglinEntityMixin extends MobEntityMixin implement
                     break;
                 case "TimeInOverworld":
                     nbt.putInt("TimeInOverworld", this.timeInOverworld);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        AbstractPiglinEntity entity = ((AbstractPiglinEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "IsImmuneToZombification":
+                    entity.setImmuneToZombification(nbt.getBoolean("IsImmuneToZombification"));
+                    break;
+                case "TimeInOverworld":
+                    this.timeInOverworld = nbt.getInt("TimeInOverworld");
                     break;
                 default:
                     return false;

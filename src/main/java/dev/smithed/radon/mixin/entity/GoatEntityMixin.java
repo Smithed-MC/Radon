@@ -1,12 +1,18 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
+import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.passive.GoatEntity;
 import net.minecraft.nbt.NbtCompound;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(GoatEntity.class)
 public abstract class GoatEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
+
+    @Shadow @Final static TrackedData<Boolean> LEFT_HORN;
+    @Shadow @Final static TrackedData<Boolean> RIGHT_HORN;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -21,6 +27,29 @@ public abstract class GoatEntityMixin extends AnimalEntityMixin implements ICust
                     break;
                 case "HasRightHorn":
                     nbt.putBoolean("HasRightHorn", entity.hasRightHorn());
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        GoatEntity entity = ((GoatEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "IsScreamingGoat":
+                    entity.setScreaming(nbt.getBoolean("IsScreamingGoat"));
+                    break;
+                case "HasLeftHorn":
+                    this.dataTracker.set(LEFT_HORN, nbt.getBoolean("HasLeftHorn"));
+                    break;
+                case "HasRightHorn":
+                    this.dataTracker.set(RIGHT_HORN, nbt.getBoolean("HasRightHorn"));
                     break;
                 default:
                     return false;

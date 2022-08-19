@@ -10,9 +10,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PigEntity.class)
 public abstract class PigEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
-    @Final
-    @Shadow
-    private SaddledComponent saddledComponent;
+
+    @Shadow @Final SaddledComponent saddledComponent;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -21,6 +20,23 @@ public abstract class PigEntityMixin extends AnimalEntityMixin implements ICusto
             switch (topLevelNbt) {
                 case "Saddle":
                     this.saddledComponent.writeNbt(nbt);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        PigEntity entity = ((PigEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Saddle":
+                    this.saddledComponent.readNbt(nbt);
                     break;
                 default:
                     return false;

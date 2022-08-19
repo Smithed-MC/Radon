@@ -12,9 +12,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PillagerEntity.class)
 public abstract class PillagerEntityMixin extends RaiderEntityMixin implements ICustomNBTMixin {
-    @Final
-    @Shadow
-    private SimpleInventory inventory;
+
+    @Shadow @Final SimpleInventory inventory;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -34,6 +33,31 @@ public abstract class PillagerEntityMixin extends RaiderEntityMixin implements I
                 default:
                     return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        PillagerEntity entity = ((PillagerEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Inventory":
+                    NbtList nbtList = nbt.getList("Inventory", 10);
+                    for(int i = 0; i < nbtList.size(); ++i) {
+                        ItemStack itemStack = ItemStack.fromNbt(nbtList.getCompound(i));
+                        if (!itemStack.isEmpty()) {
+                            this.inventory.addStack(itemStack);
+                        }
+                    }
+                    break;
+                default:
+                    return false;
+            }
+        } else {
+            entity.setCanPickUpLoot(true);
         }
         return true;
     }

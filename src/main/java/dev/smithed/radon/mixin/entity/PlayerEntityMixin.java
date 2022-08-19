@@ -1,9 +1,12 @@
 package dev.smithed.radon.mixin.entity;
 
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Dynamic;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IFilteredNbtList;
 import net.minecraft.SharedConstants;
 import net.minecraft.block.entity.SculkShriekerWarningManager;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,25 +14,28 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EnderChestInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
+import net.minecraft.util.math.GlobalPos;
+import net.minecraft.util.math.random.Random;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.Objects;
+
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private PlayerInventory inventory;
-    @Shadow
-    private int sleepTimer;
-    @Shadow
-    protected int enchantmentTableSeed;
-    @Shadow
-    protected HungerManager hungerManager;
-    @Shadow
-    protected SculkShriekerWarningManager sculkShriekerWarningManager;
-    @Shadow
-    private PlayerAbilities abilities;
-    @Shadow
-    protected EnderChestInventory enderChestInventory;
+
+    @Shadow PlayerInventory inventory;
+    @Shadow int sleepTimer;
+    @Shadow int enchantmentTableSeed;
+    @Shadow HungerManager hungerManager;
+    @Shadow PlayerAbilities abilities;
+    @Shadow EnderChestInventory enderChestInventory;
+    @Shadow abstract void setShoulderEntityRight(NbtCompound entityNbt);
+    @Shadow abstract void setShoulderEntityLeft(NbtCompound entityNbt);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -95,6 +101,72 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
                 default:
                     return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        PlayerEntity entity = ((PlayerEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Inventory":
+                    NbtList nbtList = nbt.getList("Inventory", 10);
+                    this.inventory.readNbt(nbtList);
+                    break;
+                case "SelectedItemSlot":
+                    this.inventory.selectedSlot = nbt.getInt("SelectedItemSlot");
+                    break;
+                case "SleepTimer":
+                    this.sleepTimer = nbt.getShort("SleepTimer");
+                    break;
+                case "XpP":
+                    entity.experienceProgress = nbt.getFloat("XpP");
+                    break;
+                case "XpLevel":
+                    entity.experienceLevel = nbt.getInt("XpLevel");
+                    break;
+                case "XpTotal":
+                    entity.totalExperience = nbt.getInt("XpTotal");
+                    break;
+                case "XpSeed":
+                    this.enchantmentTableSeed = nbt.getInt("XpSeed");
+                    if (this.enchantmentTableSeed == 0) {
+                        this.enchantmentTableSeed = this.random.nextInt();
+                    }
+                    break;
+                case "Score":
+                    entity.setScore(nbt.getInt("Score"));
+                    break;
+                case "foodLevel":
+                case "foodTickTimer":
+                case "foodSaturationLevel":
+                case "foodExhaustionLevel":
+                    this.hungerManager.readNbt(nbt);
+                    break;
+                case "abilities":
+                    this.abilities.readNbt(nbt);
+                    break;
+                case "EnderItems":
+                    if (nbt.contains("EnderItems", 9))
+                        this.enderChestInventory.readNbtList(nbt.getList("EnderItems", 10));
+                    break;
+                case "ShoulderEntityLeft":
+                    if (nbt.contains("ShoulderEntityLeft", 10))
+                        this.setShoulderEntityLeft(nbt.getCompound("ShoulderEntityLeft"));
+                    break;
+                case "ShoulderEntityRight":
+                    if (nbt.contains("ShoulderEntityRight", 10))
+                        this.setShoulderEntityRight(nbt.getCompound("ShoulderEntityRight"));
+                    break;
+                default:
+                    return false;
+            }
+
+
+
         }
         return true;
     }

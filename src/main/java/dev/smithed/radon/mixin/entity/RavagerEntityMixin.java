@@ -8,12 +8,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(RavagerEntity.class)
 public abstract class RavagerEntityMixin extends RaiderEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private int attackTick;
-    @Shadow
-    private int stunTick;
-    @Shadow
-    private int roarTick;
+
+    @Shadow int attackTick;
+    @Shadow int stunTick;
+    @Shadow int roarTick;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -28,6 +26,29 @@ public abstract class RavagerEntityMixin extends RaiderEntityMixin implements IC
                     break;
                 case "RoarTick":
                     nbt.putInt("RoarTick", this.roarTick);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        RavagerEntity entity = ((RavagerEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "AttackTick":
+                    this.attackTick = nbt.getInt("AttackTick");
+                    break;
+                case "StunTick":
+                    this.stunTick = nbt.getInt("StunTick");
+                    break;
+                case "RoarTick":
+                    this.roarTick = nbt.getInt("RoarTick");
                     break;
                 default:
                     return false;

@@ -5,24 +5,21 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PersistentProjectileEntity.class)
 public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMixin {
-    @Shadow
-    private BlockState inBlockState;
-    @Shadow
-    public int shake;
-    @Shadow
-    private int life;
-    @Shadow
-    protected boolean inGround;
-    @Shadow
-    private double damage;
-    @Shadow
-    private SoundEvent sound;
+
+    @Shadow BlockState inBlockState;
+    @Shadow int shake;
+    @Shadow int life;
+    @Shadow boolean inGround;
+    @Shadow double damage;
+    @Shadow SoundEvent sound;
+    @Shadow abstract SoundEvent getHitSound();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -59,6 +56,53 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
                     break;
                 case "ShotFromCrossbow":
                     nbt.putBoolean("ShotFromCrossbow", entity.isShotFromCrossbow());
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        PersistentProjectileEntity entity = ((PersistentProjectileEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "life":
+                    this.life = nbt.getShort("life");
+                    break;
+                case "inBlockState":
+                    if (nbt.contains("inBlockState", 10))
+                        this.inBlockState = NbtHelper.toBlockState(nbt.getCompound("inBlockState"));
+                    break;
+                case "shake":
+                    this.shake = nbt.getByte("shake") & 255;
+                    break;
+                case "inGround":
+                    this.inGround = nbt.getBoolean("inGround");
+                    break;
+                case "damage":
+                    if (nbt.contains("damage", 99))
+                        this.damage = nbt.getDouble("damage");
+                    break;
+                case "pickup":
+                    entity.pickupType = PersistentProjectileEntity.PickupPermission.fromOrdinal(nbt.getByte("pickup"));
+                    break;
+                case "crit":
+                    entity.setCritical(nbt.getBoolean("crit"));
+                    break;
+                case "PierceLevel":
+                    entity.setPierceLevel(nbt.getByte("PierceLevel"));
+                    break;
+                case "SoundEvent":
+                    if (nbt.contains("SoundEvent", 8))
+                        this.sound = (SoundEvent)Registry.SOUND_EVENT.getOrEmpty(new Identifier(nbt.getString("SoundEvent"))).orElse(this.getHitSound());
+                    break;
+                case "ShotFromCrossbow":
+                    entity.setShotFromCrossbow(nbt.getBoolean("ShotFromCrossbow"));
                     break;
                 default:
                     return false;

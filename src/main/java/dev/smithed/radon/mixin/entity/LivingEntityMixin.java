@@ -11,6 +11,7 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtOps;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -19,14 +20,10 @@ import java.util.Map;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends EntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private static Logger field_36332;
-    @Shadow
-    private int lastAttackedTime;
-    @Shadow
-    private Map<StatusEffect, StatusEffectInstance> activeStatusEffects;
-    @Shadow
-    protected Brain<?> brain;
+    @Shadow @Final static Logger field_36332;
+    @Shadow int lastAttackedTime;
+    @Shadow Map<StatusEffect, StatusEffectInstance> activeStatusEffects;
+    @Shadow Brain<?> brain;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -83,6 +80,37 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
                 dataResult.resultOrPartial(var10001::error).ifPresent((brain) -> {
                     nbt.put("Brain", brain);
                 });
+                break;
+            default:
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        LivingEntity entity = ((LivingEntity)(Object)this);
+        if(!nbt.contains(topLevelNbt))
+            return false;
+        switch (topLevelNbt) {
+            case "AbsorptionAmount":
+                entity.setAbsorptionAmount(nbt.getFloat("AbsorptionAmount"));
+                break;
+            case "Tag":
+                if (nbt.contains("Attributes", 9) && this.world != null && !this.world.isClient)
+                    entity.getAttributes().readNbt(nbt.getList("Attributes", 10));
+                break;
+            case "ActiveEffects":
+                if (nbt.contains("ActiveEffects", 9)) {
+                    NbtList nbtList = nbt.getList("ActiveEffects", 10);
+                    for (int i = 0; i < nbtList.size(); ++i) {
+                        NbtCompound nbtCompound = nbtList.getCompound(i);
+                        StatusEffectInstance statusEffectInstance = StatusEffectInstance.fromNbt(nbtCompound);
+                        if (statusEffectInstance != null) {
+                            this.activeStatusEffects.put(statusEffectInstance.getEffectType(), statusEffectInstance);
+                        }
+                    }
+                }
                 break;
             default:
                 return false;

@@ -1,23 +1,23 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.entity.vehicle.TntMinecartEntity;
+import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(TntMinecartEntity.class)
-public abstract class TntMinecartEntityMixin extends AbstractMinecartEntityMixin implements ICustomNBTMixin {
+@Mixin(FireballEntity.class)
+public abstract class FireballEntityMixin extends AbstractFireballEntityMixin implements ICustomNBTMixin {
 
-    @Shadow int fuseTicks = -1;
+    @Shadow int explosionPower = 1;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        TntMinecartEntity entity = ((TntMinecartEntity) (Object) this);
+        FireballEntity entity = ((FireballEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "TNTFuse":
-                    nbt.putInt("TNTFuse", this.fuseTicks);
+                case "ExplosionPower":
+                    nbt.putByte("ExplosionPower", (byte)this.explosionPower);
                     break;
                 default:
                     return false;
@@ -28,14 +28,14 @@ public abstract class TntMinecartEntityMixin extends AbstractMinecartEntityMixin
 
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        TntMinecartEntity entity = ((TntMinecartEntity)(Object)this);
+        FireballEntity entity = ((FireballEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "TNTFuse":
-                    if (nbt.contains("TNTFuse", 99))
-                        this.fuseTicks = nbt.getInt("TNTFuse");
+                case "ExplosionPower":
+                    if (nbt.contains("ExplosionPower", 99))
+                        this.explosionPower = nbt.getByte("ExplosionPower");
                     break;
                 default:
                     return false;

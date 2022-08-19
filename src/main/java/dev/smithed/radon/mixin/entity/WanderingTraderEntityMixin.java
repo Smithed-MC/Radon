@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(WanderingTraderEntity.class)
 public abstract class WanderingTraderEntityMixin extends MerchantEntityMixin {
-    @Shadow
-    private BlockPos wanderTarget;
-    @Shadow
-    private int despawnDelay;
+
+    @Shadow BlockPos wanderTarget;
+    @Shadow int despawnDelay;
+
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         WanderingTraderEntity entity = ((WanderingTraderEntity)(Object)this);
@@ -30,6 +30,29 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntityMixin {
                     return false;
             }
         }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        WanderingTraderEntity entity = ((WanderingTraderEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "DespawnDelay":
+                    if (nbt.contains("DespawnDelay", 99))
+                        this.despawnDelay = nbt.getInt("DespawnDelay");
+                    break;
+                case "WanderTarget":
+                    if (nbt.contains("WanderTarget"))
+                        this.wanderTarget = NbtHelper.toBlockPos(nbt.getCompound("WanderTarget"));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        entity.setBreedingAge(Math.max(0, entity.getBreedingAge()));
         return true;
     }
 }

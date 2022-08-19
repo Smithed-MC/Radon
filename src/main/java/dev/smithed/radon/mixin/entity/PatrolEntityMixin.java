@@ -10,12 +10,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PatrolEntity.class)
 public abstract class PatrolEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private BlockPos patrolTarget;
-    @Shadow
-    private boolean patrolLeader;
-    @Shadow
-    private boolean patrolling;
+
+    @Shadow BlockPos patrolTarget;
+    @Shadow boolean patrolLeader;
+    @Shadow boolean patrolling;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -37,6 +35,28 @@ public abstract class PatrolEntityMixin extends MobEntityMixin implements ICusto
             }
         }
         return true;
+    }
 
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        PatrolEntity entity = ((PatrolEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "PatrolTarget":
+                    this.patrolTarget = NbtHelper.toBlockPos(nbt.getCompound("PatrolTarget"));
+                    break;
+                case "PatrolLeader":
+                    this.patrolLeader = nbt.getBoolean("PatrolLeader");
+                    break;
+                case "Patrolling":
+                    this.patrolling = nbt.getBoolean("Patrolling");
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
     }
 }

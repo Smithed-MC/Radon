@@ -7,8 +7,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(SpellcastingIllagerEntity.class)
 public abstract class SpellCastingIllagerEntityMixin extends RaiderEntityMixin {
-    @Shadow
-    protected int spellTicks;
+
+    @Shadow int spellTicks;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -17,6 +17,23 @@ public abstract class SpellCastingIllagerEntityMixin extends RaiderEntityMixin {
             switch (topLevelNbt) {
                 case "SpellTicks":
                     nbt.putInt("SpellTicks", this.spellTicks);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        SpellcastingIllagerEntity entity = ((SpellcastingIllagerEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "SpellTicks":
+                    this.spellTicks = nbt.getInt("SpellTicks");
                     break;
                 default:
                     return false;
