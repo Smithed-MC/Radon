@@ -44,7 +44,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
         if(!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "DataVersion":
-                    nbt.putInt("DataVersion", SharedConstants.getGameVersion().getWorldVersion());
+                    nbt.putInt("DataVersion", SharedConstants.getGameVersion().getSaveVersion().getId());
                     break;
                 case "Inventory":
                     if(this.inventory instanceof IFilteredNbtList mixin)
