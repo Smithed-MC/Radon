@@ -8,8 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(MarkerEntity.class)
 public abstract class MarkerEntityMixin extends EntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private NbtCompound data;
+    @Shadow NbtCompound data;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -22,6 +21,21 @@ public abstract class MarkerEntityMixin extends EntityMixin implements ICustomNB
                 default:
                     return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        MarkerEntity entity = ((MarkerEntity)(Object)this);
+        if(!nbt.contains(topLevelNbt))
+            return false;
+        switch (topLevelNbt) {
+            case "data":
+                nbt.put("data", this.data.copy());
+                break;
+            default:
+                return false;
         }
         return true;
     }

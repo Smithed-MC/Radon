@@ -8,12 +8,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(HoglinEntity.class)
 public abstract class HoglinEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private int timeInOverworld;
-    @Shadow
-    private boolean cannotBeHunted;
-    @Shadow
-    abstract boolean isImmuneToZombification();
+    @Shadow int timeInOverworld;
+    @Shadow boolean cannotBeHunted;
+    @Shadow abstract boolean isImmuneToZombification();
+    @Shadow abstract void setCannotBeHunted(boolean cannotBeHunted);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -30,6 +28,29 @@ public abstract class HoglinEntityMixin extends AnimalEntityMixin implements ICu
                 case "CannotBeHunted":
                     if (this.cannotBeHunted)
                         nbt.putBoolean("CannotBeHunted", true);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        HoglinEntity entity = ((HoglinEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "IsImmuneToZombification":
+                    entity.setImmuneToZombification(nbt.getBoolean("IsImmuneToZombification"));
+                    break;
+                case "TimeInOverworld":
+                    this.timeInOverworld = nbt.getInt("TimeInOverworld");
+                    break;
+                case "CannotBeHunted":
+                    this.setCannotBeHunted(nbt.getBoolean("CannotBeHunted"));
                     break;
                 default:
                     return false;

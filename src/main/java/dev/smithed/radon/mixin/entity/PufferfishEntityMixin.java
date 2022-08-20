@@ -22,4 +22,21 @@ public abstract class PufferfishEntityMixin extends FishEntityMixin implements I
         }
         return true;
     }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        PufferfishEntity entity = ((PufferfishEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "PuffState":;
+                    entity.setPuffState(Math.min(nbt.getInt("PuffState"), 2));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
 }

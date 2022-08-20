@@ -1,15 +1,11 @@
 package dev.smithed.radon.mixin;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.utils.NBTUtils;
 import dev.smithed.radon.utils.SelectorContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.world.entity.*;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,16 +18,8 @@ import java.util.function.Consumer;
 @Mixin(EntityIndex.class)
 public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T> {
 
+    @Shadow abstract <U extends T> void forEach(TypeFilter<T, U> filter, Consumer<U> action);
     private static final int REASONABLESEARCHSIZE = 100;
-
-    @Shadow
-    public abstract T get(UUID uuid);
-    @Final
-    @Shadow
-    private Map<UUID, T> uuidToEntity;
-    @Shadow
-    abstract <U extends T> void forEach(TypeFilter<T, U> filter, Consumer<U> action);
-
     private final Map<String, List<EntityLike>> entityMap = new HashMap<>();
 
     @Override
@@ -47,8 +35,12 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
             set.remove(entity);
     }
 
+    /**
+     * @author ImCoolYeah105
+     * Add entity type to map when loaded
+     */
     @Inject(method = "add", at = @At("HEAD"))
-    private void addInject(T entity, CallbackInfo ci) {
+    private void radon_addInject(T entity, CallbackInfo ci) {
         if(entity instanceof Entity ent) {
             String name = NBTUtils.translationToTypeName(ent.getType().getTranslationKey());
             if(name.length() > 0)
@@ -56,8 +48,12 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
         }
     }
 
+    /**
+     * @author ImCoolYeah105
+     * Remove entity type & tags from map when unloaded
+     */
     @Inject(method = "remove", at = @At("HEAD"))
-    private void removeInject(T entity, CallbackInfo ci) {
+    private void radon_removeInject(T entity, CallbackInfo ci) {
         if(entity instanceof Entity le && !le.getScoreboardTags().isEmpty()) {
             le.getScoreboardTags().forEach(tag -> removeEntityFromTagMap(tag, entity));
         }
@@ -68,6 +64,11 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
         }
     }
 
+    /**
+     * This is a modified version of the forEach method in the base class.
+     * It will check the cache for the type and tags of the selector, and use the smallest list of entities
+     * retrieved for the @e search instead of all entities.
+     */
     @Override
     public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, SelectorContainer container) {
         List<EntityLike> set = null;

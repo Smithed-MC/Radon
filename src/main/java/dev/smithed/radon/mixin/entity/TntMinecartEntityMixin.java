@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(TntMinecartEntity.class)
 public abstract class TntMinecartEntityMixin extends AbstractMinecartEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private int fuseTicks = -1;
+
+    @Shadow int fuseTicks = -1;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -18,6 +18,24 @@ public abstract class TntMinecartEntityMixin extends AbstractMinecartEntityMixin
             switch (topLevelNbt) {
                 case "TNTFuse":
                     nbt.putInt("TNTFuse", this.fuseTicks);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        TntMinecartEntity entity = ((TntMinecartEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "TNTFuse":
+                    if (nbt.contains("TNTFuse", 99))
+                        this.fuseTicks = nbt.getInt("TNTFuse");
                     break;
                 default:
                     return false;

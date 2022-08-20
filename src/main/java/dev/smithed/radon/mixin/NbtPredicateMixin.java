@@ -16,9 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(NbtPredicate.class)
 public class NbtPredicateMixin {
 
-    @Final
-    @Shadow
-    private NbtCompound nbt;
+    @Shadow @Final private NbtCompound nbt;
 
     /**
      * @author ImCoolYeah105
@@ -33,7 +31,7 @@ public class NbtPredicateMixin {
             NbtCompound nbt = null;
             if(Radon.CONFIG.nbtOptimizations && entity instanceof IEntityMixin mixin) {
                 nbt = new NbtCompound();
-                String[] topLevelNbt = NBTUtils.getTopLevelPaths(this.nbt.toString());
+                String[] topLevelNbt = NBTUtils.getTopLevelPaths(this.nbt);
                 for(String topNbt: topLevelNbt) {
                     if (entity instanceof ServerPlayerEntity player && topNbt.equals("SelectedItem")) {
                         ItemStack itemStack = player.getInventory().getMainHandStack();
@@ -41,7 +39,7 @@ public class NbtPredicateMixin {
                             nbt.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
                         }
                     } else {
-                        nbt = mixin.writeFilteredNbt(nbt, topNbt);
+                        nbt = mixin.writeNbtFiltered(nbt, topNbt);
                         if (nbt == null)
                             break;
                     }

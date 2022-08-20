@@ -31,7 +31,11 @@ public class EntitySelectorOptionsMixin {
     @Shadow
     private static void putOption(String id, EntitySelectorOptions.SelectorHandler handler, Predicate<EntitySelectorReader> condition, Text description) {}
 
-
+    /**
+     * @author ImCoolYeah105, dragoncommands
+     * This inject overwrites statically registered selector options to wrap extra data.
+     * It may be better to inject data directly, but lambda support is suspect.
+     */
     @Inject(method = "register()V", at = @At("TAIL"))
     private static void register(CallbackInfo ci) {
         putOption("tag", (reader) -> {
@@ -60,7 +64,7 @@ public class EntitySelectorOptionsMixin {
                 NbtCompound nbtCompound2 = null;
                 if(Radon.CONFIG.nbtOptimizations && entity instanceof IEntityMixin mixin) {
                     nbtCompound2 = new NbtCompound();
-                    String[] topLevelNbt = NBTUtils.getTopLevelPaths(nbtCompound.toString());
+                    String[] topLevelNbt = NBTUtils.getTopLevelPaths(nbtCompound);
                     for(String nbt: topLevelNbt) {
                         if (entity instanceof ServerPlayerEntity player && nbt.equals("SelectedItem")) {
                             ItemStack itemStack = player.getInventory().getMainHandStack();
@@ -68,7 +72,7 @@ public class EntitySelectorOptionsMixin {
                                 nbtCompound2.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
                             }
                         } else {
-                            nbtCompound2 = mixin.writeFilteredNbt(nbtCompound2, nbt);
+                            nbtCompound2 = mixin.writeNbtFiltered(nbtCompound2, nbt);
                             if (nbtCompound2 == null)
                                 break;
                         }

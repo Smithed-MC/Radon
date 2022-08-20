@@ -22,4 +22,21 @@ public abstract class FishEntityMixin extends MobEntityMixin implements ICustomN
         }
         return true;
     }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        FishEntity entity = ((FishEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "FromBucket":
+                    entity.setFromBucket(nbt.getBoolean("FromBucket"));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
 }

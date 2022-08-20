@@ -8,10 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(HopperMinecartEntity.class)
 public abstract class HopperMinecartEntityMixin extends StorageMinecartEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private boolean enabled = true;
-    @Shadow
-    private int transferCooldown = -1;
+    @Shadow boolean enabled = true;
+    @Shadow int transferCooldown = -1;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -23,6 +21,26 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntityMix
                     break;
                 case "Enabled":
                     nbt.putBoolean("Enabled", this.enabled);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        HopperMinecartEntity entity = ((HopperMinecartEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "TransferCooldown":
+                    this.transferCooldown = nbt.getInt("TransferCooldown");
+                    break;
+                case "Enabled":
+                    this.enabled = nbt.getBoolean("Enabled");
                     break;
                 default:
                     return false;

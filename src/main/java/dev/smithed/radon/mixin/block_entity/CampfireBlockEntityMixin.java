@@ -12,15 +12,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(CampfireBlockEntity.class)
 public abstract class CampfireBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Final
-    @Shadow
-    private DefaultedList<ItemStack> itemsBeingCooked;
-    @Final
-    @Shadow
-    private int[] cookingTimes;
-    @Final
-    @Shadow
-    private int[] cookingTotalTimes;
+
+    @Shadow @Final DefaultedList<ItemStack> itemsBeingCooked;
+    @Shadow @Final int[] cookingTimes;
+    @Shadow @Final int[] cookingTotalTimes;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -34,6 +29,36 @@ public abstract class CampfireBlockEntityMixin extends BlockEntityMixin implemen
                     break;
                 case "CookingTotalTimes":
                     nbt.putIntArray("CookingTotalTimes", this.cookingTotalTimes);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            int[] is;
+            switch (topLevelNbt) {
+                case "Items":
+                    this.itemsBeingCooked.clear();
+                    Inventories.readNbt(nbt, this.itemsBeingCooked);
+                    break;
+                case "CookingTimes":
+                    if (nbt.contains("CookingTimes", 11)) {
+                        is = nbt.getIntArray("CookingTimes");
+                        System.arraycopy(is, 0, this.cookingTimes, 0, Math.min(this.cookingTotalTimes.length, is.length));
+                    }
+                    break;
+                case "Tag":
+                    if (nbt.contains("CookingTotalTimes", 11)) {
+                        is = nbt.getIntArray("CookingTotalTimes");
+                        System.arraycopy(is, 0, this.cookingTotalTimes, 0, Math.min(this.cookingTotalTimes.length, is.length));
+                    }
                     break;
                 default:
                     return false;

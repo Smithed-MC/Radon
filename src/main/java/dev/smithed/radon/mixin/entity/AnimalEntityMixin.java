@@ -10,10 +10,8 @@ import java.util.UUID;
 
 @Mixin(AnimalEntity.class)
 public abstract class AnimalEntityMixin extends PassiveEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private int loveTicks;
-    @Shadow
-    private UUID lovingPlayer;
+    @Shadow int loveTicks;
+    @Shadow UUID lovingPlayer;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -26,6 +24,26 @@ public abstract class AnimalEntityMixin extends PassiveEntityMixin implements IC
                 case "LoveCause":
                     if (this.lovingPlayer != null)
                         nbt.putUuid("LoveCause", this.lovingPlayer);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        AnimalEntity entity = ((AnimalEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "InLove":
+                    this.loveTicks = nbt.getInt("InLove");
+                    break;
+                case "LoveCause":
+                    this.lovingPlayer = nbt.containsUuid("LoveCause") ? nbt.getUuid("LoveCause") : null;
                     break;
                 default:
                     return false;

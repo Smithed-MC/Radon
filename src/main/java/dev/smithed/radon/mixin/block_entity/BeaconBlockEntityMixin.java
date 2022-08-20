@@ -11,16 +11,13 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BeaconBlockEntity.class)
 public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    StatusEffect primary;
-    @Shadow
-    StatusEffect secondary;
-    @Shadow
-    private Text customName;
-    @Shadow
-    int level;
-    @Shadow
-    private ContainerLock lock;
+
+    @Shadow StatusEffect primary;
+    @Shadow StatusEffect secondary;
+    @Shadow Text customName;
+    @Shadow int level;
+    @Shadow ContainerLock lock;
+    @Shadow static StatusEffect getPotionEffectById(int id) { return null; }
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -41,6 +38,32 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
                     break;
                 case "Lock":
                     this.lock.writeNbt(nbt);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Primary":
+                    this.primary = getPotionEffectById(nbt.getInt("Primary"));
+                    break;
+                case "Secondary":
+                    this.secondary = getPotionEffectById(nbt.getInt("Secondary"));
+                    break;
+                case "CustomName":
+                    if (nbt.contains("CustomName", 8))
+                        this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
+                    break;
+                case "Lock":
+                    this.lock = ContainerLock.fromNbt(nbt);
                     break;
                 default:
                     return false;

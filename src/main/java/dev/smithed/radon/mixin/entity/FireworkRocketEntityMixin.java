@@ -11,16 +11,11 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(FireworkRocketEntity.class)
 public abstract class FireworkRocketEntityMixin extends ProjectileEntityMixin implements ICustomNBTMixin {
-    @Final
-    @Shadow
-    private static TrackedData<ItemStack> ITEM;
-    @Final
-    @Shadow
-    private static TrackedData<Boolean> SHOT_AT_ANGLE;
-    @Shadow
-    private int life;
-    @Shadow
-    private int lifeTime;
+
+    @Shadow @Final static TrackedData<ItemStack> ITEM;
+    @Shadow @Final static TrackedData<Boolean> SHOT_AT_ANGLE;
+    @Shadow int life;
+    @Shadow int lifeTime;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -34,13 +29,41 @@ public abstract class FireworkRocketEntityMixin extends ProjectileEntityMixin im
                     nbt.putInt("LifeTime", this.lifeTime);
                     break;
                 case "FireworksItem":
-                    ItemStack itemStack = (ItemStack)this.dataTracker.get(ITEM);
+                    ItemStack itemStack = this.dataTracker.get(ITEM);
                     if (!itemStack.isEmpty()) {
                         nbt.put("FireworksItem", itemStack.writeNbt(new NbtCompound()));
                     }
                     break;
                 case "ShotAtAngle":
-                    nbt.putBoolean("ShotAtAngle", (Boolean)this.dataTracker.get(SHOT_AT_ANGLE));
+                    nbt.putBoolean("ShotAtAngle", this.dataTracker.get(SHOT_AT_ANGLE));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        FireworkRocketEntity entity = ((FireworkRocketEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Life":
+                    this.life = nbt.getInt("Life");
+                    break;
+                case "LifeTime":
+                    this.lifeTime = nbt.getInt("LifeTime");
+                    break;
+                case "FireworksItem":
+                    ItemStack itemStack = ItemStack.fromNbt(nbt.getCompound("FireworksItem"));
+                    if (!itemStack.isEmpty())
+                        this.dataTracker.set(ITEM, itemStack);
+                    break;
+                case "ShotAtAngle":
+                    this.dataTracker.set(SHOT_AT_ANGLE, nbt.getBoolean("ShotAtAngle"));
                     break;
                 default:
                     return false;

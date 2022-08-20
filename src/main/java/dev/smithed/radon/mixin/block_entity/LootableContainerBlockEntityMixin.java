@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(LootableContainerBlockEntity.class)
 public abstract class LootableContainerBlockEntityMixin extends LockableContainerBlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    protected Identifier lootTableId;
-    @Shadow
-    protected long lootTableSeed;
+
+    @Shadow Identifier lootTableId;
+    @Shadow long lootTableSeed;
+    @Shadow abstract boolean deserializeLootTable(NbtCompound nbt);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {

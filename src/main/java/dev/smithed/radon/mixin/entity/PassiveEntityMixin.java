@@ -8,8 +8,9 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(PassiveEntity.class)
 public abstract class PassiveEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    protected int forcedAge;
+
+    @Shadow int forcedAge;
+
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PassiveEntity entity = ((PassiveEntity)(Object)this);
@@ -20,6 +21,26 @@ public abstract class PassiveEntityMixin extends MobEntityMixin implements ICust
                     break;
                 case "ForcedAge":
                     nbt.putInt("ForcedAge", this.forcedAge);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        PassiveEntity entity = ((PassiveEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Age":
+                    entity.setBreedingAge(nbt.getInt("Age"));
+                    break;
+                case "ForcedAge":
+                    this.forcedAge = nbt.getInt("ForcedAge");
                     break;
                 default:
                     return false;

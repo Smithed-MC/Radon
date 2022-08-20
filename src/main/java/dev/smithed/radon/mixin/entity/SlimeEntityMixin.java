@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(SlimeEntity.class)
 public abstract class SlimeEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private boolean onGroundLastTick;
+
+    @Shadow boolean onGroundLastTick;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -21,6 +21,26 @@ public abstract class SlimeEntityMixin extends MobEntityMixin implements ICustom
                     break;
                 case "wasOnGround":
                     nbt.putBoolean("wasOnGround", this.onGroundLastTick);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        SlimeEntity entity = ((SlimeEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Size":
+                    entity.setSize(nbt.getInt("Size") + 1, false);
+                    break;
+                case "Tag":
+                    this.onGroundLastTick = nbt.getBoolean("wasOnGround");
                     break;
                 default:
                     return false;

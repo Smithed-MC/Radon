@@ -22,4 +22,22 @@ public abstract class BoatEntityMixin extends EntityMixin implements ICustomNBTM
         }
         return true;
     }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        BoatEntity entity = ((BoatEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "ChestedHorse":
+                    if (nbt.contains("Type", 8))
+                        entity.setBoatType(BoatEntity.Type.getType(nbt.getString("Type")));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
 }

@@ -1,6 +1,5 @@
 package dev.smithed.radon.mixin;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.DataFixer;
 import dev.smithed.radon.mixin_interface.IMinecraftServerExtender;
 import dev.smithed.radon.utils.NBTUtils;
@@ -32,23 +31,27 @@ public abstract class MinecraftServerMixin extends ReentrantThreadExecutor<Serve
         super(string);
     }
 
-    @Shadow
-    private MinecraftServer.ResourceManagerHolder resourceManagerHolder;
+    @Shadow private MinecraftServer.ResourceManagerHolder resourceManagerHolder;
+    @Shadow @Final protected SaveProperties saveProperties;
 
     private final Map<String, Set<String>> entityTypes = new HashMap<>();
 
-    @Final
-    @Shadow
-    protected SaveProperties saveProperties;
-
+    /**
+     * @author ImCoolYeah105
+     * Injects into constructor to build entityTypes map on load
+     */
     @Inject(method = "<init>(Ljava/lang/Thread;Lnet/minecraft/world/level/storage/LevelStorage$Session;Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/server/SaveLoader;Ljava/net/Proxy;Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/util/ApiServices;Lnet/minecraft/server/WorldGenerationProgressListenerFactory;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private void getNbt(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo cr) throws CommandSyntaxException {
+    private void radon_init(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo cr) {
         if (this.saveProperties.getGeneratorOptions().getDimensions().contains(DimensionOptions.OVERWORLD))
             this.constructEntityTypes(this.getDatapackTagManager());
     }
 
+    /**
+     * @author ImCoolYeah105
+     * Injects into resource reloading to rebuild entityTypes map
+     */
     @Inject(method = "reloadResources(Ljava/util/Collection;)Ljava/util/concurrent/CompletableFuture;", at = @At("TAIL"))
-    public void reloadResources(CallbackInfoReturnable<CompletableFuture<Void>> ci) {
+    public void radon_reloadResources(CallbackInfoReturnable<CompletableFuture<Void>> ci) {
         if(ci.getReturnValue().isDone())
             this.constructEntityTypes(this.getDatapackTagManager());
         else

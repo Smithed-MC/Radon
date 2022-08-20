@@ -1,33 +1,34 @@
 package dev.smithed.radon.mixin.entity;
 
+import com.mojang.serialization.DataResult;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerRecipeBook;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.Objects;
+
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private Vec3d enteredNetherPos;
-    @Shadow
-    private boolean seenCredits;
-    @Final
-    @Shadow
-    private ServerRecipeBook recipeBook;
-    @Shadow
-    private BlockPos spawnPointPosition;
-    @Shadow
-    private boolean spawnForced;
-    @Shadow
-    private float spawnAngle;
+
+    @Shadow Vec3d enteredNetherPos;
+    @Shadow boolean seenCredits;
+    @Shadow @Final ServerRecipeBook recipeBook;
+    @Shadow BlockPos spawnPointPosition;
+    @Shadow boolean spawnForced;
+    @Shadow float spawnAngle;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -90,6 +91,34 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
                 case "SpawnAngle":
                     if (this.spawnPointPosition != null)
                         nbt.putFloat("SpawnAngle", this.spawnAngle);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        ServerPlayerEntity entity = ((ServerPlayerEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "enteredNetherPosition":
+                    if (nbt.contains("enteredNetherPosition", 10)) {
+                        NbtCompound nbtCompound = nbt.getCompound("enteredNetherPosition");
+                        this.enteredNetherPos = new Vec3d(nbtCompound.getDouble("x"), nbtCompound.getDouble("y"), nbtCompound.getDouble("z"));
+                    }
+                    break;
+                case "seenCredits":
+                    this.seenCredits = nbt.getBoolean("seenCredits");
+                    break;
+                case "recipeBook":
+                    if (nbt.contains("recipeBook", 10)) {
+                        this.recipeBook.readNbt(nbt.getCompound("recipeBook"), entity.server.getRecipeManager());
+                    }
                     break;
                 default:
                     return false;

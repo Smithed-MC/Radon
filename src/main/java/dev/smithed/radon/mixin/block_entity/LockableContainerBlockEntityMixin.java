@@ -10,10 +10,9 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(LockableContainerBlockEntity.class)
 public abstract class LockableContainerBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private ContainerLock lock;
-    @Shadow
-    private Text customName;
+
+    @Shadow ContainerLock lock;
+    @Shadow Text customName;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -27,6 +26,26 @@ public abstract class LockableContainerBlockEntityMixin extends BlockEntityMixin
                 break;
             default:
                 return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Lock":
+                    this.lock = ContainerLock.fromNbt(nbt);
+                    break;
+                case "CustomName":
+                    if (nbt.contains("CustomName", 8))
+                        this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
+                    break;
+                default:
+                    return false;
+            }
         }
         return true;
     }

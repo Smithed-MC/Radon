@@ -33,9 +33,9 @@ public class EntitySelectorMixin implements IEntitySelectorExtender {
     @Shadow private Box box;
     @Shadow private TypeFilter<Entity, ?> entityFilter;
 
-    /*
-    @Author dragoncommands
-    @TODO make this a redirect to avoid double implementation
+    /**
+     * @author dragoncommands
+     * TODO: make this a redirect to avoid double implementation
      */
     @Inject(method = "appendEntitiesFromWorld", at=@At("HEAD"), cancellable = true)
     void appendEntitiesFromWorldInject(List<Entity> result, ServerWorld world, Vec3d pos, Predicate<Entity> predicate, CallbackInfo ci) {
@@ -46,7 +46,6 @@ public class EntitySelectorMixin implements IEntitySelectorExtender {
         } else {
             result.addAll(world.getEntitiesByType(this.entityFilter, predicate));
         }
-        // don't want to append twice
         ci.cancel();
     }
 

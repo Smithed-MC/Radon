@@ -8,20 +8,18 @@ import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.UUID;
+
 @Mixin(ShulkerBulletEntity.class)
 public abstract class ShulkerBulletEntityMixin extends ProjectileEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private Entity target;
-    @Shadow
-    private Direction direction;
-    @Shadow
-    private int stepCount;
-    @Shadow
-    private double targetX;
-    @Shadow
-    private double targetY;
-    @Shadow
-    private double targetZ;
+
+    @Shadow Entity target;
+    @Shadow Direction direction;
+    @Shadow int stepCount;
+    @Shadow double targetX;
+    @Shadow double targetY;
+    @Shadow double targetZ;
+    @Shadow UUID targetUuid;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -50,6 +48,40 @@ public abstract class ShulkerBulletEntityMixin extends ProjectileEntityMixin imp
                 default:
                     return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        ShulkerBulletEntity entity = ((ShulkerBulletEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Steps":
+                    this.stepCount = nbt.getInt("Steps");
+                    break;
+                case "TXD":
+                    this.targetX = nbt.getDouble("TXD");
+                    break;
+                case "TYD":
+                    this.targetY = nbt.getDouble("TYD");
+                    break;
+                case "TZD":
+                    this.targetZ = nbt.getDouble("TZD");
+                    break;
+                case "Dir":
+                    if (nbt.contains("Dir", 99))
+                        this.direction = Direction.byId(nbt.getInt("Dir"));
+                    break;
+                case "Target":
+                    this.targetUuid = nbt.getUuid("Target");
+                    break;
+                default:
+                    return false;
+            }
+
         }
         return true;
     }

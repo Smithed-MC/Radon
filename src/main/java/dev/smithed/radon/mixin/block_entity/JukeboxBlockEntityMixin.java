@@ -9,14 +9,12 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private long tickCount;
-    @Shadow
-    private long recordStartTick;
-    @Shadow
-    private boolean isPlaying;
-    @Shadow
-    abstract ItemStack getRecord();
+
+    @Shadow long tickCount;
+    @Shadow long recordStartTick;
+    @Shadow boolean isPlaying;
+    @Shadow abstract ItemStack getRecord();
+    @Shadow abstract void setRecord(ItemStack stack);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -34,6 +32,32 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntityMixin implement
                     break;
                 case "TickCount":
                     nbt.putLong("TickCount", this.tickCount);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "RecordItem":
+                    if (nbt.contains("RecordItem", 10))
+                        this.setRecord(ItemStack.fromNbt(nbt.getCompound("RecordItem")));
+                    break;
+                case "IsPlaying":
+                    this.isPlaying = nbt.getBoolean("IsPlaying");
+                    break;
+                case "RecordStartTick":
+                    this.recordStartTick = nbt.getLong("RecordStartTick");
+                    break;
+                case "TickCount":
+                    this.tickCount = nbt.getLong("TickCount");
                     break;
                 default:
                     return false;

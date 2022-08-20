@@ -16,11 +16,8 @@ public abstract class EndermanEntityMixin extends MobEntityMixin implements ICus
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "AngerTime":
-                    nbt.putInt("AngerTime", entity.getAngerTime());
-                    break;
                 case "AngryAt":
-                    if (entity.getAngryAt() != null)
-                        nbt.putUuid("AngryAt", entity.getAngryAt());
+                    entity.writeAngerToNbt(nbt);
                     break;
                 case "carriedBlockState":
                     BlockState blockState = entity.getCarriedBlock();
@@ -30,6 +27,35 @@ public abstract class EndermanEntityMixin extends MobEntityMixin implements ICus
                 default:
                     return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        EndermanEntity entity = ((EndermanEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "carriedBlockState":
+                    BlockState blockState = null;
+                    if (nbt.contains("carriedBlockState", 10)) {
+                        blockState = NbtHelper.toBlockState(nbt.getCompound("carriedBlockState"));
+                        if (blockState.isAir()) {
+                            blockState = null;
+                        }
+                    }
+                    entity.setCarriedBlock(blockState);
+                    break;
+                case "AngryAt":
+                case "AngerTime":
+                    entity.readAngerFromNbt(this.world, nbt);
+                    break;
+                default:
+                    return false;
+            }
+
         }
         return true;
     }

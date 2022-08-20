@@ -22,4 +22,21 @@ public abstract class SnowGolemEntityMixin extends MobEntityMixin implements ICu
         }
         return true;
     }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        SnowGolemEntity entity = ((SnowGolemEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Pumpkin":
+                    entity.setHasPumpkin(nbt.getBoolean("Pumpkin"));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
 }

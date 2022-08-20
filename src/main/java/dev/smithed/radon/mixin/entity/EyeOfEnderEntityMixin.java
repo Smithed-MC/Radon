@@ -9,8 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EyeOfEnderEntity.class)
 public abstract class EyeOfEnderEntityMixin extends EntityMixin implements ICustomNBTMixin {
-    @Shadow
-    abstract ItemStack getTrackedItem();
+    @Shadow abstract ItemStack getTrackedItem();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -21,6 +20,24 @@ public abstract class EyeOfEnderEntityMixin extends EntityMixin implements ICust
                     ItemStack itemStack = this.getTrackedItem();
                     if (!itemStack.isEmpty())
                         nbt.put("Item", itemStack.writeNbt(new NbtCompound()));
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        EyeOfEnderEntity entity = ((EyeOfEnderEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Item":
+                    ItemStack itemStack = ItemStack.fromNbt(nbt.getCompound("Item"));
+                    entity.setItem(itemStack);
                     break;
                 default:
                     return false;

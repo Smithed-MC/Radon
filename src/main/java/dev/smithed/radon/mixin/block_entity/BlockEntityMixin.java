@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin.block_entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
@@ -12,10 +13,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockEntity.class)
-public class BlockEntityMixin implements ICustomNBTMixin, IEntityMixin {
-    @Final
-    @Shadow
-    protected BlockPos pos;
+public abstract class BlockEntityMixin implements IEntityMixin, ICustomNBTMixin {
+
+    @Shadow @Final BlockPos pos;
+    @Shadow abstract BlockState getCachedState();
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -23,8 +24,13 @@ public class BlockEntityMixin implements ICustomNBTMixin, IEntityMixin {
     }
 
     @Override
-    public NbtCompound writeFilteredNbt(NbtCompound nbt, String path) {
-        String topLevelNbt = path.split("[\\.\\{\\[]")[0];
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        return false;
+    }
+
+    @Override
+    public NbtCompound writeNbtFiltered(NbtCompound nbt, String path) {
+        String topLevelNbt = path.split("[\\[.{]")[0];
         BlockEntity entity = ((BlockEntity) (Object) this);
 
         switch (topLevelNbt) {
@@ -52,5 +58,10 @@ public class BlockEntityMixin implements ICustomNBTMixin, IEntityMixin {
                     return null;
         }
         return nbt;
+    }
+
+    @Override
+    public boolean readNbtFiltered(NbtCompound nbt, String path) {
+        return false;
     }
 }

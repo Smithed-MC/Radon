@@ -32,4 +32,10 @@ public abstract class AbstractMinecartEntityMixin extends EntityMixin implements
         }
         return true;
     }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        //Minecart has 3 top level NBT fields that need to be passed together, which won't work in this case
+        return super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt);
+    }
 }

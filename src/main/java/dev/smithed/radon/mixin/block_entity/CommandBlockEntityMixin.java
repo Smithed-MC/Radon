@@ -10,15 +10,14 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(CommandBlockBlockEntity.class)
 public abstract class CommandBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Final
-    @Shadow
-    private CommandBlockExecutor commandExecutor;
-    @Shadow
-    abstract boolean isPowered();
-    @Shadow
-    abstract boolean isAuto();
-    @Shadow
-    abstract boolean isConditionMet();
+
+    @Shadow @Final CommandBlockExecutor commandExecutor;
+    @Shadow boolean powered;
+    @Shadow boolean conditionMet;
+    @Shadow abstract boolean isPowered();
+    @Shadow abstract boolean isAuto();
+    @Shadow abstract boolean isConditionMet();
+    @Shadow abstract void setAuto(boolean auto);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -41,6 +40,37 @@ public abstract class CommandBlockEntityMixin extends BlockEntityMixin implement
                 case "UpdateLastExecution":
                 case "LastExecution":
                     this.commandExecutor.writeNbt(nbt);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Command":
+                case "SuccessCount":
+                case "CustomName":
+                case "TrackOutput":
+                case "LastOutput":
+                case "UpdateLastExecution":
+                case "LastExecution":
+                    this.commandExecutor.readNbt(nbt);
+                    break;
+                case "powered":
+                    this.powered = nbt.getBoolean("powered");
+                    break;
+                case "conditionMet":
+                    this.conditionMet = nbt.getBoolean("conditionMet");
+                    break;
+                case "auto":
+                    this.setAuto(nbt.getBoolean("auto"));
                     break;
                 default:
                     return false;

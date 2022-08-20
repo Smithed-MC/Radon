@@ -8,8 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(GhastEntity.class)
 public abstract class GhastEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private int fireballStrength = 1;
+    @Shadow int fireballStrength = 1;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -18,6 +17,24 @@ public abstract class GhastEntityMixin extends MobEntityMixin implements ICustom
             switch (topLevelNbt) {
                 case "ExplosionPower":
                     nbt.putByte("ExplosionPower", (byte)this.fireballStrength);
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        GhastEntity entity = ((GhastEntity)(Object)this);
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "ExplosionPower":
+                    if (nbt.contains("ExplosionPower", 99))
+                        this.fireballStrength = nbt.getByte("ExplosionPower");
                     break;
                 default:
                     return false;

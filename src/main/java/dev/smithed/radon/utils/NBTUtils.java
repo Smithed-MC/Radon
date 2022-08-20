@@ -1,5 +1,9 @@
 package dev.smithed.radon.utils;
 
+import net.minecraft.nbt.NbtCompound;
+
+import java.util.Set;
+
 public class NBTUtils {
 
     public static int getSlot(String nbt) {
@@ -25,6 +29,12 @@ public class NBTUtils {
     public static String[] getTopLevelPaths(String nbt) {
         nbt = nbt.substring(1,nbt.length()-1) + ",";
         return nbt.split(":(\\[(.*?)\\])*(\\{(.*?)\\})*(.*?),");
+    }
+
+    public static String[] getTopLevelPaths(NbtCompound nbt) {
+        Set<String> set = nbt.getKeys();
+        String[] strings = new String[set.size()];
+        return nbt.getKeys().toArray(strings);
     }
 
     public static String translationToTypeName(String name) {

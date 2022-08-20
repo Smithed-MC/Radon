@@ -5,17 +5,16 @@ import net.minecraft.block.entity.EndGatewayBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(EndGatewayBlockEntity.class)
 public abstract class EndGatewayBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
-    @Shadow
-    private long age;
-    @Shadow
-    private BlockPos exitPortalPos;
-    @Shadow
-    private boolean exactTeleport;
+
+    @Shadow long age;
+    @Shadow BlockPos exitPortalPos;
+    @Shadow boolean exactTeleport;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -35,6 +34,34 @@ public abstract class EndGatewayBlockEntityMixin extends BlockEntityMixin implem
                 default:
                     return false;
             }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+            if(!nbt.contains(topLevelNbt))
+                return false;
+            switch (topLevelNbt) {
+                case "Age":
+                    this.age = nbt.getLong("Age");
+                    break;
+                case "ExitPortal":
+                    if (nbt.contains("ExitPortal", 10)) {
+                        BlockPos blockPos = NbtHelper.toBlockPos(nbt.getCompound("ExitPortal"));
+                        if (World.isValid(blockPos)) {
+                            this.exitPortalPos = blockPos;
+                        }
+                    }
+                    break;
+                case "ExactTeleport":
+                    this.exactTeleport = nbt.getBoolean("ExactTeleport");
+                    break;
+                default:
+                    return false;
+            }
+
         }
         return true;
     }
