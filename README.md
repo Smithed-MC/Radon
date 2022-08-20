@@ -6,5 +6,7 @@ Radon is an experimental no-compromises drop-in fabric mod designed to apply tar
 
 ## Setup
 
-Put into your fabric mods folder or just download with the [smithed client](https://smithed.dev/).
+Download the latest version from [Releases](https://github.com/Smithed-MC/Radon/releases) and place the mod in your [Fabric](https://fabricmc.net/) mods folder.
+
+(WIP) Alternativly, use the [smithed client](https://smithed.dev/), a new Minecraft launcher which includes datapack searching, automatic merging, and some performance mod options.
 
