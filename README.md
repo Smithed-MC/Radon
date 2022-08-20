@@ -15,5 +15,5 @@ Want to see the difference for yourself? Radon supports toggling optimizations o
 * /radon nbt-optimiations <true/false>
 * /radon selector-optimizations <true/false>
 
-It also has a debug mode, which can print potential problems to console if you find your commands aren't running faster or worse are running slower. Don't toggle this on while running commands tickly or you'll get console spam:
+Radon also has a debug mode, which can print potential problems to console if you find your commands aren't running faster or worse are running slower. Don't toggle this on while running commands tickly or you'll get console spam:
 * /radon debug-mode <true/false>
