@@ -10,3 +10,10 @@ Download the latest version from [Releases](https://github.com/Smithed-MC/Radon/
 
 (WIP) Alternativly, use the [smithed client](https://smithed.dev/), a new Minecraft launcher which includes datapack searching, automatic merging, and some performance mod options.
 
+## Advanced Features
+Want to see the difference for yourself? Radon supports toggling optimizations on the fly using these commands. You can observe the mspt in f3, or run a profile with f3+L in single player and /perf <start/stop> in multiplayer:
+* /radon nbt-optimiations <true/false>
+* /radon selector-optimizations <true/false>
+
+It also has a debug mode, which can print potential problems to console if you find your commands aren't running faster or worse are running slower. Don't toggle this on while running commands tickly or you'll get console spam:
+* /radon debug-mode <true/false>
