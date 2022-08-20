@@ -143,6 +143,8 @@ public abstract class DataCommandMixin {
                         context.getSource().sendFeedback(dataCommandObject.feedbackModify(), true);
                         cir.setReturnValue(i);
                     }
+                } else {
+                    throw MERGE_FAILED_EXCEPTION.create();
                 }
             }
         }
