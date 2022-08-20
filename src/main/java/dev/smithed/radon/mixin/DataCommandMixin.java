@@ -125,7 +125,8 @@ public abstract class DataCommandMixin {
      * Otherwise, main function runs normally.
      */
     @Inject(
-            method = "executeModify(Lcom/mojang/brigadier/context/CommandContext;Lnet/minecraft/server/command/DataCommand$ObjectType;Lnet/minecraft/server/command/ModifyOperation;Ljava/util/List;)I",
+            //method = "executeModify(Lcom/mojang/brigadier/context/CommandContext;Lcom/mojang/brigadier/context/CommandContext$ObjectType;Lcom/mojang/brigadier/context/CommandContext$ModifyOperation;Ljava/util/List;)I",
+            method = "executeModify",
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
     private static void radon_executeModify(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType, DataCommand.ModifyOperation modifier, List<NbtElement> elements, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
@@ -152,7 +153,7 @@ public abstract class DataCommandMixin {
      * Otherwise, main function runs normally.
      */
     @Inject(
-            method = "executeMerge(Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/server/command/DataCommand;Lnet/minecraft/nbt/NbtCompound;)I",
+            method = "executeMerge(Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/command/DataCommandObject;Lnet/minecraft/nbt/NbtCompound;)I",
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
     private static void radon_executeMerge(ServerCommandSource source, DataCommandObject object, NbtCompound nbt, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
@@ -176,13 +177,14 @@ public abstract class DataCommandMixin {
      * Otherwise, main function runs normally.
      */
     @Inject(
-            method = "executeRemove(Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/server/command/DataCommand;Lnet/minecraft/command/argument/NbtPathArgumentType$NbtPath;)I",
+            method = "executeRemove(Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/command/DataCommandObject;Lnet/minecraft/command/argument/NbtPathArgumentType$NbtPath;)I",
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
     private static void radon_executeRemove(ServerCommandSource source, DataCommandObject object, NbtPathArgumentType.NbtPath path, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
         if (Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
             NbtCompound nbtCompound = mixin.getNbtFiltered(path.toString());
             int i = path.remove(nbtCompound);
+            Radon.logDebug(nbtCompound);
             if (i != 0) {
                 if(mixin.setNbtFiltered(nbtCompound, path.toString())) {
                     source.sendFeedback(object.feedbackModify(), true);
