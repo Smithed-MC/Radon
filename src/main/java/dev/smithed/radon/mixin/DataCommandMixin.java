@@ -166,11 +166,13 @@ public abstract class DataCommandMixin {
             for(String topNbt: topLevelNbt) {
                 NbtCompound nbtCompound = mixin.getNbtFiltered(topNbt);
                 NbtCompound nbtCompound2 = nbtCompound.copy().copyFrom(nbt.getCompound(topNbt));
-                if(nbtCompound.equals(nbtCompound2))
-                    same += 1;
                 Radon.logDebug(nbtCompound2);
-                if(!mixin.setNbtFiltered(nbtCompound, topNbt))
-                    return;
+                if(nbtCompound.equals(nbtCompound2)) {
+                    same += 1;
+                } else {
+                    if (!mixin.setNbtFiltered(nbtCompound, topNbt))
+                        return;
+                }
             }
             if(same == topLevelNbt.length)
                 throw MERGE_FAILED_EXCEPTION.create();
