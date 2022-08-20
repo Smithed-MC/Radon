@@ -35,6 +35,7 @@ import java.util.function.BiConsumer;
 @Mixin(DataCommand.class)
 public abstract class DataCommandMixin {
 
+    @Shadow @Final static SimpleCommandExceptionType MERGE_FAILED_EXCEPTION;
     @Shadow @Final static SimpleCommandExceptionType GET_MULTIPLE_EXCEPTION;
     @Shadow @Final static List<DataCommand.ObjectType> TARGET_OBJECT_TYPES;
     @Shadow @Final static List<DataCommand.ObjectType> SOURCE_OBJECT_TYPES;
@@ -159,13 +160,18 @@ public abstract class DataCommandMixin {
     private static void radon_executeMerge(ServerCommandSource source, DataCommandObject object, NbtCompound nbt, CallbackInfoReturnable<Integer> cir) throws CommandSyntaxException {
         if (Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
             String[] topLevelNbt = NBTUtils.getTopLevelPaths(nbt);
+            int same = 0;
             for(String topNbt: topLevelNbt) {
                 NbtCompound nbtCompound = mixin.getNbtFiltered(topNbt);
-                nbtCompound.copyFrom(nbt);
-                Radon.logDebug(nbtCompound);
+                NbtCompound nbtCompound2 = nbtCompound.copy().copyFrom(nbt.getCompound(topNbt));
+                if(nbtCompound.equals(nbtCompound2))
+                    same += 1;
+                Radon.logDebug(nbtCompound2);
                 if(!mixin.setNbtFiltered(nbtCompound, topNbt))
                     return;
             }
+            if(same == topLevelNbt.length)
+                throw MERGE_FAILED_EXCEPTION.create();
             source.sendFeedback(object.feedbackModify(), true);
             cir.setReturnValue(1);
         }
