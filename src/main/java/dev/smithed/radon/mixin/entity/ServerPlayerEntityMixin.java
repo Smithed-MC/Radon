@@ -1,12 +1,15 @@
 package dev.smithed.radon.mixin.entity;
 
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerRecipeBook;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryKey;
@@ -23,12 +26,14 @@ import java.util.Objects;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ICustomNBTMixin {
 
+    @Shadow @Final static Logger LOGGER = LogUtils.getLogger();
     @Shadow Vec3d enteredNetherPos;
     @Shadow boolean seenCredits;
     @Shadow @Final ServerRecipeBook recipeBook;
     @Shadow BlockPos spawnPointPosition;
     @Shadow boolean spawnForced;
     @Shadow float spawnAngle;
+    @Shadow RegistryKey<World> spawnPointDimension;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -92,6 +97,16 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
                     if (this.spawnPointPosition != null)
                         nbt.putFloat("SpawnAngle", this.spawnAngle);
                     break;
+                case "SpawnDimension":
+                    if (this.spawnPointPosition != null) {
+                        DataResult<NbtElement> var10000 = Identifier.CODEC.encodeStart(NbtOps.INSTANCE, this.spawnPointDimension.getValue());
+                        Logger var10001 = LOGGER;
+                        Objects.requireNonNull(var10001);
+                        var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> {
+                            nbt.put("SpawnDimension", nbtElement);
+                        });
+                    }
+                    break;
                 default:
                     return false;
             }
@@ -119,6 +134,26 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
                     if (nbt.contains("recipeBook", 10)) {
                         this.recipeBook.readNbt(nbt.getCompound("recipeBook"), entity.server.getRecipeManager());
                     }
+                    break;
+                case "SpawnForced":
+                    this.spawnForced = nbt.getBoolean("SpawnForced");
+                    break;
+                case "SpawnAngle":
+                    this.spawnAngle = nbt.getFloat("SpawnAngle");
+                    break;
+                case "SpawnDimension":
+                    DataResult<RegistryKey<World>> var10001 = World.CODEC.parse(NbtOps.INSTANCE, nbt.get("SpawnDimension"));
+                    Logger var10002 = LOGGER;
+                    Objects.requireNonNull(var10002);
+                    this.spawnPointDimension = var10001.resultOrPartial(var10002::error).orElse(World.OVERWORLD);
+                    break;
+                case "SpawnX":
+                case "SpawnY":
+                case "SpawnZ":
+                    int i = nbt.contains("SpawnX", 99) ? nbt.getInt("SpawnX") : this.spawnPointPosition.getX();
+                    int j = nbt.contains("SpawnY", 99) ? nbt.getInt("SpawnY") : this.spawnPointPosition.getY();
+                    int k = nbt.contains("SpawnZ", 99) ? nbt.getInt("SpawnZ") : this.spawnPointPosition.getZ();
+                    this.spawnPointPosition = new BlockPos(i, j, k);
                     break;
                 default:
                     return false;

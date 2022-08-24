@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin.entity;
 
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.village.VillagerData;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -19,6 +21,7 @@ import java.util.UUID;
 @Mixin(ZombieVillagerEntity.class)
 public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implements ICustomNBTMixin {
 
+    @Shadow @Final static Logger field_36334 = LogUtils.getLogger();
     @Shadow int conversionTimer;
     @Shadow UUID converter;
     @Shadow NbtElement gossipData;
@@ -53,6 +56,14 @@ public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implem
                         nbt.putInt("Xp", this.xp);
                     }
                     break;
+                case "VillagerData":
+                    DataResult<NbtElement> var10000 = VillagerData.CODEC.encodeStart(NbtOps.INSTANCE, entity.getVillagerData());
+                    Logger var10001 = field_36334;
+                    Objects.requireNonNull(var10001);
+                    var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> {
+                        nbt.put("VillagerData", nbtElement);
+                    });
+                    break;
                 default:
                     return false;
             }
@@ -82,6 +93,14 @@ public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implem
                 case "Xp":
                     if (nbt.contains("Xp", 3))
                         this.xp = nbt.getInt("Xp");
+                    break;
+                case "VillagerData":
+                    if (nbt.contains("VillagerData", 10)) {
+                        DataResult<VillagerData> dataResult = VillagerData.CODEC.parse(new Dynamic(NbtOps.INSTANCE, nbt.get("VillagerData")));
+                        Logger var10001 = field_36334;
+                        Objects.requireNonNull(var10001);
+                        dataResult.resultOrPartial(var10001::error).ifPresent(entity::setVillagerData);
+                    }
                     break;
                 default:
                     return false;
