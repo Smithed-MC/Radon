@@ -28,6 +28,7 @@ public abstract class CreeperEntityMixin extends MobEntityMixin implements ICust
                     break;
                 case "ExplosionRadius":
                     nbt.putByte("ExplosionRadius", (byte)this.explosionRadius);
+                    break;
                 case "ignited":
                     nbt.putBoolean("ignited", entity.isIgnited());
                     break;

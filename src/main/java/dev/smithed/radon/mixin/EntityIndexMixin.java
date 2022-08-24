@@ -32,7 +32,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
     public void removeEntityFromTagMap(String tag, EntityLike entity) {
         List<EntityLike> set = entityMap.get(tag);
         if(set != null)
-            set.remove(entity);
+            set.removeAll(Collections.singleton(entity));
     }
 
     /**
