@@ -61,6 +61,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     @Shadow abstract void setRotation(float yaw, float pitch);
     @Shadow abstract boolean shouldSetPositionOnLoad();
     @Shadow abstract NbtList toNbtList(double... values);
+    @Shadow abstract NbtList toNbtList(float... values);
     @Shadow abstract void setFlag(int index, boolean value);
 
     /**

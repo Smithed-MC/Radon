@@ -53,7 +53,6 @@ public abstract class DataCommandMixin {
             nbt = mixin.getNbtFiltered(path.toString());
         if (nbt == null)
             nbt = object.getNbt();
-        Radon.logDebug(nbt);
         Collection<NbtElement> collection = path.get(nbt);
         //END
 
@@ -99,7 +98,6 @@ public abstract class DataCommandMixin {
                                 }
                                 if (nbt == null)
                                     nbt = dataCommandObject.getNbt();
-                                Radon.logDebug(nbt);
                                 List<NbtElement> list = nbtPath.get(nbt);
                                 // END
                                 return executeModify(context, objectType, modifier, list);
@@ -138,7 +136,6 @@ public abstract class DataCommandMixin {
             if (nbtCompound != null) {
                 int i = modifier.modify(context, nbtCompound, nbtPath, elements);
                 if (i != 0) {
-                    Radon.logDebug(nbtCompound);
                     if (mixin.setNbtFiltered(nbtCompound, nbtPath.toString())) {
                         context.getSource().sendFeedback(dataCommandObject.feedbackModify(), true);
                         cir.setReturnValue(i);
@@ -166,7 +163,6 @@ public abstract class DataCommandMixin {
             for(String topNbt: topLevelNbt) {
                 NbtCompound nbtCompound = mixin.getNbtFiltered(topNbt);
                 NbtCompound nbtCompound2 = nbtCompound.copy().copyFrom(nbt.getCompound(topNbt));
-                Radon.logDebug(nbtCompound2);
                 if(nbtCompound.equals(nbtCompound2)) {
                     same += 1;
                 } else {
@@ -194,7 +190,6 @@ public abstract class DataCommandMixin {
         if (Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
             NbtCompound nbtCompound = mixin.getNbtFiltered(path.toString());
             int i = path.remove(nbtCompound);
-            Radon.logDebug(nbtCompound);
             if (i != 0) {
                 if(mixin.setNbtFiltered(nbtCompound, path.toString())) {
                     source.sendFeedback(object.feedbackModify(), true);
