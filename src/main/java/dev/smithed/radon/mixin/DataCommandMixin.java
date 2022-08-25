@@ -162,11 +162,11 @@ public abstract class DataCommandMixin {
             int same = 0;
             for(String topNbt: topLevelNbt) {
                 NbtCompound nbtCompound = mixin.getNbtFiltered(topNbt);
-                NbtCompound nbtCompound2 = nbtCompound.copy().copyFrom(nbt.getCompound(topNbt));
+                NbtCompound nbtCompound2 = nbtCompound.copy().copyFrom(nbt);
                 if(nbtCompound.equals(nbtCompound2)) {
                     same += 1;
                 } else {
-                    if (!mixin.setNbtFiltered(nbtCompound, topNbt))
+                    if (!mixin.setNbtFiltered(nbtCompound2, topNbt))
                         return;
                 }
             }
