@@ -21,17 +21,19 @@ public class RadonCommand {
                 .requires(source -> source.hasPermissionLevel(2))
                 .then(CommandManager.literal("nbt-optimizations").executes(RadonCommand::toggle_radon_nbt)
                         .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_radon_nbt)))
-                        .then(CommandManager.literal("selector-optimizations").executes(RadonCommand::toggle_radon_selector)
-                                .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_radon_selector)))
+                .then(CommandManager.literal("selector-optimizations").executes(RadonCommand::toggle_radon_selector)
+                        .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_radon_selector)))
                 .then(CommandManager.literal("debug-mode").executes(RadonCommand::toggle_debug_mode)
                         .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_debug_mode)))
+                .then(CommandManager.literal("fix-block-access-forceload").executes(RadonCommand::toggle_block_forceload_mode)
+                        .then(CommandManager.argument("enabled", BoolArgumentType.bool()).executes(RadonCommand::set_block_forceload_mode)))
             );
     }
 
     public static int toggle_radon_nbt(CommandContext<ServerCommandSource> context) {
         Text text;
         if(Radon.CONFIG.nbtOptimizations) {
-            text = Text.literal("Radon NBT optimizations are now disabled");
+            text = Text.literal("Disabled Radon NBT optimizations");
             Radon.CONFIG.nbtOptimizations = false;
         } else {
             text = Text.literal("Enabled Radon NBT optimizations");
@@ -51,7 +53,7 @@ public class RadonCommand {
     public static int toggle_radon_selector(CommandContext<ServerCommandSource> context) {
         Text text;
         if(Radon.CONFIG.entitySelectorOptimizations) {
-            text = Text.literal("Radon Selector optimizations are now disabled");
+            text = Text.literal("Disabled Radon Selector optimizations");
             Radon.CONFIG.entitySelectorOptimizations = false;
         } else {
             text = Text.literal("Enabled Radon Selector optimizations");
@@ -71,7 +73,7 @@ public class RadonCommand {
     public static int toggle_debug_mode(CommandContext<ServerCommandSource> context) {
         Text text;
         if(Radon.CONFIG.debug) {
-            text = Text.literal("Radon Debug Mode is now disabled");
+            text = Text.literal("Disabled Radon Debug Mode");
             Radon.CONFIG.debug = false;
         } else {
             text = Text.literal("Enabled Radon Debug Mode");
@@ -84,6 +86,26 @@ public class RadonCommand {
     public static int set_debug_mode(CommandContext<ServerCommandSource> ctx) {
         Text text = Text.literal("Radon Debug Mode has been set to: " + BoolArgumentType.getBool(ctx, "enabled"));
         Radon.CONFIG.debug = BoolArgumentType.getBool(ctx, "enabled");
+        ctx.getSource().getServer().getPlayerManager().broadcast(text, false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int toggle_block_forceload_mode(CommandContext<ServerCommandSource> context) {
+        Text text;
+        if(Radon.CONFIG.fixBlockAccessForceload) {
+            text = Text.literal("Disabled Radon fix block access forceload");
+            Radon.CONFIG.fixBlockAccessForceload = false;
+        } else {
+            text = Text.literal("Enabled Radon fix block access forceload");
+            Radon.CONFIG.fixBlockAccessForceload = true;
+        }
+        context.getSource().getServer().getPlayerManager().broadcast(text, false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static int set_block_forceload_mode(CommandContext<ServerCommandSource> ctx) {
+        Text text = Text.literal("Radon fix block access forceload has been set to: " + BoolArgumentType.getBool(ctx, "enabled"));
+        Radon.CONFIG.fixBlockAccessForceload = BoolArgumentType.getBool(ctx, "enabled");
         ctx.getSource().getServer().getPlayerManager().broadcast(text, false);
         return Command.SINGLE_SUCCESS;
     }
