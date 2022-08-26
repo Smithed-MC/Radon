@@ -29,6 +29,10 @@ import java.util.function.Function;
 public abstract class BlockDataObjectMixin implements IDataCommandObjectMixin {
 
     @Shadow @Final static SimpleCommandExceptionType INVALID_BLOCK_EXCEPTION;
+    /**
+     * Overwrites standard lambda variable to include support for not loading chunks when if block is processed
+     * @reason afaik, there is no way to inject code into a lambda
+     */
     @Shadow @Final public static final Function<String, DataCommand.ObjectType> TYPE_FACTORY = (argumentName) -> {
         return new DataCommand.ObjectType() {
             public DataCommandObject getObject(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
@@ -53,7 +57,6 @@ public abstract class BlockDataObjectMixin implements IDataCommandObjectMixin {
 
     @Shadow @Final BlockEntity blockEntity;
     @Shadow @Final  BlockPos pos;
-    @Shadow abstract void setNbt(NbtCompound nbt);
 
     @Override
     public NbtCompound getNbtFiltered(String path) {

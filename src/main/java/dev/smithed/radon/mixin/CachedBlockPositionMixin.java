@@ -12,45 +12,26 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(CachedBlockPosition.class)
 public abstract class CachedBlockPositionMixin {
 
-    @Shadow @Final WorldView world;
-    @Shadow @Final BlockPos pos;
-    @Shadow @Final boolean forceLoad;
-    @Shadow @Nullable BlockState state;
-    @Shadow @Nullable BlockEntity blockEntity;
-    @Shadow boolean cachedEntity;
-
-    /**
-     * @author ImCoolYeah105
-     * @reason redirect getBlockState -> getBlockStateNoLoad, may be replaceable with a @redirect
-     */
-    @Overwrite
-    public BlockState getBlockState() {
-        if (this.state == null && (this.forceLoad || this.world.isChunkLoaded(this.pos))) {
-            if(Radon.CONFIG.fixBlockAccessForceload && this.world instanceof IWorldExtender mixin)
-                this.state = mixin.getBlockStateNoLoad(this.pos);
-            else
-                this.state = this.world.getBlockState(this.pos);
-        }
-        return this.state;
+    @Redirect(method = "getBlockState()Lnet/minecraft/block/BlockState;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
+    public BlockState radon_getBlockState(WorldView world, BlockPos pos) {
+        if(Radon.CONFIG.fixBlockAccessForceload && world instanceof IWorldExtender mixin)
+            return mixin.getBlockStateNoLoad(pos);
+        else
+            return world.getBlockState(pos);
     }
 
-    /**
-     * @author ImCoolYeah105
-     * @reason redirect getBlockEntity -> getBlockEntityNoLoad, may be replaceable with a @redirect
-     */
-    @Overwrite
-    public BlockEntity getBlockEntity() {
-        if (this.blockEntity == null && !this.cachedEntity) {
-            if(Radon.CONFIG.fixBlockAccessForceload && this.world instanceof IWorldExtender mixin)
-                this.blockEntity = mixin.getBlockEntityNoLoad(this.pos);
-            else
-                this.blockEntity = this.world.getBlockEntity(this.pos);
-            this.cachedEntity = true;
-        }
-        return this.blockEntity;
+    @Redirect(method = "getBlockEntity()Lnet/minecraft/block/entity/BlockEntity;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldView;getBlockEntity(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/entity/BlockEntity;"))
+    public BlockEntity radon_getBlockEntity(WorldView world, BlockPos pos) {
+        if(Radon.CONFIG.fixBlockAccessForceload && world instanceof IWorldExtender mixin)
+            return mixin.getBlockEntityNoLoad(pos);
+        else
+            return world.getBlockEntity(pos);
     }
+
 }
