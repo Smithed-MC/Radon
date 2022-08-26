@@ -29,7 +29,7 @@ import java.util.function.Function;
 public abstract class BlockDataObjectMixin implements IDataCommandObjectMixin {
 
     @Shadow @Final static SimpleCommandExceptionType INVALID_BLOCK_EXCEPTION;
-    @Shadow @Final public static Function<String, DataCommand.ObjectType> TYPE_FACTORY = (argumentName) -> {
+    @Shadow @Final public static final Function<String, DataCommand.ObjectType> TYPE_FACTORY = (argumentName) -> {
         return new DataCommand.ObjectType() {
             public DataCommandObject getObject(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
                 BlockPos blockPos = BlockPosArgumentType.getLoadedBlockPos(context, argumentName + "Pos");
