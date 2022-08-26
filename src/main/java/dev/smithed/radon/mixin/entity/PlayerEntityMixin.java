@@ -3,6 +3,7 @@ package dev.smithed.radon.mixin.entity;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IFilteredNbtList;
 import net.minecraft.SharedConstants;
@@ -27,7 +28,6 @@ import java.util.Objects;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICustomNBTMixin {
 
-    @Shadow @Final static Logger field_38197 = LogUtils.getLogger();
     @Shadow PlayerInventory inventory;
     @Shadow int sleepTimer;
     @Shadow int enchantmentTableSeed;
@@ -101,7 +101,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
                     break;
                 case "warden_spawn_tracker":
                     DataResult<NbtElement> var10000 = SculkShriekerWarningManager.CODEC.encodeStart(NbtOps.INSTANCE, this.sculkShriekerWarningManager);
-                    Logger var10001 = field_38197;
+                    Logger var10001 = Radon.LOGGER;
                     Objects.requireNonNull(var10001);
                     var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> {
                         nbt.put("warden_spawn_tracker", nbtElement);
@@ -110,7 +110,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
                 case "LastDeathLocation":
                     entity.getLastDeathPos().flatMap((globalPos) -> {
                         DataResult<NbtElement> var10002 = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, globalPos);
-                        Logger var10003 = field_38197;
+                        Logger var10003 = Radon.LOGGER;
                         Objects.requireNonNull(var10003);
                         return var10002.resultOrPartial(var10003::error);
                     }).ifPresent((nbtElement) -> {
@@ -183,7 +183,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
                 case "warden_spawn_tracker":
                     if (nbt.contains("warden_spawn_tracker", 10)) {
                         DataResult<?> var10000 = SculkShriekerWarningManager.CODEC.parse(new Dynamic(NbtOps.INSTANCE, nbt.get("warden_spawn_tracker")));
-                        Logger var10001 = field_38197;
+                        Logger var10001 = Radon.LOGGER;
                         Objects.requireNonNull(var10001);
                         var10000.resultOrPartial(var10001::error).ifPresent((sculkShriekerWarningManager) -> {
                             this.sculkShriekerWarningManager = (SculkShriekerWarningManager) sculkShriekerWarningManager;
@@ -193,7 +193,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
                 case "LastDeathLocation":
                     if (nbt.contains("LastDeathLocation", 10)) {
                         DataResult<GlobalPos> var3 = GlobalPos.CODEC.parse(NbtOps.INSTANCE, nbt.get("LastDeathLocation"));
-                        Logger var10002 = field_38197;
+                        Logger var10002 = Radon.LOGGER;
                         Objects.requireNonNull(var10002);
                         entity.setLastDeathPos(var3.resultOrPartial(var10002::error));
                     }

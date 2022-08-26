@@ -1,10 +1,12 @@
 package dev.smithed.radon.mixin.entity;
 
 import dev.smithed.radon.Radon;
+import dev.smithed.radon.mixin.integrations.IntegrationRouter;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
+import me.jellysquid.mods.lithium.common.entity.EquipmentEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.ai.goal.GoalSelector;
@@ -40,7 +42,6 @@ import java.util.UUID;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
 
-    @Shadow @Final static Logger LOGGER;
     @Shadow @Final static TrackedData<EntityPose> POSE;
     @Shadow @Final Random random;
     @Shadow World world;
@@ -319,7 +320,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
                     try {
                         entity.setCustomName(Text.Serializer.fromJson(string));
                     } catch (Exception var16) {
-                        LOGGER.warn("Failed to parse entity custom name {}", string, var16);
+                        Radon.LOGGER.warn("Failed to parse entity custom name {}", string, var16);
                     }
                     break;
                 case "CustomNameVisible":
@@ -353,6 +354,8 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
                     if(this.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
                         if (this.shouldSetPositionOnLoad())
                             this.refreshPosition();
+                        if(topLevelNbt.equals("ArmorItems") || topLevelNbt.equals("HandItems"))
+                            IntegrationRouter.triggerEquipmentUpdate(this);
                     } else {
                         return false;
                     }
