@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "radon",
-  "version": "0.3.0",
+  "version": "0.3.1",
 
   "name": "Radon",
   "description": "Optimizes various features in commands. Currently limited to NBT lookups.",
@@ -31,5 +31,8 @@
     "fabric": "*",
     "minecraft": "~1.19",
     "java": ">=17"
+  },
+  "suggests": {
+    "lithium": ">=0.8.0"
   }
 }

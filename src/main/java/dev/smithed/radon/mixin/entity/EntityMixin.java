@@ -5,6 +5,7 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
+import me.jellysquid.mods.lithium.common.entity.EquipmentEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.ai.goal.GoalSelector;
@@ -353,6 +354,8 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
                     if(this.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
                         if (this.shouldSetPositionOnLoad())
                             this.refreshPosition();
+                        if(entity instanceof EquipmentEntity mixin && (topLevelNbt.equals("ArmorItems") || topLevelNbt.equals("HandItems") ))
+                            mixin.lithiumOnEquipmentChanged();
                     } else {
                         return false;
                     }
