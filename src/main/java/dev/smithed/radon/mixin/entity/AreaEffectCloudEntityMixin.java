@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin.entity;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.command.argument.ParticleEffectArgumentType;
 import net.minecraft.entity.AreaEffectCloudEntity;
@@ -132,7 +133,7 @@ public abstract class AreaEffectCloudEntityMixin extends EntityMixin implements 
                     try {
                         entity.setParticleType(ParticleEffectArgumentType.readParameters(new StringReader(nbt.getString("Particle"))));
                     } catch (CommandSyntaxException var5) {
-                        LOGGER.warn("Couldn't load custom particle {}", nbt.getString("Particle"), var5);
+                        Radon.LOGGER.warn("Couldn't load custom particle {}", nbt.getString("Particle"), var5);
                     }
                 }
                 break;
