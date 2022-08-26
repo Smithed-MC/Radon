@@ -3,6 +3,7 @@ package dev.smithed.radon.mixin.entity;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
+import dev.smithed.radon.Radon;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -22,7 +23,6 @@ import java.util.Objects;
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin extends MerchantEntityMixin {
 
-    @Shadow @Final static Logger field_36335 = LogUtils.getLogger();
     @Shadow int foodLevel;
     @Shadow VillagerGossips gossip;
     @Shadow long lastRestockTime;
@@ -61,7 +61,7 @@ public abstract class VillagerEntityMixin extends MerchantEntityMixin {
                     break;
                 case "VillagerData":
                     DataResult<NbtElement> data = VillagerData.CODEC.encodeStart(NbtOps.INSTANCE, entity.getVillagerData());
-                    Logger logger = field_36335;
+                    Logger logger = Radon.LOGGER;
                     Objects.requireNonNull(logger);
                     data.resultOrPartial(logger::error).ifPresent(nbtElement -> nbt.put("VillagerData", nbtElement));
                     break;
@@ -110,7 +110,7 @@ public abstract class VillagerEntityMixin extends MerchantEntityMixin {
                 case "VillagerData":
                     if (nbt.contains("VillagerData", 10)) {
                         DataResult<VillagerData> dataResult = VillagerData.CODEC.parse(new Dynamic(NbtOps.INSTANCE, nbt.get("VillagerData")));
-                        Logger logger = field_36335;
+                        Logger logger = Radon.LOGGER;
                         Objects.requireNonNull(logger);
                         dataResult.resultOrPartial(logger::error).ifPresent(entity::setVillagerData);
                     }

@@ -35,7 +35,7 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	//mod integrations
-	implementation "maven.modrinth:lithium:${project.lithium_version}"
+	modImplementation "maven.modrinth:lithium:${project.lithium_version}"
 }
 
 processResources {

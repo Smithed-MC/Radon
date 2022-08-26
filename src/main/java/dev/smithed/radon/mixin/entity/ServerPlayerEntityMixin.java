@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin.entity;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
@@ -26,7 +27,6 @@ import java.util.Objects;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ICustomNBTMixin {
 
-    @Shadow @Final static Logger LOGGER = LogUtils.getLogger();
     @Shadow Vec3d enteredNetherPos;
     @Shadow boolean seenCredits;
     @Shadow @Final ServerRecipeBook recipeBook;
@@ -100,7 +100,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
                 case "SpawnDimension":
                     if (this.spawnPointPosition != null) {
                         DataResult<NbtElement> var10000 = Identifier.CODEC.encodeStart(NbtOps.INSTANCE, this.spawnPointDimension.getValue());
-                        Logger var10001 = LOGGER;
+                        Logger var10001 = Radon.LOGGER;
                         Objects.requireNonNull(var10001);
                         var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> {
                             nbt.put("SpawnDimension", nbtElement);
@@ -143,7 +143,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
                     break;
                 case "SpawnDimension":
                     DataResult<RegistryKey<World>> var10001 = World.CODEC.parse(NbtOps.INSTANCE, nbt.get("SpawnDimension"));
-                    Logger var10002 = LOGGER;
+                    Logger var10002 = Radon.LOGGER;
                     Objects.requireNonNull(var10002);
                     this.spawnPointDimension = var10001.resultOrPartial(var10002::error).orElse(World.OVERWORLD);
                     break;

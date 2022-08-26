@@ -3,6 +3,7 @@ package dev.smithed.radon.mixin.entity;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.mob.ZombieVillagerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -21,7 +22,6 @@ import java.util.UUID;
 @Mixin(ZombieVillagerEntity.class)
 public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implements ICustomNBTMixin {
 
-    @Shadow @Final static Logger field_36334 = LogUtils.getLogger();
     @Shadow int conversionTimer;
     @Shadow UUID converter;
     @Shadow NbtElement gossipData;
@@ -58,7 +58,7 @@ public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implem
                     break;
                 case "VillagerData":
                     DataResult<NbtElement> var10000 = VillagerData.CODEC.encodeStart(NbtOps.INSTANCE, entity.getVillagerData());
-                    Logger var10001 = field_36334;
+                    Logger var10001 = Radon.LOGGER;
                     Objects.requireNonNull(var10001);
                     var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> {
                         nbt.put("VillagerData", nbtElement);
@@ -97,7 +97,7 @@ public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implem
                 case "VillagerData":
                     if (nbt.contains("VillagerData", 10)) {
                         DataResult<VillagerData> dataResult = VillagerData.CODEC.parse(new Dynamic(NbtOps.INSTANCE, nbt.get("VillagerData")));
-                        Logger var10001 = field_36334;
+                        Logger var10001 = Radon.LOGGER;
                         Objects.requireNonNull(var10001);
                         dataResult.resultOrPartial(var10001::error).ifPresent(entity::setVillagerData);
                     }
