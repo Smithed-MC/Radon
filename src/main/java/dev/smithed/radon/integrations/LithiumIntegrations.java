@@ -1,4 +1,4 @@
-package dev.smithed.radon.mixin.integrations;
+package dev.smithed.radon.integrations;
 
 import me.jellysquid.mods.lithium.common.entity.EquipmentEntity;
 
