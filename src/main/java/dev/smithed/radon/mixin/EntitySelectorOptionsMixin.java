@@ -28,6 +28,7 @@ import java.util.function.Predicate;
 
 @Mixin(EntitySelectorOptions.class)
 public class EntitySelectorOptionsMixin {
+
     @Shadow
     private static void putOption(String id, EntitySelectorOptions.SelectorHandler handler, Predicate<EntitySelectorReader> condition, Text description) {}
 
@@ -53,9 +54,7 @@ public class EntitySelectorOptionsMixin {
                     return entity.getScoreboardTags().contains(string) != bl;
                 }
             });
-        }, (reader) -> {
-            return true;
-        }, Text.translatable("argument.entity.options.tag.description"));
+        }, (reader) -> true, Text.translatable("argument.entity.options.tag.description"));
 
         putOption("nbt", (reader) -> {
             boolean bl = reader.readNegationCharacter();
@@ -120,9 +119,7 @@ public class EntitySelectorOptionsMixin {
                         entityext.getSelectorContainer().isTypeTag = true;
                         entityext.getSelectorContainer().isNotType = bl;
                     }
-                    reader.setPredicate((entity) -> {
-                        return entity.getType().isIn(tagKey) != bl;
-                    });
+                    reader.setPredicate((entity) -> entity.getType().isIn(tagKey) != bl);
                 } else {
                     Identifier identifier = Identifier.fromCommandInput(reader.getReader());
                     EntityType<?> entityType = (EntityType)Registry.ENTITY_TYPE.getOrEmpty(identifier).orElseThrow(() -> {
@@ -138,18 +135,14 @@ public class EntitySelectorOptionsMixin {
                         entityext.getSelectorContainer().isNotType = bl;
                     }
 
-                    reader.setPredicate((entity) -> {
-                        return Objects.equals(entityType, entity.getType()) != bl;
-                    });
+                    reader.setPredicate((entity) -> Objects.equals(entityType, entity.getType()) != bl);
                     if (!bl) {
                         reader.setEntityType(entityType);
                     }
                 }
 
             }
-        }, (reader) -> {
-            return !reader.selectsEntityType();
-        }, Text.translatable("argument.entity.options.type.description"));
+        }, (reader) -> !reader.selectsEntityType(), Text.translatable("argument.entity.options.type.description"));
     }
 
 }

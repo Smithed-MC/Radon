@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "radon",
-  "version": "0.3.1",
+  "version": "0.3.2",
 
   "name": "Radon",
-  "description": "Optimizes various features in commands. Currently limited to NBT lookups.",
+  "description": "Applied targets optimizations to Minecraft Commands.",
   "authors": [
     "ImCoolYeah105",
     "dragoncommands"

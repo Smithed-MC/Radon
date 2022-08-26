@@ -41,12 +41,8 @@ public class EntitySelectorMixin implements IEntitySelectorExtender {
     void appendEntitiesFromWorldInject(List<Entity> result, ServerWorld world, Vec3d pos, Predicate<Entity> predicate, CallbackInfo ci) {
         if(Radon.CONFIG.entitySelectorOptimizations && world instanceof IServerWorldExtender extender) {
             result.addAll(extender.getEntitiesByTag(entityFilter, predicate, this.container));
-        } else if (this.box != null) {
-            result.addAll(world.getEntitiesByType(this.entityFilter, this.box.offset(pos), predicate));
-        } else {
-            result.addAll(world.getEntitiesByType(this.entityFilter, predicate));
+            ci.cancel();
         }
-        ci.cancel();
     }
 
     private SelectorContainer container;
