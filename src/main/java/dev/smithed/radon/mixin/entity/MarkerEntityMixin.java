@@ -32,7 +32,7 @@ public abstract class MarkerEntityMixin extends EntityMixin implements ICustomNB
             return false;
         switch (topLevelNbt) {
             case "data":
-                nbt.put("data", this.data.copy());
+                this.data = nbt.getCompound("data");
                 break;
             default:
                 return false;
