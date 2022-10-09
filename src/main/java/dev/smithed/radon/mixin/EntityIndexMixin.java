@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin;
 
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.utils.NBTUtils;
 import dev.smithed.radon.utils.SelectorContainer;
@@ -117,6 +118,9 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
 
         if (size == 0)
             return;
+
+        if(Radon.CONFIG.debug)
+            Radon.logDebug("searching on " + size + " entities for " + container);
 
         if (set != null) {
             set.forEach(entity -> {

@@ -12,4 +12,15 @@ public class SelectorContainer {
     public boolean isTypeTag = false;
     public boolean isNotType = false;
 
+    @Override
+    public String toString() {
+        return "SelectorContainer{" +
+                "selectorTags=" + selectorTags +
+                ", notSelectorTags=" + notSelectorTags +
+                ", entityTypes=" + entityTypes +
+                ", type='" + type + '\'' +
+                ", isTypeTag=" + isTypeTag +
+                ", isNotType=" + isNotType +
+                '}';
+    }
 }
