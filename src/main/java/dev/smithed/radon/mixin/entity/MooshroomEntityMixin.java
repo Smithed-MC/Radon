@@ -19,9 +19,7 @@ public abstract class MooshroomEntityMixin extends AnimalEntityMixin implements 
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "Type":
-                    //the name field of getMooshroomType cannot be accessed directly, so here we get the enum
-                    //name and make it lower case. It's the same result, but could theoretically break.
-                    nbt.putString("Type", entity.getMooshroomType().toString().toLowerCase());
+                    nbt.putString("Type", entity.getVariant().asString());
                     break;
                 case "EffectId":
                     if (this.stewEffect != null)

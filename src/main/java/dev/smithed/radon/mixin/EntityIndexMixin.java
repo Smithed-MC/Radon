@@ -6,6 +6,7 @@ import dev.smithed.radon.utils.NBTUtils;
 import dev.smithed.radon.utils.SelectorContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
+import net.minecraft.util.function.LazyIterationConsumer;
 import net.minecraft.world.entity.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 @Mixin(EntityIndex.class)
 public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T> {
 
-    @Shadow abstract <U extends T> void forEach(TypeFilter<T, U> filter, Consumer<U> action);
+    @Shadow abstract <U extends T> void forEach(TypeFilter<T, U> filter, LazyIterationConsumer<U> consumer);
     private static final int REASONABLESEARCHSIZE = 100;
     private final Map<String, List<EntityLike>> entityMap = new HashMap<>();
 
@@ -71,7 +72,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
      * retrieved for the @e search instead of all entities.
      */
     @Override
-    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, Consumer<U> action, SelectorContainer container) {
+    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, LazyIterationConsumer<U> action, SelectorContainer container) {
         List<EntityLike> set = null;
         List<List<EntityLike>> list = null;
         int size = Integer.MAX_VALUE;

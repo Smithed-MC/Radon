@@ -69,14 +69,14 @@ public class ExecuteCommandMixin {
             if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
                 try {
                     NbtCompound nbtCompound = mixin.getNbtFiltered(path.toString());
-                    path.put(nbtCompound, () -> nbtSetter.apply(i));
+                    path.put(nbtCompound, nbtSetter.apply(i));
                     if(mixin.setNbtFiltered(nbtCompound, path.toString()))
                         return;
                 } catch (CommandSyntaxException ignored) {}
             }
             try {
                 NbtCompound nbtCompound = object.getNbt();
-                path.put(nbtCompound, () -> nbtSetter.apply(i));
+                path.put(nbtCompound, nbtSetter.apply(i));
                 object.setNbt(nbtCompound);
             } catch (CommandSyntaxException ignored) {}
         }, BINARY_RESULT_CONSUMER);

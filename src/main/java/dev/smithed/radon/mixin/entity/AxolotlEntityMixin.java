@@ -37,7 +37,7 @@ public abstract class AxolotlEntityMixin extends AnimalEntityMixin implements IC
                 return false;
             switch (topLevelNbt) {
                 case "Variant":
-                    this.setVariant(AxolotlEntity.Variant.VARIANTS[nbt.getInt("Variant")]);
+                    this.setVariant(AxolotlEntity.Variant.byId(nbt.getInt("Variant")));
                     break;
                 case "FromBucket":
                     entity.setFromBucket(nbt.getBoolean("FromBucket"));

@@ -4,9 +4,13 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.passive.TropicalFishEntity;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(TropicalFishEntity.class)
 public abstract class TropicalFishEntityMixin extends FishEntityMixin implements ICustomNBTMixin {
+
+    @Shadow abstract int getTropicalFishVariant();
+    @Shadow abstract void setTropicalFishVariant(int variant);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -14,7 +18,7 @@ public abstract class TropicalFishEntityMixin extends FishEntityMixin implements
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "Variant":
-                    nbt.putInt("Variant", entity.getVariant());
+                    nbt.putInt("Variant", this.getTropicalFishVariant());
                     break;
                 default:
                     return false;
@@ -31,7 +35,7 @@ public abstract class TropicalFishEntityMixin extends FishEntityMixin implements
                 return false;
             switch (topLevelNbt) {
                 case "Variant":
-                    entity.setVariant(nbt.getInt("Variant"));
+                    this.setTropicalFishVariant(nbt.getInt("Variant"));
                     break;
                 default:
                     return false;

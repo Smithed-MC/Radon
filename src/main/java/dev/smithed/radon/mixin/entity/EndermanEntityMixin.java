@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.registry.RegistryKeys;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(EndermanEntity.class)
@@ -41,7 +42,7 @@ public abstract class EndermanEntityMixin extends MobEntityMixin implements ICus
                 case "carriedBlockState":
                     BlockState blockState = null;
                     if (nbt.contains("carriedBlockState", 10)) {
-                        blockState = NbtHelper.toBlockState(nbt.getCompound("carriedBlockState"));
+                        blockState = NbtHelper.toBlockState(this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK), nbt.getCompound("carriedBlockState"));
                         if (blockState.isAir()) {
                             blockState = null;
                         }

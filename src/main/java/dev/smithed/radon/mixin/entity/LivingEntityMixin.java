@@ -27,7 +27,7 @@ import java.util.Optional;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends EntityMixin implements ICustomNBTMixin {
 
-    @Shadow @Final static Logger field_36332;
+    @Shadow @Final static Logger LOGGER;
     @Shadow int lastAttackedTime;
     @Shadow Map<StatusEffect, StatusEffectInstance> activeStatusEffects;
     @Shadow Brain<?> brain;
@@ -84,7 +84,7 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
                 break;
             case "brain":
                 DataResult<NbtElement> dataResult = this.brain.encode(NbtOps.INSTANCE);
-                Logger var10001 = field_36332;
+                Logger var10001 = LOGGER;
                 java.util.Objects.requireNonNull(var10001);
                 dataResult.resultOrPartial(var10001::error).ifPresent((brain) -> {
                     nbt.put("Brain", brain);
@@ -140,7 +140,7 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
                     Team team = this.world.getScoreboard().getTeam(string);
                     boolean bl = team != null && this.world.getScoreboard().addPlayerToTeam(entity.getUuidAsString(), team);
                     if (!bl) {
-                        field_36332.warn("Unable to add mob to team \"{}\" (that team probably doesn't exist)", string);
+                        LOGGER.warn("Unable to add mob to team \"{}\" (that team probably doesn't exist)", string);
                     }
                 }
                 break;

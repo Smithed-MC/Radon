@@ -40,7 +40,7 @@ public abstract class VillagerEntityMixin extends MerchantEntityMixin {
                     nbt.putByte("FoodLevel", (byte)this.foodLevel);
                     break;
                 case "Gossips":
-                    nbt.put("Gossips", (NbtElement)this.gossip.serialize(NbtOps.INSTANCE).getValue());
+                    nbt.put("Gossips", (NbtElement)this.gossip.serialize(NbtOps.INSTANCE));
                     break;
                 case "Xp":
                     nbt.putInt("Xp", this.experience);

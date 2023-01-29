@@ -24,10 +24,10 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "Primary":
-                    nbt.putInt("Primary", StatusEffect.method_43257(this.primary));
+                    nbt.putInt("Primary", StatusEffect.getRawIdNullable(this.primary));
                     break;
                 case "Secondary":
-                    nbt.putInt("Secondary", StatusEffect.method_43257(this.secondary));
+                    nbt.putInt("Secondary", StatusEffect.getRawIdNullable(this.secondary));
                     break;
                 case "Levels":
                     nbt.putInt("Levels", this.level);

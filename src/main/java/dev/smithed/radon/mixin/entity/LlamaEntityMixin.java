@@ -4,6 +4,7 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.passive.LlamaEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -17,9 +18,10 @@ public abstract class LlamaEntityMixin extends AbstractDonkeyEntityMixin impleme
         LlamaEntity entity = ((LlamaEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Variant":
-                    nbt.putInt("Variant", entity.getVariant());
-                    break;
+                //TODO: use access widener to grab id value
+                //case "Variant":
+                //    nbt.putInt("Variant", entity.getVariant().id);
+                //    break;
                 case "Strength":
                     nbt.putInt("Strength", entity.getStrength());
                     break;
@@ -45,7 +47,7 @@ public abstract class LlamaEntityMixin extends AbstractDonkeyEntityMixin impleme
                     this.setStrength(nbt.getInt("Strength"));
                     break;
                 case "Variant":
-                    entity.setVariant(nbt.getInt("Variant"));
+                    entity.setVariant(LlamaEntity.Variant.byId(nbt.getInt("Variant")));
                     break;
                 case "DecorItem":
                     if (nbt.contains("DecorItem", 10))

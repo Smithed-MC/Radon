@@ -40,6 +40,7 @@ public abstract class ServerWorldMixin implements IServerWorldExtender {
                 if(predicate.test((T)entity)) {
                     list.add((T)entity);
                 }
+                return null;
             }, selector);
             return list;
         }

@@ -34,7 +34,6 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
     @Shadow HungerManager hungerManager;
     @Shadow PlayerAbilities abilities;
     @Shadow EnderChestInventory enderChestInventory;
-    @Shadow SculkShriekerWarningManager sculkShriekerWarningManager;
     @Shadow abstract void setShoulderEntityRight(NbtCompound entityNbt);
     @Shadow abstract void setShoulderEntityLeft(NbtCompound entityNbt);
 
@@ -98,14 +97,6 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
                     if (!entity.getShoulderEntityRight().isEmpty()) {
                         nbt.put("ShoulderEntityRight", entity.getShoulderEntityRight());
                     }
-                    break;
-                case "warden_spawn_tracker":
-                    DataResult<NbtElement> var10000 = SculkShriekerWarningManager.CODEC.encodeStart(NbtOps.INSTANCE, this.sculkShriekerWarningManager);
-                    Logger var10001 = Radon.LOGGER;
-                    Objects.requireNonNull(var10001);
-                    var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> {
-                        nbt.put("warden_spawn_tracker", nbtElement);
-                    });
                     break;
                 case "LastDeathLocation":
                     entity.getLastDeathPos().flatMap((globalPos) -> {
@@ -179,16 +170,6 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
                 case "ShoulderEntityRight":
                     if (nbt.contains("ShoulderEntityRight", 10))
                         this.setShoulderEntityRight(nbt.getCompound("ShoulderEntityRight"));
-                    break;
-                case "warden_spawn_tracker":
-                    if (nbt.contains("warden_spawn_tracker", 10)) {
-                        DataResult<?> var10000 = SculkShriekerWarningManager.CODEC.parse(new Dynamic(NbtOps.INSTANCE, nbt.get("warden_spawn_tracker")));
-                        Logger var10001 = Radon.LOGGER;
-                        Objects.requireNonNull(var10001);
-                        var10000.resultOrPartial(var10001::error).ifPresent((sculkShriekerWarningManager) -> {
-                            this.sculkShriekerWarningManager = (SculkShriekerWarningManager) sculkShriekerWarningManager;
-                        });
-                    }
                     break;
                 case "LastDeathLocation":
                     if (nbt.contains("LastDeathLocation", 10)) {

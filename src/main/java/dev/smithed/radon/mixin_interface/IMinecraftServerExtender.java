@@ -1,6 +1,6 @@
 package dev.smithed.radon.mixin_interface;
 
-import net.minecraft.tag.TagManagerLoader;
+import net.minecraft.registry.tag.TagManagerLoader;
 
 import java.util.Set;
 
