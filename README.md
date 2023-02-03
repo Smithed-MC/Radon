@@ -14,7 +14,7 @@ Worst case senario for player NBT lookup: `data get entity @s Health` 10000 time
 
 Running `execute if entity @e[type=minecraft:item_frame]` 10000 times per tick while 5120 markers are loaded and 320 item frames are loaded
 
-![selector](https://cdn.discordapp.com/attachments/507995770109165579/1012754969478307890/selector.png
+![selector](https://cdn.discordapp.com/attachments/507995770109165579/1012754969478307890/selector.png)
 
 ## Setup
 
