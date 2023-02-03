@@ -10,7 +10,7 @@ Testing included a server with these datapacks combined: Mechanization, The Cree
 ## Proof
 Worst case senario for player NBT lookup: `data get entity @s Health` 10000 times per tick on a player with a full inv, ender chest, and all recipes unlocked.
 
-![Player NBT](https://cdn.discordapp.com/attachments/507995770109165579/1012754969088249926/player_nbt.png))
+![Player NBT](https://cdn.discordapp.com/attachments/507995770109165579/1012754969088249926/player_nbt.png)
 
 Running `execute if entity @e[type=minecraft:item_frame]` 10000 times per tick while 5120 markers are loaded and 320 item frames are loaded
 
