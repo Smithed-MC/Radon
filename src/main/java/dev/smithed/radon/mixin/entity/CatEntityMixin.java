@@ -4,9 +4,9 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.passive.CatEntity;
 import net.minecraft.entity.passive.CatVariant;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(CatEntity.class)
@@ -18,7 +18,7 @@ public abstract class CatEntityMixin extends TameableEntityMixin implements ICus
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "variant":
-                    nbt.putString("variant", Registry.CAT_VARIANT.getId(entity.getVariant()).toString());
+                    nbt.putString("variant", Registries.CAT_VARIANT.getId(entity.getVariant()).toString());
                     break;
                 case "CollarColor":
                     nbt.putByte("CollarColor", (byte)entity.getCollarColor().getId());
@@ -38,7 +38,7 @@ public abstract class CatEntityMixin extends TameableEntityMixin implements ICus
                 return false;
             switch (topLevelNbt) {
                 case "variant":
-                    CatVariant catVariant = Registry.CAT_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));
+                    CatVariant catVariant = Registries.CAT_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));
                     if (catVariant != null)
                         entity.setVariant(catVariant);
                     break;

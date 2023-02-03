@@ -4,10 +4,11 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.block.JigsawBlock;
 import net.minecraft.block.entity.JigsawBlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -59,7 +60,7 @@ public abstract class JigsawBlockEntityMixin extends BlockEntityMixin implements
                     this.target = new Identifier(nbt.getString("target"));
                     break;
                 case "pool":
-                    this.pool = RegistryKey.of(Registry.STRUCTURE_POOL_KEY, new Identifier(nbt.getString("pool")));
+                    this.pool = RegistryKey.of(RegistryKeys.TEMPLATE_POOL, new Identifier(nbt.getString("pool")));
                     break;
                 case "final_state":
                     this.finalState = nbt.getString("final_state");

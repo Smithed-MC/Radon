@@ -16,9 +16,10 @@ public abstract class RabbitEntityMixin extends AnimalEntityMixin implements ICu
         RabbitEntity entity = ((RabbitEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "RabbitType":
-                    nbt.putInt("RabbitType", entity.getRabbitType());
-                    break;
+                //TODO: access private id field
+                //case "RabbitType":
+                //    nbt.putInt("RabbitType", this.getVariant().id);
+                //    break;
                 case "MoreCarrotTicks":
                     nbt.putInt("MoreCarrotTicks", this.moreCarrotTicks);
                     break;
@@ -37,7 +38,7 @@ public abstract class RabbitEntityMixin extends AnimalEntityMixin implements ICu
                 return false;
             switch (topLevelNbt) {
                 case "RabbitType":
-                    entity.setRabbitType(nbt.getInt("RabbitType"));
+                    entity.setVariant(RabbitEntity.RabbitType.byId(nbt.getInt("RabbitType")));
                     break;
                 case "MoreCarrotTicks":
                     this.moreCarrotTicks = nbt.getInt("MoreCarrotTicks");

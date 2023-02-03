@@ -1,22 +1,13 @@
 package dev.smithed.radon.mixin.entity;
 
-import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
-import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.passive.FoxEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
-import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Iterator;
 import java.util.List;
@@ -28,7 +19,6 @@ public abstract class FoxEntityMixin extends AnimalEntityMixin implements ICusto
     @Shadow abstract List<UUID> getTrustedUuids();
     @Shadow abstract void addTrustedUuid(@Nullable UUID uuid);
     @Shadow abstract void setSleeping(boolean sleeping);
-    @Shadow abstract void setType(FoxEntity.Type type);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -52,7 +42,7 @@ public abstract class FoxEntityMixin extends AnimalEntityMixin implements ICusto
                     nbt.putBoolean("Sleeping", entity.isSleeping());
                     break;
                 case "Type":
-                    nbt.putString("Type", entity.getFoxType().getKey());
+                    nbt.putString("Type", entity.getVariant().asString());
                     break;
                 case "Sitting":
                     nbt.putBoolean("Sitting", entity.isSitting());
@@ -84,7 +74,7 @@ public abstract class FoxEntityMixin extends AnimalEntityMixin implements ICusto
                     this.setSleeping(nbt.getBoolean("Sleeping"));
                     break;
                 case "Type":
-                    this.setType(FoxEntity.Type.byName(nbt.getString("Type")));
+                    entity.setVariant(FoxEntity.Type.byName(nbt.getString("Type")));
                     break;
                 case "Sitting":
                     entity.setSitting(nbt.getBoolean("Sitting"));

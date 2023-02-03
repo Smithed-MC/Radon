@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(HorseEntity.class)
 public abstract class HorseEntityMixin extends AbstractHorseEntityMixin implements ICustomNBTMixin {
 
-    @Shadow abstract int getVariant();
-    @Shadow abstract void setVariant(int variant);
+    @Shadow abstract int getHorseVariant();
+    @Shadow abstract void setHorseVariant(int variant);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -19,7 +19,7 @@ public abstract class HorseEntityMixin extends AbstractHorseEntityMixin implemen
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "Variant":
-                    nbt.putInt("Variant", this.getVariant());
+                    nbt.putInt("Variant", this.getHorseVariant());
                     break;
                 case "ArmorItem":
                     if (!this.items.getStack(1).isEmpty())
@@ -40,7 +40,7 @@ public abstract class HorseEntityMixin extends AbstractHorseEntityMixin implemen
                 return false;
             switch (topLevelNbt) {
                 case "Variant":
-                    this.setVariant(nbt.getInt("Variant"));
+                    this.setHorseVariant(nbt.getInt("Variant"));
                     break;
                 case "ArmorItem":
                     if (nbt.contains("ArmorItem", 10)) {

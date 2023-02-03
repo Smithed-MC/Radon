@@ -4,9 +4,9 @@ import com.mojang.datafixers.DataFixer;
 import dev.smithed.radon.mixin_interface.IMinecraftServerExtender;
 import dev.smithed.radon.utils.NBTUtils;
 import net.minecraft.resource.*;
+import net.minecraft.registry.tag.TagManagerLoader;
 import net.minecraft.server.*;
 import net.minecraft.server.command.CommandOutput;
-import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.ApiServices;
 import net.minecraft.util.thread.ReentrantThreadExecutor;
 import net.minecraft.world.SaveProperties;
@@ -42,8 +42,7 @@ public abstract class MinecraftServerMixin extends ReentrantThreadExecutor<Serve
      */
     @Inject(method = "<init>(Ljava/lang/Thread;Lnet/minecraft/world/level/storage/LevelStorage$Session;Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/server/SaveLoader;Ljava/net/Proxy;Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/util/ApiServices;Lnet/minecraft/server/WorldGenerationProgressListenerFactory;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     private void radon_init(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo cr) {
-        if (this.saveProperties.getGeneratorOptions().getDimensions().contains(DimensionOptions.OVERWORLD))
-            this.constructEntityTypes(this.getDatapackTagManager());
+        this.constructEntityTypes(this.getDatapackTagManager());
     }
 
     /**

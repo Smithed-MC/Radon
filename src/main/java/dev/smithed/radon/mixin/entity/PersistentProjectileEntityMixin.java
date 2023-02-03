@@ -4,9 +4,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -52,7 +53,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
                     nbt.putByte("PierceLevel", entity.getPierceLevel());
                     break;
                 case "SoundEvent":
-                    nbt.putString("SoundEvent", Registry.SOUND_EVENT.getId(this.sound).toString());
+                    nbt.putString("SoundEvent", Registries.SOUND_EVENT.getId(this.sound).toString());
                     break;
                 case "ShotFromCrossbow":
                     nbt.putBoolean("ShotFromCrossbow", entity.isShotFromCrossbow());
@@ -76,7 +77,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
                     break;
                 case "inBlockState":
                     if (nbt.contains("inBlockState", 10))
-                        this.inBlockState = NbtHelper.toBlockState(nbt.getCompound("inBlockState"));
+                        this.inBlockState = NbtHelper.toBlockState(this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK), nbt.getCompound("inBlockState"));
                     break;
                 case "shake":
                     this.shake = nbt.getByte("shake") & 255;
@@ -99,7 +100,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
                     break;
                 case "SoundEvent":
                     if (nbt.contains("SoundEvent", 8))
-                        this.sound = (SoundEvent)Registry.SOUND_EVENT.getOrEmpty(new Identifier(nbt.getString("SoundEvent"))).orElse(this.getHitSound());
+                        this.sound = Registries.SOUND_EVENT.getOrEmpty(new Identifier(nbt.getString("SoundEvent"))).orElse(this.getHitSound());
                     break;
                 case "ShotFromCrossbow":
                     entity.setShotFromCrossbow(nbt.getBoolean("ShotFromCrossbow"));

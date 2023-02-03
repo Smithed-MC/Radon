@@ -14,10 +14,10 @@ public abstract class PandaEntityMixin extends AnimalEntityMixin implements ICus
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "MainGene":
-                    nbt.putString("MainGene", entity.getMainGene().getName());
+                    nbt.putString("MainGene", entity.getMainGene().asString());
                     break;
                 case "HiddenGene":
-                    nbt.putString("HiddenGene", entity.getHiddenGene().getName());
+                    nbt.putString("HiddenGene", entity.getHiddenGene().asString());
                     break;
                 default:
                     return false;

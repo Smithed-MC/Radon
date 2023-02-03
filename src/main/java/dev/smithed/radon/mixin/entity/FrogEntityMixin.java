@@ -4,8 +4,8 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.passive.FrogEntity;
 import net.minecraft.entity.passive.FrogVariant;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(FrogEntity.class)
@@ -17,7 +17,7 @@ public abstract class FrogEntityMixin extends AnimalEntityMixin implements ICust
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "AngerTime":
-                    nbt.putString("variant", Registry.FROG_VARIANT.getId(entity.getVariant()).toString());
+                    nbt.putString("variant", Registries.FROG_VARIANT.getId(entity.getVariant()).toString());
                     break;
                 default:
                     return false;
@@ -34,7 +34,7 @@ public abstract class FrogEntityMixin extends AnimalEntityMixin implements ICust
                 return false;
             switch (topLevelNbt) {
                 case "variant":
-                    FrogVariant frogVariant = (FrogVariant)Registry.FROG_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));
+                    FrogVariant frogVariant = Registries.FROG_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));
                     if (frogVariant != null)
                         entity.setVariant(frogVariant);
                     break;

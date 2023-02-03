@@ -6,7 +6,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
-import net.minecraft.tag.BlockTags;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.BlockTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -58,7 +59,7 @@ public abstract class FallingBlockEntityMixin extends EntityMixin implements ICu
             return false;
         switch (topLevelNbt) {
             case "BlockState":
-                this.block = NbtHelper.toBlockState(nbt.getCompound("BlockState"));
+                this.block = NbtHelper.toBlockState(this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK), nbt.getCompound("BlockState"));
                 if (this.block.isAir())
                     this.block = Blocks.SAND.getDefaultState();
                 break;

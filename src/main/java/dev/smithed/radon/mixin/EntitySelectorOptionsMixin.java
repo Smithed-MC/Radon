@@ -12,11 +12,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.StringNbtReader;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.tag.TagKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -93,11 +94,11 @@ public class EntitySelectorOptionsMixin {
 
         putOption("type", (reader) -> {
             reader.setSuggestionProvider((builder, consumer) -> {
-                CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.getIds(), builder, String.valueOf('!'));
-                CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.streamTags().map(TagKey::id), builder, "!#");
+                CommandSource.suggestIdentifiers(Registries.ENTITY_TYPE.getIds(), builder, String.valueOf('!'));
+                CommandSource.suggestIdentifiers(Registries.ENTITY_TYPE.streamTags().map(TagKey::id), builder, "!#");
                 if (!reader.excludesEntityType()) {
-                    CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.getIds(), builder);
-                    CommandSource.suggestIdentifiers(Registry.ENTITY_TYPE.streamTags().map(TagKey::id), builder, String.valueOf('#'));
+                    CommandSource.suggestIdentifiers(Registries.ENTITY_TYPE.getIds(), builder);
+                    CommandSource.suggestIdentifiers(Registries.ENTITY_TYPE.streamTags().map(TagKey::id), builder, String.valueOf('#'));
                 }
 
                 return builder.buildFuture();
@@ -113,7 +114,7 @@ public class EntitySelectorOptionsMixin {
                 }
 
                 if (reader.readTagCharacter()) {
-                    TagKey<EntityType<?>> tagKey = TagKey.of(Registry.ENTITY_TYPE_KEY, Identifier.fromCommandInput(reader.getReader()));
+                    TagKey<EntityType<?>> tagKey = TagKey.of(RegistryKeys.ENTITY_TYPE, Identifier.fromCommandInput(reader.getReader()));
                     if(Radon.CONFIG.entitySelectorOptimizations && reader instanceof IEntitySelectorReaderExtender entityext) {
                         entityext.getSelectorContainer().type = tagKey.id().toString();
                         entityext.getSelectorContainer().isTypeTag = true;
@@ -122,7 +123,7 @@ public class EntitySelectorOptionsMixin {
                     reader.setPredicate((entity) -> entity.getType().isIn(tagKey) != bl);
                 } else {
                     Identifier identifier = Identifier.fromCommandInput(reader.getReader());
-                    EntityType<?> entityType = (EntityType)Registry.ENTITY_TYPE.getOrEmpty(identifier).orElseThrow(() -> {
+                    EntityType<?> entityType = (EntityType)Registries.ENTITY_TYPE.getOrEmpty(identifier).orElseThrow(() -> {
                         reader.getReader().setCursor(i);
                         return EntitySelectorOptions.INVALID_TYPE_EXCEPTION.createWithContext(reader.getReader(), identifier.toString());
                     });

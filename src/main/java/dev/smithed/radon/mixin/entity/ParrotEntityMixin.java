@@ -13,9 +13,10 @@ public abstract class ParrotEntityMixin extends TameableEntityMixin implements I
         ParrotEntity entity = ((ParrotEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Variant":
-                    nbt.putInt("Variant", entity.getVariant());
-                    break;
+                //TODO: access private id field
+                //case "Variant":
+                //    nbt.putInt("Variant", entity.getVariant().id);
+                //    break;
                 default:
                     return false;
             }
@@ -31,7 +32,7 @@ public abstract class ParrotEntityMixin extends TameableEntityMixin implements I
                 return false;
             switch (topLevelNbt) {
                 case "Variant":
-                    entity.setVariant(nbt.getInt("Variant"));
+                    entity.setVariant(ParrotEntity.Variant.byIndex(nbt.getInt("Variant")));
                     break;
                 default:
                     return false;
