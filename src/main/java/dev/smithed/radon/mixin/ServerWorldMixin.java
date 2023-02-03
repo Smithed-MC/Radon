@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.TypeFilter;
+import net.minecraft.util.function.LazyIterationConsumer;
 import net.minecraft.world.entity.EntityIndex;
 import net.minecraft.world.entity.EntityLookup;
 import org.spongepowered.asm.mixin.Final;
@@ -28,23 +29,29 @@ public abstract class ServerWorldMixin implements IServerWorldExtender {
 
     @Override
     public <T extends Entity> List<? extends T> getEntitiesByTag(TypeFilter<Entity, T> filter, Predicate<? super T> predicate, SelectorContainer selector) {
-        if(Radon.CONFIG.entitySelectorOptimizations && this.getEntityLookup() instanceof ISimpleEntityLookupExtender lookup && this.server instanceof IMinecraftServerExtender server) {
-            if(selector.isTypeTag) {
-                selector.entityTypes = server.getEntityTagEntries(selector.type);
-                if(selector.entityTypes == null)
-                    return getEntitiesByType(filter, predicate);
-            }
 
-            List<T> list = Lists.newArrayList();
-            lookup.forEachTaggedEntity(filter, (entity) -> {
-                if(predicate.test((T)entity)) {
-                    list.add((T)entity);
+        try {
+            if (Radon.CONFIG.entitySelectorOptimizations && this.getEntityLookup() instanceof ISimpleEntityLookupExtender lookup && this.server instanceof IMinecraftServerExtender server) {
+                if (selector.isTypeTag) {
+                    selector.entityTypes = server.getEntityTagEntries(selector.type);
+                    if (selector.entityTypes == null)
+                        return getEntitiesByType(filter, predicate);
                 }
-                return null;
-            }, selector);
-            return list;
+
+                List<T> list = Lists.newArrayList();
+                lookup.forEachTaggedEntity(filter, (entity) -> {
+                    if (predicate.test((T) entity)) {
+                        list.add((T) entity);
+                    }
+                    return LazyIterationConsumer.NextIteration.CONTINUE;
+                }, selector);
+                return list;
+            }
+            return getEntitiesByType(filter, predicate);
+        } catch(Exception e) {
+            e.printStackTrace();
+            return null;
         }
-        return getEntitiesByType(filter, predicate);
     }
 
     @Override

@@ -42,9 +42,7 @@ public abstract class MinecraftServerMixin extends ReentrantThreadExecutor<Serve
      */
     @Inject(method = "<init>(Ljava/lang/Thread;Lnet/minecraft/world/level/storage/LevelStorage$Session;Lnet/minecraft/resource/ResourcePackManager;Lnet/minecraft/server/SaveLoader;Ljava/net/Proxy;Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/util/ApiServices;Lnet/minecraft/server/WorldGenerationProgressListenerFactory;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     private void radon_init(Thread serverThread, LevelStorage.Session session, ResourcePackManager dataPackManager, SaveLoader saveLoader, Proxy proxy, DataFixer dataFixer, ApiServices apiServices, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo cr) {
-        //TODO: Verify what this line is supposed to do
-        //if (this.saveProperties.getGeneratorOptions().getDimensions().contains(DimensionOptions.OVERWORLD))
-            this.constructEntityTypes(this.getDatapackTagManager());
+        this.constructEntityTypes(this.getDatapackTagManager());
     }
 
     /**
@@ -60,7 +58,6 @@ public abstract class MinecraftServerMixin extends ReentrantThreadExecutor<Serve
     }
 
     private void constructEntityTypes(TagManagerLoader tags) {
-        System.out.println("Rebuilding entity type tag cache");
         this.entityTypes.clear();
         for(TagManagerLoader.RegistryTags<?> tag: tags.getRegistryTags()) {
             final String key = tag.key().getValue().toString();

@@ -140,6 +140,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
                 }
             }));
         } else {
+            System.out.println("Flag 1");
             this.forEach(filter, action);
         }
     }
