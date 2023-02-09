@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "radon",
-  "version": "0.3.3",
+  "version": "${mod_version}",
 
   "name": "Radon",
   "description": "Applied targets optimizations to Minecraft Commands.",
@@ -27,9 +27,9 @@
     "modid.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.6",
+    "fabricloader": ">=0.14.13",
     "fabric": "*",
-    "minecraft": "~1.19",
+    "minecraft": "1.19.3",
     "java": ">=17"
   },
   "suggests": {
