@@ -14,12 +14,10 @@ public abstract class SpellCastingIllagerEntityMixin extends RaiderEntityMixin {
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SpellcastingIllagerEntity entity = ((SpellcastingIllagerEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "SpellTicks":
-                    nbt.putInt("SpellTicks", this.spellTicks);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("SpellTicks")) {
+                nbt.putInt("SpellTicks", this.spellTicks);
+            } else {
+                return false;
             }
         }
         return true;
@@ -31,12 +29,10 @@ public abstract class SpellCastingIllagerEntityMixin extends RaiderEntityMixin {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "SpellTicks":
-                    this.spellTicks = nbt.getInt("SpellTicks");
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("SpellTicks")) {
+                this.spellTicks = nbt.getInt("SpellTicks");
+            } else {
+                return false;
             }
         }
         return true;

@@ -27,12 +27,12 @@
     "modid.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.13",
+    "fabricloader": ">=0.14.19",
     "fabric": "*",
-    "minecraft": "1.19.3",
+    "minecraft": "1.19.4",
     "java": ">=17"
   },
   "suggests": {
-    "lithium": ">=0.8.0"
+    "lithium": ">=0.11.0"
   }
 }

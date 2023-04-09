@@ -37,62 +37,27 @@ public abstract class StructureBlockEntityMixin extends BlockEntityMixin impleme
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "name":
-                    nbt.putString("name", this.getTemplateName());
-                    break;
-                case "author":
-                    nbt.putString("author", this.author);
-                    break;
-                case "metadata":
-                    nbt.putString("metadata", this.metadata);
-                    break;
-                case "posX":
-                    nbt.putInt("posX", this.offset.getX());
-                    break;
-                case "posY":
-                    nbt.putInt("posY", this.offset.getY());
-                    break;
-                case "posZ":
-                    nbt.putInt("posZ", this.offset.getZ());
-                    break;
-                case "sizeX":
-                    nbt.putInt("sizeX", this.size.getX());
-                    break;
-                case "sizeY":
-                    nbt.putInt("sizeY", this.size.getY());
-                    break;
-                case "sizeZ":
-                    nbt.putInt("sizeZ", this.size.getZ());
-                    break;
-                case "rotation":
-                    nbt.putString("rotation", this.rotation.toString());
-                    break;
-                case "mirror":
-                    nbt.putString("mirror", this.mirror.toString());
-                    break;
-                case "mode":
-                    nbt.putString("mode", this.mode.toString());
-                    break;
-                case "ignoreEntities":
-                    nbt.putBoolean("ignoreEntities", this.ignoreEntities);
-                    break;
-                case "powered":
-                    nbt.putBoolean("powered", this.powered);
-                    break;
-                case "showair":
-                    nbt.putBoolean("showair", this.showAir);
-                    break;
-                case "showboundingbox":
-                    nbt.putBoolean("showboundingbox", this.showBoundingBox);
-                    break;
-                case "integrity":
-                    nbt.putFloat("integrity", this.integrity);
-                    break;
-                case "seed":
-                    nbt.putLong("seed", this.seed);
-                    break;
-                default:
+                case "name" -> nbt.putString("name", this.getTemplateName());
+                case "author" -> nbt.putString("author", this.author);
+                case "metadata" -> nbt.putString("metadata", this.metadata);
+                case "posX" -> nbt.putInt("posX", this.offset.getX());
+                case "posY" -> nbt.putInt("posY", this.offset.getY());
+                case "posZ" -> nbt.putInt("posZ", this.offset.getZ());
+                case "sizeX" -> nbt.putInt("sizeX", this.size.getX());
+                case "sizeY" -> nbt.putInt("sizeY", this.size.getY());
+                case "sizeZ" -> nbt.putInt("sizeZ", this.size.getZ());
+                case "rotation" -> nbt.putString("rotation", this.rotation.toString());
+                case "mirror" -> nbt.putString("mirror", this.mirror.toString());
+                case "mode" -> nbt.putString("mode", this.mode.toString());
+                case "ignoreEntities" -> nbt.putBoolean("ignoreEntities", this.ignoreEntities);
+                case "powered" -> nbt.putBoolean("powered", this.powered);
+                case "showair" -> nbt.putBoolean("showair", this.showAir);
+                case "showboundingbox" -> nbt.putBoolean("showboundingbox", this.showBoundingBox);
+                case "integrity" -> nbt.putFloat("integrity", this.integrity);
+                case "seed" -> nbt.putLong("seed", this.seed);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -104,76 +69,57 @@ public abstract class StructureBlockEntityMixin extends BlockEntityMixin impleme
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "name":
-                    this.setTemplateName(nbt.getString("name"));
-                    break;
-                case "author":
-                    this.author = nbt.getString("author");
-                    break;
-                case "metadata":
-                    this.metadata = nbt.getString("metadata");
-                    break;
-                case "posX":
-                case "posY":
-                case "posZ":
+                case "name" -> this.setTemplateName(nbt.getString("name"));
+                case "author" -> this.author = nbt.getString("author");
+                case "metadata" -> this.metadata = nbt.getString("metadata");
+                case "posX", "posY", "posZ" -> {
                     int i = nbt.contains("posX") ? MathHelper.clamp(nbt.getInt("posX"), -48, 48) : this.offset.getX();
                     int j = nbt.contains("posY") ? MathHelper.clamp(nbt.getInt("posY"), -48, 48) : this.offset.getY();
                     int k = nbt.contains("posZ") ? MathHelper.clamp(nbt.getInt("posZ"), -48, 48) : this.offset.getZ();
                     this.offset = new BlockPos(i, j, k);
-                    break;
-                case "sizeX":
-                case "sizeY":
-                case "sizeZ":
+                }
+                case "sizeX", "sizeY", "sizeZ" -> {
                     int l = nbt.contains("posX") ? MathHelper.clamp(nbt.getInt("posX"), 0, 48) : this.size.getX();
                     int m = nbt.contains("posY") ? MathHelper.clamp(nbt.getInt("posY"), 0, 48) : this.size.getY();
                     int n = nbt.contains("posZ") ? MathHelper.clamp(nbt.getInt("posZ"), 0, 48) : this.size.getZ();
                     this.size = new Vec3i(l, m, n);
-                    break;
-                case "rotation":
+                }
+                case "rotation" -> {
                     try {
                         this.rotation = BlockRotation.valueOf(nbt.getString("rotation"));
                     } catch (IllegalArgumentException var11) {
                         this.rotation = BlockRotation.NONE;
                     }
-                    break;
-                case "mirror":
+                }
+                case "mirror" -> {
                     try {
                         this.mirror = BlockMirror.valueOf(nbt.getString("mirror"));
                     } catch (IllegalArgumentException var10) {
                         this.mirror = BlockMirror.NONE;
                     }
-                    break;
-                case "mode":
+                }
+                case "mode" -> {
                     try {
                         this.mode = StructureBlockMode.valueOf(nbt.getString("mode"));
                     } catch (IllegalArgumentException var9) {
                         this.mode = StructureBlockMode.DATA;
                     }
-                    break;
-                case "ignoreEntities":
-                    this.ignoreEntities = nbt.getBoolean("ignoreEntities");
-                    break;
-                case "powered":
-                    this.powered = nbt.getBoolean("powered");
-                    break;
-                case "showair":
-                    this.showAir = nbt.getBoolean("showair");
-                    break;
-                case "showboundingbox":
-                    this.showBoundingBox = nbt.getBoolean("showboundingbox");
-                    break;
-                case "integrity":
+                }
+                case "ignoreEntities" -> this.ignoreEntities = nbt.getBoolean("ignoreEntities");
+                case "powered" -> this.powered = nbt.getBoolean("powered");
+                case "showair" -> this.showAir = nbt.getBoolean("showair");
+                case "showboundingbox" -> this.showBoundingBox = nbt.getBoolean("showboundingbox");
+                case "integrity" -> {
                     if (nbt.contains("integrity")) {
                         this.integrity = nbt.getFloat("integrity");
                     } else {
                         this.integrity = 1.0F;
                     }
-                    break;
-                case "seed":
-                    this.seed = nbt.getLong("seed");
-                    break;
-                default:
+                }
+                case "seed" -> this.seed = nbt.getLong("seed");
+                default -> {
                     return false;
+                }
             }
             this.updateBlockMode();
         }

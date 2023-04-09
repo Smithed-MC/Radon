@@ -15,12 +15,10 @@ public abstract class FireballEntityMixin extends AbstractFireballEntityMixin im
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FireballEntity entity = ((FireballEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "ExplosionPower":
-                    nbt.putByte("ExplosionPower", (byte)this.explosionPower);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("ExplosionPower")) {
+                nbt.putByte("ExplosionPower", (byte) this.explosionPower);
+            } else {
+                return false;
             }
         }
         return true;
@@ -32,13 +30,11 @@ public abstract class FireballEntityMixin extends AbstractFireballEntityMixin im
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "ExplosionPower":
-                    if (nbt.contains("ExplosionPower", 99))
-                        this.explosionPower = nbt.getByte("ExplosionPower");
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("ExplosionPower")) {
+                if (nbt.contains("ExplosionPower", 99))
+                    this.explosionPower = nbt.getByte("ExplosionPower");
+            } else {
+                return false;
             }
         }
         return true;

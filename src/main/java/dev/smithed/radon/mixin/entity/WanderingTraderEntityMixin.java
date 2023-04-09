@@ -18,16 +18,15 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntityMixin {
         WanderingTraderEntity entity = ((WanderingTraderEntity)(Object)this);
         if(!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "DespawnDelay":
-                    nbt.putInt("DespawnDelay", this.despawnDelay);
-                    break;
-                case "WanderTarget":
+                case "DespawnDelay" -> nbt.putInt("DespawnDelay", this.despawnDelay);
+                case "WanderTarget" -> {
                     if (this.wanderTarget != null) {
                         nbt.put("WanderTarget", NbtHelper.fromBlockPos(this.wanderTarget));
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -40,16 +39,17 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntityMixin {
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "DespawnDelay":
+                case "DespawnDelay" -> {
                     if (nbt.contains("DespawnDelay", 99))
                         this.despawnDelay = nbt.getInt("DespawnDelay");
-                    break;
-                case "WanderTarget":
+                }
+                case "WanderTarget" -> {
                     if (nbt.contains("WanderTarget"))
                         this.wanderTarget = NbtHelper.toBlockPos(nbt.getCompound("WanderTarget"));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         entity.setBreedingAge(Math.max(0, entity.getBreedingAge()));

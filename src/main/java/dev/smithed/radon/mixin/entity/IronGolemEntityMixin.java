@@ -13,15 +13,11 @@ public abstract class IronGolemEntityMixin extends MobEntityMixin implements ICu
         IronGolemEntity entity = ((IronGolemEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "AngerTime":
-                case "AngryAt":
-                    entity.writeAngerToNbt(nbt);
-                    break;
-                case "PlayerCreated":
-                    nbt.putBoolean("PlayerCreated", entity.isPlayerCreated());
-                    break;
-                default:
+                case "AngerTime", "AngryAt" -> entity.writeAngerToNbt(nbt);
+                case "PlayerCreated" -> nbt.putBoolean("PlayerCreated", entity.isPlayerCreated());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -34,15 +30,11 @@ public abstract class IronGolemEntityMixin extends MobEntityMixin implements ICu
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "PlayerCreated":
-                    entity.setPlayerCreated(nbt.getBoolean("PlayerCreated"));
-                    break;
-                case "AngerTime":
-                case "AngryAt":
-                    entity.readAngerFromNbt(this.world, nbt);
-                    break;
-                default:
+                case "PlayerCreated" -> entity.setPlayerCreated(nbt.getBoolean("PlayerCreated"));
+                case "AngerTime", "AngryAt" -> entity.readAngerFromNbt(this.world, nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;

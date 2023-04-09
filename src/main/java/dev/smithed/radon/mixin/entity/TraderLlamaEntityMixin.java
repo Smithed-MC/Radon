@@ -15,12 +15,10 @@ public abstract class TraderLlamaEntityMixin extends LlamaEntityMixin implements
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TraderLlamaEntity entity = ((TraderLlamaEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "DespawnDelay":
-                    nbt.putInt("DespawnDelay", this.despawnDelay);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("DespawnDelay")) {
+                nbt.putInt("DespawnDelay", this.despawnDelay);
+            } else {
+                return false;
             }
         }
         return true;
@@ -32,13 +30,11 @@ public abstract class TraderLlamaEntityMixin extends LlamaEntityMixin implements
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "DespawnDelay":
-                    if (nbt.contains("DespawnDelay", 99))
-                        this.despawnDelay = nbt.getInt("DespawnDelay");
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("DespawnDelay")) {
+                if (nbt.contains("DespawnDelay", 99))
+                    this.despawnDelay = nbt.getInt("DespawnDelay");
+            } else {
+                return false;
             }
         }
         return true;

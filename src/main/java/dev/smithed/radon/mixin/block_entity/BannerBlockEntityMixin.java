@@ -25,16 +25,17 @@ public abstract class BannerBlockEntityMixin extends BlockEntityMixin implements
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Patterns":
+                case "Patterns" -> {
                     if (this.patternListNbt != null)
                         nbt.put("Patterns", this.patternListNbt);
-                    break;
-                case "CustomName":
+                }
+                case "CustomName" -> {
                     if (this.customName != null)
                         nbt.putString("CustomName", Text.Serializer.toJson(this.customName));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -46,16 +47,17 @@ public abstract class BannerBlockEntityMixin extends BlockEntityMixin implements
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "CustomName":
+                case "CustomName" -> {
                     if (nbt.contains("CustomName", 8))
                         this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
-                    break;
-                case "Patterns":
+                }
+                case "Patterns" -> {
                     this.patternListNbt = nbt.getList("Patterns", 10);
                     this.patterns = null;
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -17,14 +17,12 @@ public abstract class CatEntityMixin extends TameableEntityMixin implements ICus
         CatEntity entity = ((CatEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "variant":
-                    nbt.putString("variant", Registries.CAT_VARIANT.getId(entity.getVariant()).toString());
-                    break;
-                case "CollarColor":
-                    nbt.putByte("CollarColor", (byte)entity.getCollarColor().getId());
-                    break;
-                default:
+                case "variant" ->
+                        nbt.putString("variant", Registries.CAT_VARIANT.getId(entity.getVariant()).toString());
+                case "CollarColor" -> nbt.putByte("CollarColor", (byte) entity.getCollarColor().getId());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -37,17 +35,18 @@ public abstract class CatEntityMixin extends TameableEntityMixin implements ICus
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "variant":
+                case "variant" -> {
                     CatVariant catVariant = Registries.CAT_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));
                     if (catVariant != null)
                         entity.setVariant(catVariant);
-                    break;
-                case "CollarColor":
+                }
+                case "CollarColor" -> {
                     if (nbt.contains("CollarColor", 99))
                         entity.setCollarColor(DyeColor.byId(nbt.getInt("CollarColor")));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

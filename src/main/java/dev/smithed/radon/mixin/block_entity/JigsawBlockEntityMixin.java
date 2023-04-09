@@ -25,23 +25,14 @@ public abstract class JigsawBlockEntityMixin extends BlockEntityMixin implements
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "name":
-                    nbt.putString("name", this.name.toString());
-                    break;
-                case "target":
-                    nbt.putString("target", this.target.toString());
-                    break;
-                case "pool":
-                    nbt.putString("pool", this.pool.getValue().toString());
-                    break;
-                case "final_state":
-                    nbt.putString("final_state", this.finalState);
-                    break;
-                case "joint":
-                    nbt.putString("joint", this.joint.asString());
-                    break;
-                default:
+                case "name" -> nbt.putString("name", this.name.toString());
+                case "target" -> nbt.putString("target", this.target.toString());
+                case "pool" -> nbt.putString("pool", this.pool.getValue().toString());
+                case "final_state" -> nbt.putString("final_state", this.finalState);
+                case "joint" -> nbt.putString("joint", this.joint.asString());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -53,23 +44,16 @@ public abstract class JigsawBlockEntityMixin extends BlockEntityMixin implements
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "name":
-                    this.name = new Identifier(nbt.getString("name"));
-                    break;
-                case "target":
-                    this.target = new Identifier(nbt.getString("target"));
-                    break;
-                case "pool":
-                    this.pool = RegistryKey.of(RegistryKeys.TEMPLATE_POOL, new Identifier(nbt.getString("pool")));
-                    break;
-                case "final_state":
-                    this.finalState = nbt.getString("final_state");
-                    break;
-                case "joint":
-                    this.joint = JigsawBlockEntity.Joint.byName(nbt.getString("joint")).orElseGet(() -> JigsawBlock.getFacing(this.getCachedState()).getAxis().isHorizontal() ? JigsawBlockEntity.Joint.ALIGNED : JigsawBlockEntity.Joint.ROLLABLE);
-                    break;
-                default:
+                case "name" -> this.name = new Identifier(nbt.getString("name"));
+                case "target" -> this.target = new Identifier(nbt.getString("target"));
+                case "pool" ->
+                        this.pool = RegistryKey.of(RegistryKeys.TEMPLATE_POOL, new Identifier(nbt.getString("pool")));
+                case "final_state" -> this.finalState = nbt.getString("final_state");
+                case "joint" ->
+                        this.joint = JigsawBlockEntity.Joint.byName(nbt.getString("joint")).orElseGet(() -> JigsawBlock.getFacing(this.getCachedState()).getAxis().isHorizontal() ? JigsawBlockEntity.Joint.ALIGNED : JigsawBlockEntity.Joint.ROLLABLE);
+                default -> {
                     return false;
+                }
             }
         }
         return true;

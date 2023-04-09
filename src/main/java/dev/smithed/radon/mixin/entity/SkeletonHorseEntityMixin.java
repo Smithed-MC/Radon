@@ -16,14 +16,11 @@ public abstract class SkeletonHorseEntityMixin extends AbstractHorseEntityMixin 
         SkeletonHorseEntity entity = ((SkeletonHorseEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "SkeletonTrap":
-                    nbt.putBoolean("SkeletonTrap", entity.isTrapped());
-                    break;
-                case "SkeletonTrapTime":
-                    nbt.putInt("SkeletonTrapTime", this.trapTime);
-                    break;
-                default:
+                case "SkeletonTrap" -> nbt.putBoolean("SkeletonTrap", entity.isTrapped());
+                case "SkeletonTrapTime" -> nbt.putInt("SkeletonTrapTime", this.trapTime);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -36,14 +33,11 @@ public abstract class SkeletonHorseEntityMixin extends AbstractHorseEntityMixin 
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "SkeletonTrap":
-                    entity.setTrapped(nbt.getBoolean("SkeletonTrap"));
-                    break;
-                case "SkeletonTrapTime":
-                    this.trapTime = nbt.getInt("SkeletonTrapTime");
-                    break;
-                default:
+                case "SkeletonTrap" -> entity.setTrapped(nbt.getBoolean("SkeletonTrap"));
+                case "SkeletonTrapTime" -> this.trapTime = nbt.getInt("SkeletonTrapTime");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -16,14 +16,11 @@ public abstract class PassiveEntityMixin extends MobEntityMixin implements ICust
         PassiveEntity entity = ((PassiveEntity)(Object)this);
         if(!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Age":
-                    nbt.putInt("Age", entity.getBreedingAge());
-                    break;
-                case "ForcedAge":
-                    nbt.putInt("ForcedAge", this.forcedAge);
-                    break;
-                default:
+                case "Age" -> nbt.putInt("Age", entity.getBreedingAge());
+                case "ForcedAge" -> nbt.putInt("ForcedAge", this.forcedAge);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -36,14 +33,11 @@ public abstract class PassiveEntityMixin extends MobEntityMixin implements ICust
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Age":
-                    entity.setBreedingAge(nbt.getInt("Age"));
-                    break;
-                case "ForcedAge":
-                    this.forcedAge = nbt.getInt("ForcedAge");
-                    break;
-                default:
+                case "Age" -> entity.setBreedingAge(nbt.getInt("Age"));
+                case "ForcedAge" -> this.forcedAge = nbt.getInt("ForcedAge");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

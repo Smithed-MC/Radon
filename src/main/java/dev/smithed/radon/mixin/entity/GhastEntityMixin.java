@@ -14,12 +14,10 @@ public abstract class GhastEntityMixin extends MobEntityMixin implements ICustom
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         GhastEntity entity = ((GhastEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "ExplosionPower":
-                    nbt.putByte("ExplosionPower", (byte)this.fireballStrength);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("ExplosionPower")) {
+                nbt.putByte("ExplosionPower", (byte) this.fireballStrength);
+            } else {
+                return false;
             }
         }
         return true;
@@ -31,13 +29,11 @@ public abstract class GhastEntityMixin extends MobEntityMixin implements ICustom
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "ExplosionPower":
-                    if (nbt.contains("ExplosionPower", 99))
-                        this.fireballStrength = nbt.getByte("ExplosionPower");
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("ExplosionPower")) {
+                if (nbt.contains("ExplosionPower", 99))
+                    this.fireballStrength = nbt.getByte("ExplosionPower");
+            } else {
+                return false;
             }
         }
         return true;

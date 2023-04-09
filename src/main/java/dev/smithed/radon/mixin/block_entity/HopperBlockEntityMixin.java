@@ -24,7 +24,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Items":
+                case "Items" -> {
                     if (this.lootTableId == null) {
                         int slot = NBTUtils.getSlot(path);
                         if (slot >= 0 && slot <= 4) {
@@ -41,20 +41,18 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
                             Inventories.writeNbt(nbt, this.inventory);
                         }
                     }
-                    break;
-                case "LootTable":
-                case "LootTableSeed":
+                }
+                case "LootTable", "LootTableSeed" -> {
                     if (this.lootTableId != null) {
                         nbt.putString("LootTable", this.lootTableId.toString());
                         if (this.lootTableSeed != 0L)
                             nbt.putLong("LootTableSeed", this.lootTableSeed);
                     }
-                    break;
-                case "TransferCooldown":
-                    nbt.putInt("TransferCooldown", this.transferCooldown);
-                    break;
-                default:
+                }
+                case "TransferCooldown" -> nbt.putInt("TransferCooldown", this.transferCooldown);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -66,22 +64,20 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Items":
+                case "Items" -> {
                     this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
                     Inventories.readNbt(nbt, this.inventory);
-                    break;
-                case "LootTable":
-                case "LootTableSeed":
+                }
+                case "LootTable", "LootTableSeed" -> {
                     if (nbt.contains("LootTable", 8)) {
                         this.lootTableId = new Identifier(nbt.getString("LootTable"));
                         this.lootTableSeed = nbt.getLong("LootTableSeed");
                     }
-                    break;
-                case "TransferCooldown":
-                    this.transferCooldown = nbt.getInt("TransferCooldown");
-                    break;
-                default:
+                }
+                case "TransferCooldown" -> this.transferCooldown = nbt.getInt("TransferCooldown");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

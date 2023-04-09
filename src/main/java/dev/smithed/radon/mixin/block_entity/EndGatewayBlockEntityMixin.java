@@ -20,19 +20,18 @@ public abstract class EndGatewayBlockEntityMixin extends BlockEntityMixin implem
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Age":
-                    nbt.putLong("Age", this.age);
-                    break;
-                case "ExitPortal":
+                case "Age" -> nbt.putLong("Age", this.age);
+                case "ExitPortal" -> {
                     if (this.exitPortalPos != null)
                         nbt.put("ExitPortal", NbtHelper.fromBlockPos(this.exitPortalPos));
-                    break;
-                case "ExactTeleport":
+                }
+                case "ExactTeleport" -> {
                     if (this.exactTeleport)
                         nbt.putBoolean("ExactTeleport", true);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -44,22 +43,19 @@ public abstract class EndGatewayBlockEntityMixin extends BlockEntityMixin implem
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Age":
-                    this.age = nbt.getLong("Age");
-                    break;
-                case "ExitPortal":
+                case "Age" -> this.age = nbt.getLong("Age");
+                case "ExitPortal" -> {
                     if (nbt.contains("ExitPortal", 10)) {
                         BlockPos blockPos = NbtHelper.toBlockPos(nbt.getCompound("ExitPortal"));
                         if (World.isValid(blockPos)) {
                             this.exitPortalPos = blockPos;
                         }
                     }
-                    break;
-                case "ExactTeleport":
-                    this.exactTeleport = nbt.getBoolean("ExactTeleport");
-                    break;
-                default:
+                }
+                case "ExactTeleport" -> this.exactTeleport = nbt.getBoolean("ExactTeleport");
+                default -> {
                     return false;
+                }
             }
 
         }

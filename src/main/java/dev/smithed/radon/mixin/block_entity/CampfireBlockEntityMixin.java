@@ -21,17 +21,12 @@ public abstract class CampfireBlockEntityMixin extends BlockEntityMixin implemen
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Items":
-                    Inventories.writeNbt(nbt, this.itemsBeingCooked, true);
-                    break;
-                case "CookingTimes":
-                    nbt.putIntArray("CookingTimes", this.cookingTimes);
-                    break;
-                case "CookingTotalTimes":
-                    nbt.putIntArray("CookingTotalTimes", this.cookingTotalTimes);
-                    break;
-                default:
+                case "Items" -> Inventories.writeNbt(nbt, this.itemsBeingCooked, true);
+                case "CookingTimes" -> nbt.putIntArray("CookingTimes", this.cookingTimes);
+                case "CookingTotalTimes" -> nbt.putIntArray("CookingTotalTimes", this.cookingTotalTimes);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -44,24 +39,25 @@ public abstract class CampfireBlockEntityMixin extends BlockEntityMixin implemen
                 return false;
             int[] is;
             switch (topLevelNbt) {
-                case "Items":
+                case "Items" -> {
                     this.itemsBeingCooked.clear();
                     Inventories.readNbt(nbt, this.itemsBeingCooked);
-                    break;
-                case "CookingTimes":
+                }
+                case "CookingTimes" -> {
                     if (nbt.contains("CookingTimes", 11)) {
                         is = nbt.getIntArray("CookingTimes");
                         System.arraycopy(is, 0, this.cookingTimes, 0, Math.min(this.cookingTotalTimes.length, is.length));
                     }
-                    break;
-                case "Tag":
+                }
+                case "Tag" -> {
                     if (nbt.contains("CookingTotalTimes", 11)) {
                         is = nbt.getIntArray("CookingTotalTimes");
                         System.arraycopy(is, 0, this.cookingTotalTimes, 0, Math.min(this.cookingTotalTimes.length, is.length));
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

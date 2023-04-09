@@ -15,12 +15,10 @@ public abstract class FrogEntityMixin extends AnimalEntityMixin implements ICust
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FrogEntity entity = ((FrogEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "AngerTime":
-                    nbt.putString("variant", Registries.FROG_VARIANT.getId(entity.getVariant()).toString());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("variant")) {
+                nbt.putString("variant", Registries.FROG_VARIANT.getId(entity.getVariant()).toString());
+            } else {
+                return false;
             }
         }
         return true;
@@ -32,14 +30,12 @@ public abstract class FrogEntityMixin extends AnimalEntityMixin implements ICust
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "variant":
-                    FrogVariant frogVariant = Registries.FROG_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));
-                    if (frogVariant != null)
-                        entity.setVariant(frogVariant);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("variant")) {
+                FrogVariant frogVariant = Registries.FROG_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));
+                if (frogVariant != null)
+                    entity.setVariant(frogVariant);
+            } else {
+                return false;
             }
         }
         return true;

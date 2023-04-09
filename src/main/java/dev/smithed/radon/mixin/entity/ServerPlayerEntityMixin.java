@@ -121,42 +121,35 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "enteredNetherPosition":
+                case "enteredNetherPosition" -> {
                     if (nbt.contains("enteredNetherPosition", 10)) {
                         NbtCompound nbtCompound = nbt.getCompound("enteredNetherPosition");
                         this.enteredNetherPos = new Vec3d(nbtCompound.getDouble("x"), nbtCompound.getDouble("y"), nbtCompound.getDouble("z"));
                     }
-                    break;
-                case "seenCredits":
-                    this.seenCredits = nbt.getBoolean("seenCredits");
-                    break;
-                case "recipeBook":
+                }
+                case "seenCredits" -> this.seenCredits = nbt.getBoolean("seenCredits");
+                case "recipeBook" -> {
                     if (nbt.contains("recipeBook", 10)) {
                         this.recipeBook.readNbt(nbt.getCompound("recipeBook"), entity.server.getRecipeManager());
                     }
-                    break;
-                case "SpawnForced":
-                    this.spawnForced = nbt.getBoolean("SpawnForced");
-                    break;
-                case "SpawnAngle":
-                    this.spawnAngle = nbt.getFloat("SpawnAngle");
-                    break;
-                case "SpawnDimension":
+                }
+                case "SpawnForced" -> this.spawnForced = nbt.getBoolean("SpawnForced");
+                case "SpawnAngle" -> this.spawnAngle = nbt.getFloat("SpawnAngle");
+                case "SpawnDimension" -> {
                     DataResult<RegistryKey<World>> var10001 = World.CODEC.parse(NbtOps.INSTANCE, nbt.get("SpawnDimension"));
                     Logger var10002 = Radon.LOGGER;
                     Objects.requireNonNull(var10002);
                     this.spawnPointDimension = var10001.resultOrPartial(var10002::error).orElse(World.OVERWORLD);
-                    break;
-                case "SpawnX":
-                case "SpawnY":
-                case "SpawnZ":
+                }
+                case "SpawnX", "SpawnY", "SpawnZ" -> {
                     int i = nbt.contains("SpawnX", 99) ? nbt.getInt("SpawnX") : this.spawnPointPosition.getX();
                     int j = nbt.contains("SpawnY", 99) ? nbt.getInt("SpawnY") : this.spawnPointPosition.getY();
                     int k = nbt.contains("SpawnZ", 99) ? nbt.getInt("SpawnZ") : this.spawnPointPosition.getZ();
                     this.spawnPointPosition = new BlockPos(i, j, k);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

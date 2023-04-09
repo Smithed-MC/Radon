@@ -59,27 +59,18 @@ public abstract class ShulkerBulletEntityMixin extends ProjectileEntityMixin imp
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Steps":
-                    this.stepCount = nbt.getInt("Steps");
-                    break;
-                case "TXD":
-                    this.targetX = nbt.getDouble("TXD");
-                    break;
-                case "TYD":
-                    this.targetY = nbt.getDouble("TYD");
-                    break;
-                case "TZD":
-                    this.targetZ = nbt.getDouble("TZD");
-                    break;
-                case "Dir":
+                case "Steps" -> this.stepCount = nbt.getInt("Steps");
+                case "TXD" -> this.targetX = nbt.getDouble("TXD");
+                case "TYD" -> this.targetY = nbt.getDouble("TYD");
+                case "TZD" -> this.targetZ = nbt.getDouble("TZD");
+                case "Dir" -> {
                     if (nbt.contains("Dir", 99))
                         this.direction = Direction.byId(nbt.getInt("Dir"));
-                    break;
-                case "Target":
-                    this.targetUuid = nbt.getUuid("Target");
-                    break;
-                default:
+                }
+                case "Target" -> this.targetUuid = nbt.getUuid("Target");
+                default -> {
                     return false;
+                }
             }
 
         }

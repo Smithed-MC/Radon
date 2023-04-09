@@ -15,20 +15,21 @@ public abstract class StorageMinecartEntityMixin extends AbstractMinecartEntityM
         StorageMinecartEntity entity = ((StorageMinecartEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "LootTable":
+                case "LootTable" -> {
                     if (entity.getLootTableId() != null)
                         nbt.putString("LootTable", entity.getLootTableId().toString());
-                    break;
-                case "LootTableSeed":
+                }
+                case "LootTableSeed" -> {
                     if (entity.getLootTableId() != null && entity.getLootTableSeed() != 0L)
                         nbt.putLong("LootTableSeed", entity.getLootTableSeed());
-                    break;
-                case "Items":
+                }
+                case "Items" -> {
                     if (entity.getLootTableId() == null)
                         Inventories.writeNbt(nbt, entity.getInventory());
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -41,18 +42,15 @@ public abstract class StorageMinecartEntityMixin extends AbstractMinecartEntityM
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Items":
-                    entity.readInventoryFromNbt(nbt);
-                    break;
-                case "LootTable":
+                case "Items" -> entity.readInventoryFromNbt(nbt);
+                case "LootTable" -> {
                     if (nbt.contains("LootTable", 8))
                         entity.setLootTableId(new Identifier(nbt.getString("LootTable")));
-                    break;
-                case "LootTableSeed":
-                    entity.setLootTableSeed(nbt.getLong("LootTableSeed"));
-                    break;
-                default:
+                }
+                case "LootTableSeed" -> entity.setLootTableSeed(nbt.getLong("LootTableSeed"));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

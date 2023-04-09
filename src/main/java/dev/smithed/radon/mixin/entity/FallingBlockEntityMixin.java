@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(FallingBlockEntity.class)
 public abstract class FallingBlockEntityMixin extends EntityMixin implements ICustomNBTMixin {
+
     @Shadow BlockState block;
     @Shadow int timeFalling;
     @Shadow boolean dropItem;
@@ -24,30 +25,19 @@ public abstract class FallingBlockEntityMixin extends EntityMixin implements ICu
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FallingBlockEntity entity = ((FallingBlockEntity) (Object) this);
         switch (topLevelNbt) {
-            case "BlockState":
-                nbt.put("BlockState", NbtHelper.fromBlockState(this.block));
-                break;
-            case "Time":
-                nbt.putInt("Time", this.timeFalling);
-                break;
-            case "DropItem":
-                nbt.putBoolean("DropItem", this.dropItem);
-                break;
-            case "HurtEntities":
-                nbt.putBoolean("HurtEntities", this.hurtEntities);
-                break;
-            case "FallHurtAmount":
-                nbt.putFloat("FallHurtAmount", this.fallHurtAmount);
-                break;
-            case "FallHurtMax":
-                nbt.putInt("FallHurtMax", this.fallHurtMax);
-                break;
-            case "TileEntityData":
+            case "BlockState" -> nbt.put("BlockState", NbtHelper.fromBlockState(this.block));
+            case "Time" -> nbt.putInt("Time", this.timeFalling);
+            case "DropItem" -> nbt.putBoolean("DropItem", this.dropItem);
+            case "HurtEntities" -> nbt.putBoolean("HurtEntities", this.hurtEntities);
+            case "FallHurtAmount" -> nbt.putFloat("FallHurtAmount", this.fallHurtAmount);
+            case "FallHurtMax" -> nbt.putInt("FallHurtMax", this.fallHurtMax);
+            case "TileEntityData" -> {
                 if (entity.blockEntityData != null)
                     nbt.put("TileEntityData", entity.blockEntityData);
-                break;
-            default:
+            }
+            default -> {
                 return false;
+            }
         }
         return true;
     }
@@ -58,15 +48,13 @@ public abstract class FallingBlockEntityMixin extends EntityMixin implements ICu
         if(!nbt.contains(topLevelNbt))
             return false;
         switch (topLevelNbt) {
-            case "BlockState":
+            case "BlockState" -> {
                 this.block = NbtHelper.toBlockState(this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK), nbt.getCompound("BlockState"));
                 if (this.block.isAir())
                     this.block = Blocks.SAND.getDefaultState();
-                break;
-            case "Time":
-                this.timeFalling = nbt.getInt("Time");
-                break;
-            case "HurtEntities":
+            }
+            case "Time" -> this.timeFalling = nbt.getInt("Time");
+            case "HurtEntities" -> {
                 if (nbt.contains("HurtEntities", 99)) {
                     this.hurtEntities = nbt.getBoolean("HurtEntities");
                     this.fallHurtAmount = nbt.getFloat("FallHurtAmount");
@@ -74,17 +62,18 @@ public abstract class FallingBlockEntityMixin extends EntityMixin implements ICu
                 } else if (this.block.isIn(BlockTags.ANVIL)) {
                     this.hurtEntities = true;
                 }
-                break;
-            case "DropItem":
+            }
+            case "DropItem" -> {
                 if (nbt.contains("DropItem", 99))
                     this.dropItem = nbt.getBoolean("DropItem");
-                break;
-            case "TileEntityData":
+            }
+            case "TileEntityData" -> {
                 if (nbt.contains("TileEntityData", 10))
                     entity.blockEntityData = nbt.getCompound("TileEntityData");
-                break;
-            default:
+            }
+            default -> {
                 return false;
+            }
         }
         return true;
     }

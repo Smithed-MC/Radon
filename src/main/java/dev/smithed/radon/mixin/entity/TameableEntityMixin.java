@@ -19,15 +19,14 @@ public abstract class TameableEntityMixin extends AnimalEntityMixin implements I
         TameableEntity entity = ((TameableEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Sitting":
-                    nbt.putBoolean("Sitting", this.sitting);
-                    break;
-                case "Owner":
+                case "Sitting" -> nbt.putBoolean("Sitting", this.sitting);
+                case "Owner" -> {
                     if (entity.getOwnerUuid() != null)
                         nbt.putUuid("Owner", entity.getOwnerUuid());
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -22,7 +22,7 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Items":
+                case "Items" -> {
                     if (this.lootTableId == null) {
                         int slot = NBTUtils.getSlot(path);
                         if (slot >= 0 && slot <= 26) {
@@ -39,17 +39,17 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
                             Inventories.writeNbt(nbt, this.inventory);
                         }
                     }
-                    break;
-                case "LootTable":
-                case "LootTableSeed":
+                }
+                case "LootTable", "LootTableSeed" -> {
                     if (this.lootTableId != null) {
                         nbt.putString("LootTable", this.lootTableId.toString());
                         if (this.lootTableSeed != 0L)
                             nbt.putLong("LootTableSeed", this.lootTableSeed);
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -61,21 +61,21 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Items":
+                case "Items" -> {
                     this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
                     if (!this.deserializeLootTable(nbt)) {
                         Inventories.readNbt(nbt, this.inventory);
                     }
-                    break;
-                case "LootTable":
-                case "LootTableSeed":
+                }
+                case "LootTable", "LootTableSeed" -> {
                     if (nbt.contains("LootTable", 8)) {
                         this.lootTableId = new Identifier(nbt.getString("LootTable"));
                         this.lootTableSeed = nbt.getLong("LootTableSeed");
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

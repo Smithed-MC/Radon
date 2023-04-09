@@ -27,26 +27,15 @@ public abstract class SignBlockEntityMixin extends BlockEntityMixin implements I
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "GlowingText":
-                    nbt.putBoolean("GlowingText", this.glowingText);
-                    break;
-                case "Color":
-                    nbt.putString("Color", this.textColor.getName());
-                    break;
-                case "Text1":
-                    writeSignLineToNbt(0, nbt);
-                    break;
-                case "Text2":
-                    writeSignLineToNbt(1, nbt);
-                    break;
-                case "Text3":
-                    writeSignLineToNbt(2, nbt);
-                    break;
-                case "Text4":
-                    writeSignLineToNbt(3, nbt);
-                    break;
-                default:
+                case "GlowingText" -> nbt.putBoolean("GlowingText", this.glowingText);
+                case "Color" -> nbt.putString("Color", this.textColor.getName());
+                case "Text1" -> writeSignLineToNbt(0, nbt);
+                case "Text2" -> writeSignLineToNbt(1, nbt);
+                case "Text3" -> writeSignLineToNbt(2, nbt);
+                case "Text4" -> writeSignLineToNbt(3, nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -59,30 +48,27 @@ public abstract class SignBlockEntityMixin extends BlockEntityMixin implements I
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Color":
-                    this.textColor = DyeColor.byName(nbt.getString("Color"), DyeColor.BLACK);
-                    break;
-                case "GlowingText":
-                    this.glowingText = nbt.getBoolean("GlowingText");
-                    break;
-                case "Text1":
+                case "Color" -> this.textColor = DyeColor.byName(nbt.getString("Color"), DyeColor.BLACK);
+                case "GlowingText" -> this.glowingText = nbt.getBoolean("GlowingText");
+                case "Text1" -> {
                     readSignLineFromNbt(0, nbt);
                     this.textsBeingEdited = null;
-                    break;
-                case "Text2":
+                }
+                case "Text2" -> {
                     readSignLineFromNbt(1, nbt);
                     this.textsBeingEdited = null;
-                    break;
-                case "Text3":
+                }
+                case "Text3" -> {
                     readSignLineFromNbt(2, nbt);
                     this.textsBeingEdited = null;
-                    break;
-                case "Text4":
+                }
+                case "Text4" -> {
                     readSignLineFromNbt(3, nbt);
                     this.textsBeingEdited = null;
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
 
         }

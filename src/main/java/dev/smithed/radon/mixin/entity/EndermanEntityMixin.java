@@ -16,17 +16,15 @@ public abstract class EndermanEntityMixin extends MobEntityMixin implements ICus
         EndermanEntity entity = ((EndermanEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "AngerTime":
-                case "AngryAt":
-                    entity.writeAngerToNbt(nbt);
-                    break;
-                case "carriedBlockState":
+                case "AngerTime", "AngryAt" -> entity.writeAngerToNbt(nbt);
+                case "carriedBlockState" -> {
                     BlockState blockState = entity.getCarriedBlock();
                     if (blockState != null)
                         nbt.put("carriedBlockState", NbtHelper.fromBlockState(blockState));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -39,7 +37,7 @@ public abstract class EndermanEntityMixin extends MobEntityMixin implements ICus
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "carriedBlockState":
+                case "carriedBlockState" -> {
                     BlockState blockState = null;
                     if (nbt.contains("carriedBlockState", 10)) {
                         blockState = NbtHelper.toBlockState(this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK), nbt.getCompound("carriedBlockState"));
@@ -48,13 +46,11 @@ public abstract class EndermanEntityMixin extends MobEntityMixin implements ICus
                         }
                     }
                     entity.setCarriedBlock(blockState);
-                    break;
-                case "AngryAt":
-                case "AngerTime":
-                    entity.readAngerFromNbt(this.world, nbt);
-                    break;
-                default:
+                }
+                case "AngryAt", "AngerTime" -> entity.readAngerFromNbt(this.world, nbt);
+                default -> {
                     return false;
+                }
             }
 
         }

@@ -17,12 +17,10 @@ public abstract class BatEntityMixin extends MobEntityMixin implements ICustomNB
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         BatEntity entity = ((BatEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "BatFlags":
-                    nbt.putByte("BatFlags", this.dataTracker.get(BAT_FLAGS));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("BatFlags")) {
+                nbt.putByte("BatFlags", this.dataTracker.get(BAT_FLAGS));
+            } else {
+                return false;
             }
         }
         return true;
@@ -34,12 +32,10 @@ public abstract class BatEntityMixin extends MobEntityMixin implements ICustomNB
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "BatFlags":
-                    nbt.putByte("BatFlags", this.dataTracker.get(BAT_FLAGS));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("BatFlags")) {
+                nbt.putByte("BatFlags", this.dataTracker.get(BAT_FLAGS));
+            } else {
+                return false;
             }
         }
         return true;

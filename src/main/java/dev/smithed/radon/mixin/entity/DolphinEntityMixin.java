@@ -14,23 +14,14 @@ public abstract class DolphinEntityMixin extends MobEntityMixin implements ICust
         DolphinEntity entity = ((DolphinEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "TreasurePosX":
-                    nbt.putInt("TreasurePosX", entity.getTreasurePos().getX());
-                    break;
-                case "TreasurePosY":
-                    nbt.putInt("TreasurePosY", entity.getTreasurePos().getY());
-                    break;
-                case "TreasurePosZ":
-                    nbt.putInt("TreasurePosZ", entity.getTreasurePos().getZ());
-                    break;
-                case "GotFish":
-                    nbt.putBoolean("GotFish", entity.hasFish());
-                    break;
-                case "Moistness":
-                    nbt.putInt("Moistness", entity.getMoistness());
-                    break;
-                default:
+                case "TreasurePosX" -> nbt.putInt("TreasurePosX", entity.getTreasurePos().getX());
+                case "TreasurePosY" -> nbt.putInt("TreasurePosY", entity.getTreasurePos().getY());
+                case "TreasurePosZ" -> nbt.putInt("TreasurePosZ", entity.getTreasurePos().getZ());
+                case "GotFish" -> nbt.putBoolean("GotFish", entity.hasFish());
+                case "Moistness" -> nbt.putInt("Moistness", entity.getMoistness());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -43,26 +34,23 @@ public abstract class DolphinEntityMixin extends MobEntityMixin implements ICust
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "TreasurePosX":
+                case "TreasurePosX" -> {
                     int i = nbt.getInt("TreasurePosX");
                     entity.setTreasurePos(new BlockPos(i, entity.getTreasurePos().getY(), entity.getTreasurePos().getZ()));
-                    break;
-                case "TreasurePosY":
+                }
+                case "TreasurePosY" -> {
                     int j = nbt.getInt("TreasurePosY");
                     entity.setTreasurePos(new BlockPos(entity.getTreasurePos().getX(), j, entity.getTreasurePos().getZ()));
-                    break;
-                case "TreasurePosZ":
+                }
+                case "TreasurePosZ" -> {
                     int k = nbt.getInt("TreasurePosZ");
                     entity.setTreasurePos(new BlockPos(entity.getTreasurePos().getX(), entity.getTreasurePos().getY(), k));
-                    break;
-                case "GotFish":
-                    entity.setHasFish(nbt.getBoolean("GotFish"));
-                    break;
-                case "Moistness":
-                    entity.setMoistness(nbt.getInt("Moistness"));
-                    break;
-                default:
+                }
+                case "GotFish" -> entity.setHasFish(nbt.getBoolean("GotFish"));
+                case "Moistness" -> entity.setMoistness(nbt.getInt("Moistness"));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -13,14 +13,11 @@ public abstract class ChickenEntityMixin extends AnimalEntityMixin implements IC
         ChickenEntity entity = ((ChickenEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "AngerTime":
-                    nbt.putBoolean("IsChickenJockey", entity.hasJockey);
-                    break;
-                case "AngryAt":
-                    nbt.putInt("EggLayTime", entity.eggLayTime);
-                    break;
-                default:
+                case "IsChickenJockey" -> nbt.putBoolean("IsChickenJockey", entity.hasJockey);
+                case "EggLayTime" -> nbt.putInt("EggLayTime", entity.eggLayTime);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -33,14 +30,11 @@ public abstract class ChickenEntityMixin extends AnimalEntityMixin implements IC
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "IsChickenJockey":
-                    entity.hasJockey = nbt.getBoolean("IsChickenJockey");
-                    break;
-                case "ChestedHorse":
-                    entity.eggLayTime = nbt.getInt("EggLayTime");
-                    break;
-                default:
+                case "IsChickenJockey" -> entity.hasJockey = nbt.getBoolean("IsChickenJockey");
+                case "ChestedHorse" -> entity.eggLayTime = nbt.getInt("EggLayTime");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

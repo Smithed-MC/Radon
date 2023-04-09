@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(CreeperEntity.class)
 public abstract class CreeperEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
+
     @Shadow int fuseTime = 30;
     @Shadow int explosionRadius = 3;
     @Shadow static TrackedData<Boolean> CHARGED;
@@ -18,22 +19,17 @@ public abstract class CreeperEntityMixin extends MobEntityMixin implements ICust
         CreeperEntity entity = ((CreeperEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "powered":
+                case "powered" -> {
                     if (this.dataTracker.get(CHARGED)) {
                         nbt.putBoolean("powered", true);
                     }
-                    break;
-                case "Fuse":
-                    nbt.putShort("Fuse", (short)this.fuseTime);
-                    break;
-                case "ExplosionRadius":
-                    nbt.putByte("ExplosionRadius", (byte)this.explosionRadius);
-                    break;
-                case "ignited":
-                    nbt.putBoolean("ignited", entity.isIgnited());
-                    break;
-                default:
+                }
+                case "Fuse" -> nbt.putShort("Fuse", (short) this.fuseTime);
+                case "ExplosionRadius" -> nbt.putByte("ExplosionRadius", (byte) this.explosionRadius);
+                case "ignited" -> nbt.putBoolean("ignited", entity.isIgnited());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -46,23 +42,22 @@ public abstract class CreeperEntityMixin extends MobEntityMixin implements ICust
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "powered":
-                    this.dataTracker.set(CHARGED, nbt.getBoolean("powered"));
-                    break;
-                case "Fuse":
+                case "powered" -> this.dataTracker.set(CHARGED, nbt.getBoolean("powered"));
+                case "Fuse" -> {
                     if (nbt.contains("Fuse", 99))
                         this.fuseTime = nbt.getShort("Fuse");
-                    break;
-                case "ExplosionRadius":
+                }
+                case "ExplosionRadius" -> {
                     if (nbt.contains("ExplosionRadius", 99))
                         this.explosionRadius = nbt.getByte("ExplosionRadius");
-                    break;
-                case "ignited":
+                }
+                case "ignited" -> {
                     if (nbt.getBoolean("ignited"))
                         entity.ignite();
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

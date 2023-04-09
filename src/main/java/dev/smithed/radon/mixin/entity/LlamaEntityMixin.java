@@ -22,15 +22,14 @@ public abstract class LlamaEntityMixin extends AbstractDonkeyEntityMixin impleme
                 //case "Variant":
                 //    nbt.putInt("Variant", entity.getVariant().id);
                 //    break;
-                case "Strength":
-                    nbt.putInt("Strength", entity.getStrength());
-                    break;
-                case "DecorItem":
+                case "Strength" -> nbt.putInt("Strength", entity.getStrength());
+                case "DecorItem" -> {
                     if (!this.items.getStack(1).isEmpty())
                         nbt.put("DecorItem", this.items.getStack(1).writeNbt(new NbtCompound()));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -43,19 +42,16 @@ public abstract class LlamaEntityMixin extends AbstractDonkeyEntityMixin impleme
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Strength":
-                    this.setStrength(nbt.getInt("Strength"));
-                    break;
-                case "Variant":
-                    entity.setVariant(LlamaEntity.Variant.byId(nbt.getInt("Variant")));
-                    break;
-                case "DecorItem":
+                case "Strength" -> this.setStrength(nbt.getInt("Strength"));
+                case "Variant" -> entity.setVariant(LlamaEntity.Variant.byId(nbt.getInt("Variant")));
+                case "DecorItem" -> {
                     if (nbt.contains("DecorItem", 10))
                         this.items.setStack(1, ItemStack.fromNbt(nbt.getCompound("DecorItem")));
                     this.updateSaddle();
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

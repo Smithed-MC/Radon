@@ -56,8 +56,8 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
      */
     @Inject(method = "remove", at = @At("HEAD"))
     private void radon_removeInject(T entity, CallbackInfo ci) {
-        if(entity instanceof Entity le && !le.getScoreboardTags().isEmpty()) {
-            le.getScoreboardTags().forEach(tag -> removeEntityFromTagMap(tag, entity));
+        if(entity instanceof Entity le && !le.getCommandTags().isEmpty()) {
+            le.getCommandTags().forEach(tag -> removeEntityFromTagMap(tag, entity));
         }
         if(entity instanceof Entity ent) {
             String name = NBTUtils.translationToTypeName(ent.getType().getTranslationKey());

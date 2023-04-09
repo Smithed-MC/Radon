@@ -44,7 +44,7 @@ public abstract class MobEntityMixin extends LivingEntityMixin implements ICusto
                 case "ArmorItems":
                     NbtList nbtList = new NbtList();
                     NbtCompound nbtCompound;
-                    for (Iterator var3 = this.armorItems.iterator(); var3.hasNext(); nbtList.add(nbtCompound)) {
+                    for (Iterator<ItemStack> var3 = this.armorItems.iterator(); var3.hasNext(); nbtList.add(nbtCompound)) {
                         ItemStack itemStack = (ItemStack) var3.next();
                         nbtCompound = new NbtCompound();
                         if (!itemStack.isEmpty()) {
@@ -56,7 +56,7 @@ public abstract class MobEntityMixin extends LivingEntityMixin implements ICusto
                 case "HandItems":
                     NbtList nbtList2 = new NbtList();
                     NbtCompound nbtCompound2;
-                    for (Iterator var11 = this.handItems.iterator(); var11.hasNext(); nbtList2.add(nbtCompound2)) {
+                    for (Iterator<ItemStack> var11 = this.handItems.iterator(); var11.hasNext(); nbtList2.add(nbtCompound2)) {
                         ItemStack itemStack2 = (ItemStack) var11.next();
                         nbtCompound2 = new NbtCompound();
                         if (!itemStack2.isEmpty()) {
@@ -137,64 +137,57 @@ public abstract class MobEntityMixin extends LivingEntityMixin implements ICusto
                 return false;
             NbtList nbtList;
             switch (topLevelNbt) {
-                case "CanPickUpLoot":
+                case "CanPickUpLoot" -> {
                     if (nbt.contains("CanPickUpLoot", 1))
                         entity.setCanPickUpLoot(nbt.getBoolean("CanPickUpLoot"));
-                    break;
-                case "PersistenceRequired":
-                    this.persistent = nbt.getBoolean("PersistenceRequired");
-                    break;
-                case "ArmorItems":
+                }
+                case "PersistenceRequired" -> this.persistent = nbt.getBoolean("PersistenceRequired");
+                case "ArmorItems" -> {
                     if (nbt.contains("ArmorItems", 9)) {
                         nbtList = nbt.getList("ArmorItems", 10);
-                        for(int i = 0; i < this.armorItems.size(); ++i) {
+                        for (int i = 0; i < this.armorItems.size(); ++i) {
                             this.armorItems.set(i, ItemStack.fromNbt(nbtList.getCompound(i)));
                         }
                     }
-                    break;
-                case "HandItems":
+                }
+                case "HandItems" -> {
                     if (nbt.contains("HandItems", 9)) {
                         nbtList = nbt.getList("HandItems", 10);
-                        for(int i = 0; i < this.handItems.size(); ++i) {
+                        for (int i = 0; i < this.handItems.size(); ++i) {
                             this.handItems.set(i, ItemStack.fromNbt(nbtList.getCompound(i)));
                         }
                     }
-                    break;
-                case "ArmorDropChances":
+                }
+                case "ArmorDropChances" -> {
                     if (nbt.contains("ArmorDropChances", 9)) {
                         nbtList = nbt.getList("ArmorDropChances", 5);
-                        for(int i = 0; i < nbtList.size(); ++i) {
+                        for (int i = 0; i < nbtList.size(); ++i) {
                             this.armorDropChances[i] = nbtList.getFloat(i);
                         }
                     }
-                    break;
-                case "HandDropChances":
+                }
+                case "HandDropChances" -> {
                     if (nbt.contains("HandDropChances", 9)) {
                         nbtList = nbt.getList("HandDropChances", 5);
-                        for(int i = 0; i < nbtList.size(); ++i) {
+                        for (int i = 0; i < nbtList.size(); ++i) {
                             this.handDropChances[i] = nbtList.getFloat(i);
                         }
                     }
-                    break;
-                case "Leash":
+                }
+                case "Leash" -> {
                     if (nbt.contains("Leash", 10))
                         this.leashNbt = nbt.getCompound("Leash");
-                    break;
-                case "LeftHanded":
-                    entity.setLeftHanded(nbt.getBoolean("LeftHanded"));
-                    break;
-                case "Tag":
+                }
+                case "LeftHanded" -> entity.setLeftHanded(nbt.getBoolean("LeftHanded"));
+                case "Tag" -> {
                     if (nbt.contains("DeathLootTable", 8))
                         this.lootTable = new Identifier(nbt.getString("DeathLootTable"));
-                    break;
-                case "DeathLootTableSeed":
-                    this.lootTableSeed = nbt.getLong("DeathLootTableSeed");
-                    break;
-                case "NoAI":
-                    entity.setAiDisabled(nbt.getBoolean("NoAI"));
-                    break;
-                default:
+                }
+                case "DeathLootTableSeed" -> this.lootTableSeed = nbt.getLong("DeathLootTableSeed");
+                case "NoAI" -> entity.setAiDisabled(nbt.getBoolean("NoAI"));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

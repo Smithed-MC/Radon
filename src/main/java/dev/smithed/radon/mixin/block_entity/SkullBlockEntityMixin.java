@@ -21,16 +21,14 @@ public abstract class SkullBlockEntityMixin extends BlockEntityMixin implements 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "SkullOwner":
-                    if (this.owner != null) {
-                        NbtCompound nbtCompound = new NbtCompound();
-                        NbtHelper.writeGameProfile(nbtCompound, this.owner);
-                        nbt.put("SkullOwner", nbtCompound);
-                    }
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("SkullOwner")) {
+                if (this.owner != null) {
+                    NbtCompound nbtCompound = new NbtCompound();
+                    NbtHelper.writeGameProfile(nbtCompound, this.owner);
+                    nbt.put("SkullOwner", nbtCompound);
+                }
+            } else {
+                return false;
             }
         }
         return true;
@@ -42,20 +40,21 @@ public abstract class SkullBlockEntityMixin extends BlockEntityMixin implements 
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "SkullOwner":
+                case "SkullOwner" -> {
                     if (nbt.contains("SkullOwner", 10))
                         this.setOwner(NbtHelper.toGameProfile(nbt.getCompound("SkullOwner")));
-                    break;
-                case "ExtraType":
+                }
+                case "ExtraType" -> {
                     if (nbt.contains("ExtraType", 8)) {
                         String string = nbt.getString("ExtraType");
                         if (!StringHelper.isEmpty(string)) {
                             this.setOwner(new GameProfile(null, string));
                         }
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -15,12 +15,10 @@ public abstract class GlowSquidEntityMixin extends MobEntityMixin implements ICu
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         GlowSquidEntity entity = ((GlowSquidEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "DarkTicksRemaining":
-                    nbt.putInt("DarkTicksRemaining", entity.getDarkTicksRemaining());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("DarkTicksRemaining")) {
+                nbt.putInt("DarkTicksRemaining", entity.getDarkTicksRemaining());
+            } else {
+                return false;
             }
         }
         return true;
@@ -32,12 +30,10 @@ public abstract class GlowSquidEntityMixin extends MobEntityMixin implements ICu
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "DarkTicksRemaining":
-                    this.setDarkTicksRemaining(nbt.getInt("DarkTicksRemaining"));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("DarkTicksRemaining")) {
+                this.setDarkTicksRemaining(nbt.getInt("DarkTicksRemaining"));
+            } else {
+                return false;
             }
         }
         return true;

@@ -18,6 +18,7 @@ import java.util.Set;
 
 @Mixin(ArrowEntity.class)
 public abstract class ArrowEntityMixin extends PersistentProjectileEntityMixin implements ICustomNBTMixin {
+
     @Shadow @Final Set<StatusEffectInstance> effects;
     @Shadow Potion potion;
     @Shadow boolean colorSet;
@@ -29,28 +30,27 @@ public abstract class ArrowEntityMixin extends PersistentProjectileEntityMixin i
         ArrowEntity entity = ((ArrowEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Potion":
+                case "Potion" -> {
                     if (this.potion != Potions.EMPTY)
                         nbt.putString("Potion", Registries.POTION.getId(this.potion).toString());
-                    break;
-                case "Color":
+                }
+                case "Color" -> {
                     if (this.colorSet)
                         nbt.putInt("Color", entity.getColor());
-                    break;
-                case "CustomPotionEffects":
+                }
+                case "CustomPotionEffects" -> {
                     if (!this.effects.isEmpty()) {
                         NbtList nbtList = new NbtList();
-                        Iterator var3 = this.effects.iterator();
 
-                        while(var3.hasNext()) {
-                            StatusEffectInstance statusEffectInstance = (StatusEffectInstance)var3.next();
+                        for (StatusEffectInstance statusEffectInstance : this.effects) {
                             nbtList.add(statusEffectInstance.writeNbt(new NbtCompound()));
                         }
                         nbt.put("CustomPotionEffects", nbtList);
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -63,22 +63,23 @@ public abstract class ArrowEntityMixin extends PersistentProjectileEntityMixin i
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Potion":
+                case "Potion" -> {
                     if (nbt.contains("Potion", 8))
                         this.potion = PotionUtil.getPotion(nbt);
-                    break;
-                case "CustomPotionEffects":
+                }
+                case "CustomPotionEffects" -> {
                     for (StatusEffectInstance statusEffectInstance : PotionUtil.getCustomPotionEffects(nbt))
                         entity.addEffect(statusEffectInstance);
-                    break;
-                case "Color":
+                }
+                case "Color" -> {
                     if (nbt.contains("Color", 99))
                         this.setColor(nbt.getInt("Color"));
-                    break;
-                default:
+                }
+                default -> {
                     if (!this.colorSet)
                         this.initColor();
                     return false;
+                }
             }
         }
         return true;

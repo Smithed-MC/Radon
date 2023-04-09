@@ -13,15 +13,14 @@ public abstract class EndCrystalEntityMixin extends EntityMixin {
         EndCrystalEntity entity = ((EndCrystalEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "ShowBottom":
-                    nbt.putBoolean("ShowBottom", entity.shouldShowBottom());
-                    break;
-                case "BeamTarget":
+                case "ShowBottom" -> nbt.putBoolean("ShowBottom", entity.shouldShowBottom());
+                case "BeamTarget" -> {
                     if (entity.getBeamTarget() != null)
                         nbt.put("BeamTarget", NbtHelper.fromBlockPos(entity.getBeamTarget()));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -34,16 +33,17 @@ public abstract class EndCrystalEntityMixin extends EntityMixin {
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "BeamTarget":
+                case "BeamTarget" -> {
                     if (nbt.contains("BeamTarget", 10))
                         entity.setBeamTarget(NbtHelper.toBlockPos(nbt.getCompound("BeamTarget")));
-                    break;
-                case "ShowBottom":
+                }
+                case "ShowBottom" -> {
                     if (nbt.contains("ShowBottom", 1))
                         entity.setShowBottom(nbt.getBoolean("ShowBottom"));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
 
         }

@@ -15,14 +15,12 @@ public abstract class EyeOfEnderEntityMixin extends EntityMixin implements ICust
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         EyeOfEnderEntity entity = ((EyeOfEnderEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Item":
-                    ItemStack itemStack = this.getTrackedItem();
-                    if (!itemStack.isEmpty())
-                        nbt.put("Item", itemStack.writeNbt(new NbtCompound()));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Item")) {
+                ItemStack itemStack = this.getTrackedItem();
+                if (!itemStack.isEmpty())
+                    nbt.put("Item", itemStack.writeNbt(new NbtCompound()));
+            } else {
+                return false;
             }
         }
         return true;
@@ -34,13 +32,11 @@ public abstract class EyeOfEnderEntityMixin extends EntityMixin implements ICust
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Item":
-                    ItemStack itemStack = ItemStack.fromNbt(nbt.getCompound("Item"));
-                    entity.setItem(itemStack);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Item")) {
+                ItemStack itemStack = ItemStack.fromNbt(nbt.getCompound("Item"));
+                entity.setItem(itemStack);
+            } else {
+                return false;
             }
         }
         return true;

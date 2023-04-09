@@ -43,73 +43,51 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
 
         if(!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "DataVersion":
-                    nbt.putInt("DataVersion", SharedConstants.getGameVersion().getSaveVersion().getId());
-                    break;
-                case "Inventory":
-                    if(this.inventory instanceof IFilteredNbtList mixin)
+                case "DataVersion" ->
+                        nbt.putInt("DataVersion", SharedConstants.getGameVersion().getSaveVersion().getId());
+                case "Inventory" -> {
+                    if (this.inventory instanceof IFilteredNbtList mixin)
                         nbt.put("Inventory", mixin.writeNbtFiltered(new NbtList(), path.toString()));
                     else
                         nbt.put("Inventory", this.inventory.writeNbt(new NbtList()));
-                    break;
-                case "SelectedItemSlot":
-                    nbt.putInt("SelectedItemSlot", this.inventory.selectedSlot);
-                    break;
-                case "SleepTimer":
-                    nbt.putShort("SleepTimer", (short) this.sleepTimer);
-                    break;
-                case "XpP":
-                    nbt.putFloat("XpP", entity.experienceProgress);
-                    break;
-                case "XpLevel":
-                    nbt.putInt("XpLevel", entity.experienceLevel);
-                    break;
-                case "XpTotal":
-                    nbt.putInt("XpTotal", entity.totalExperience);
-                    break;
-                case "XpSeed":
-                    nbt.putInt("XpSeed", this.enchantmentTableSeed);
-                    break;
-                case "Score":
-                    nbt.putInt("Score", entity.getScore());
-                    break;
-                case "foodLevel":
-                case "foodTickTimer":
-                case "foodSaturationLevel":
-                case "foodExhaustionLevel":
-                    this.hungerManager.writeNbt(nbt);
-                    break;
-                case "abilities":
-                    this.abilities.writeNbt(nbt);
-                    break;
-                case "EnderItems":
-                    if(this.enderChestInventory instanceof IFilteredNbtList mixin)
+                }
+                case "SelectedItemSlot" -> nbt.putInt("SelectedItemSlot", this.inventory.selectedSlot);
+                case "SleepTimer" -> nbt.putShort("SleepTimer", (short) this.sleepTimer);
+                case "XpP" -> nbt.putFloat("XpP", entity.experienceProgress);
+                case "XpLevel" -> nbt.putInt("XpLevel", entity.experienceLevel);
+                case "XpTotal" -> nbt.putInt("XpTotal", entity.totalExperience);
+                case "XpSeed" -> nbt.putInt("XpSeed", this.enchantmentTableSeed);
+                case "Score" -> nbt.putInt("Score", entity.getScore());
+                case "foodLevel", "foodTickTimer", "foodSaturationLevel", "foodExhaustionLevel" ->
+                        this.hungerManager.writeNbt(nbt);
+                case "abilities" -> this.abilities.writeNbt(nbt);
+                case "EnderItems" -> {
+                    if (this.enderChestInventory instanceof IFilteredNbtList mixin)
                         nbt.put("EnderItems", mixin.writeNbtFiltered(new NbtList(), path.toString()));
                     else
                         nbt.put("EnderItems", this.enderChestInventory.toNbtList());
-                    break;
-                case "ShoulderEntityLeft":
+                }
+                case "ShoulderEntityLeft" -> {
                     if (!entity.getShoulderEntityLeft().isEmpty()) {
                         nbt.put("ShoulderEntityLeft", entity.getShoulderEntityLeft());
                     }
-                    break;
-                case "ShoulderEntityRight":
+                }
+                case "ShoulderEntityRight" -> {
                     if (!entity.getShoulderEntityRight().isEmpty()) {
                         nbt.put("ShoulderEntityRight", entity.getShoulderEntityRight());
                     }
-                    break;
-                case "LastDeathLocation":
-                    entity.getLastDeathPos().flatMap((globalPos) -> {
-                        DataResult<NbtElement> var10002 = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, globalPos);
-                        Logger var10003 = Radon.LOGGER;
-                        Objects.requireNonNull(var10003);
-                        return var10002.resultOrPartial(var10003::error);
-                    }).ifPresent((nbtElement) -> {
-                        nbt.put("LastDeathLocation", nbtElement);
-                    });
-                    break;
-                default:
+                }
+                case "LastDeathLocation" -> entity.getLastDeathPos().flatMap((globalPos) -> {
+                    DataResult<NbtElement> var10002 = GlobalPos.CODEC.encodeStart(NbtOps.INSTANCE, globalPos);
+                    Logger var10003 = Radon.LOGGER;
+                    Objects.requireNonNull(var10003);
+                    return var10002.resultOrPartial(var10003::error);
+                }).ifPresent((nbtElement) -> {
+                    nbt.put("LastDeathLocation", nbtElement);
+                });
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -122,65 +100,48 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Inventory":
+                case "Inventory" -> {
                     NbtList nbtList = nbt.getList("Inventory", 10);
                     this.inventory.readNbt(nbtList);
-                    break;
-                case "SelectedItemSlot":
-                    this.inventory.selectedSlot = nbt.getInt("SelectedItemSlot");
-                    break;
-                case "SleepTimer":
-                    this.sleepTimer = nbt.getShort("SleepTimer");
-                    break;
-                case "XpP":
-                    entity.experienceProgress = nbt.getFloat("XpP");
-                    break;
-                case "XpLevel":
-                    entity.experienceLevel = nbt.getInt("XpLevel");
-                    break;
-                case "XpTotal":
-                    entity.totalExperience = nbt.getInt("XpTotal");
-                    break;
-                case "XpSeed":
+                }
+                case "SelectedItemSlot" -> this.inventory.selectedSlot = nbt.getInt("SelectedItemSlot");
+                case "SleepTimer" -> this.sleepTimer = nbt.getShort("SleepTimer");
+                case "XpP" -> entity.experienceProgress = nbt.getFloat("XpP");
+                case "XpLevel" -> entity.experienceLevel = nbt.getInt("XpLevel");
+                case "XpTotal" -> entity.totalExperience = nbt.getInt("XpTotal");
+                case "XpSeed" -> {
                     this.enchantmentTableSeed = nbt.getInt("XpSeed");
                     if (this.enchantmentTableSeed == 0) {
                         this.enchantmentTableSeed = this.random.nextInt();
                     }
-                    break;
-                case "Score":
-                    entity.setScore(nbt.getInt("Score"));
-                    break;
-                case "foodLevel":
-                case "foodTickTimer":
-                case "foodSaturationLevel":
-                case "foodExhaustionLevel":
-                    this.hungerManager.readNbt(nbt);
-                    break;
-                case "abilities":
-                    this.abilities.readNbt(nbt);
-                    break;
-                case "EnderItems":
+                }
+                case "Score" -> entity.setScore(nbt.getInt("Score"));
+                case "foodLevel", "foodTickTimer", "foodSaturationLevel", "foodExhaustionLevel" ->
+                        this.hungerManager.readNbt(nbt);
+                case "abilities" -> this.abilities.readNbt(nbt);
+                case "EnderItems" -> {
                     if (nbt.contains("EnderItems", 9))
                         this.enderChestInventory.readNbtList(nbt.getList("EnderItems", 10));
-                    break;
-                case "ShoulderEntityLeft":
+                }
+                case "ShoulderEntityLeft" -> {
                     if (nbt.contains("ShoulderEntityLeft", 10))
                         this.setShoulderEntityLeft(nbt.getCompound("ShoulderEntityLeft"));
-                    break;
-                case "ShoulderEntityRight":
+                }
+                case "ShoulderEntityRight" -> {
                     if (nbt.contains("ShoulderEntityRight", 10))
                         this.setShoulderEntityRight(nbt.getCompound("ShoulderEntityRight"));
-                    break;
-                case "LastDeathLocation":
+                }
+                case "LastDeathLocation" -> {
                     if (nbt.contains("LastDeathLocation", 10)) {
                         DataResult<GlobalPos> var3 = GlobalPos.CODEC.parse(NbtOps.INSTANCE, nbt.get("LastDeathLocation"));
                         Logger var10002 = Radon.LOGGER;
                         Objects.requireNonNull(var10002);
                         entity.setLastDeathPos(var3.resultOrPartial(var10002::error));
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
 
 

@@ -13,12 +13,10 @@ public abstract class ExplosiveProjectileEntityMixin extends ProjectileEntityMix
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ExplosiveProjectileEntity entity = ((ExplosiveProjectileEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "power":
-                    nbt.put("power", this.toNbtList(new double[]{entity.powerX, entity.powerY, entity.powerZ}));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("power")) {
+                nbt.put("power", this.toNbtList(entity.powerX, entity.powerY, entity.powerZ));
+            } else {
+                return false;
             }
         }
         return true;
@@ -30,19 +28,17 @@ public abstract class ExplosiveProjectileEntityMixin extends ProjectileEntityMix
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "power":
-                    if (nbt.contains("power", 9)) {
-                        NbtList nbtList = nbt.getList("power", 6);
-                        if (nbtList.size() == 3) {
-                            entity.powerX = nbtList.getDouble(0);
-                            entity.powerY = nbtList.getDouble(1);
-                            entity.powerZ = nbtList.getDouble(2);
-                        }
+            if (topLevelNbt.equals("power")) {
+                if (nbt.contains("power", 9)) {
+                    NbtList nbtList = nbt.getList("power", 6);
+                    if (nbtList.size() == 3) {
+                        entity.powerX = nbtList.getDouble(0);
+                        entity.powerY = nbtList.getDouble(1);
+                        entity.powerZ = nbtList.getDouble(2);
                     }
-                    break;
-                default:
-                    return false;
+                }
+            } else {
+                return false;
             }
         }
         return true;

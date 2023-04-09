@@ -19,17 +19,12 @@ public abstract class GoatEntityMixin extends AnimalEntityMixin implements ICust
         GoatEntity entity = ((GoatEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "IsScreamingGoat":
-                    nbt.putBoolean("IsScreamingGoat", entity.isScreaming());
-                    break;
-                case "HasLeftHorn":
-                    nbt.putBoolean("HasLeftHorn", entity.hasLeftHorn());
-                    break;
-                case "HasRightHorn":
-                    nbt.putBoolean("HasRightHorn", entity.hasRightHorn());
-                    break;
-                default:
+                case "IsScreamingGoat" -> nbt.putBoolean("IsScreamingGoat", entity.isScreaming());
+                case "HasLeftHorn" -> nbt.putBoolean("HasLeftHorn", entity.hasLeftHorn());
+                case "HasRightHorn" -> nbt.putBoolean("HasRightHorn", entity.hasRightHorn());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -42,17 +37,12 @@ public abstract class GoatEntityMixin extends AnimalEntityMixin implements ICust
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "IsScreamingGoat":
-                    entity.setScreaming(nbt.getBoolean("IsScreamingGoat"));
-                    break;
-                case "HasLeftHorn":
-                    this.dataTracker.set(LEFT_HORN, nbt.getBoolean("HasLeftHorn"));
-                    break;
-                case "HasRightHorn":
-                    this.dataTracker.set(RIGHT_HORN, nbt.getBoolean("HasRightHorn"));
-                    break;
-                default:
+                case "IsScreamingGoat" -> entity.setScreaming(nbt.getBoolean("IsScreamingGoat"));
+                case "HasLeftHorn" -> this.dataTracker.set(LEFT_HORN, nbt.getBoolean("HasLeftHorn"));
+                case "HasRightHorn" -> this.dataTracker.set(RIGHT_HORN, nbt.getBoolean("HasRightHorn"));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

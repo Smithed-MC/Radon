@@ -12,12 +12,10 @@ public abstract class FishEntityMixin extends MobEntityMixin implements ICustomN
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FishEntity entity = ((FishEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "FromBucket":
-                    nbt.putBoolean("FromBucket", entity.isFromBucket());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("FromBucket")) {
+                nbt.putBoolean("FromBucket", entity.isFromBucket());
+            } else {
+                return false;
             }
         }
         return true;
@@ -29,12 +27,10 @@ public abstract class FishEntityMixin extends MobEntityMixin implements ICustomN
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "FromBucket":
-                    entity.setFromBucket(nbt.getBoolean("FromBucket"));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("FromBucket")) {
+                entity.setFromBucket(nbt.getBoolean("FromBucket"));
+            } else {
+                return false;
             }
         }
         return true;

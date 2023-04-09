@@ -18,13 +18,11 @@ public abstract class ConduitBlockEntityMixin extends BlockEntityMixin implement
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Target":
-                    if (this.targetEntity != null)
-                        nbt.putUuid("Target", this.targetEntity.getUuid());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Target")) {
+                if (this.targetEntity != null)
+                    nbt.putUuid("Target", this.targetEntity.getUuid());
+            } else {
+                return false;
             }
         }
         return true;
@@ -35,16 +33,14 @@ public abstract class ConduitBlockEntityMixin extends BlockEntityMixin implement
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Target":
-                    if (nbt.containsUuid("Target")) {
-                        this.targetUuid = nbt.getUuid("Target");
-                    } else {
-                        this.targetUuid = null;
-                    }
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Target")) {
+                if (nbt.containsUuid("Target")) {
+                    this.targetUuid = nbt.getUuid("Target");
+                } else {
+                    this.targetUuid = null;
+                }
+            } else {
+                return false;
             }
         }
         return true;

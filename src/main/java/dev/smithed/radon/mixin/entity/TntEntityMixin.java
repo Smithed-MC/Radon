@@ -11,12 +11,10 @@ public abstract class TntEntityMixin extends EntityMixin implements ICustomNBTMi
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TntEntity entity = ((TntEntity) (Object) this);
-        switch (topLevelNbt) {
-            case "Fuse":
-                nbt.putShort("Fuse", (short)entity.getFuse());
-                break;
-            default:
-                return false;
+        if (topLevelNbt.equals("Fuse")) {
+            nbt.putShort("Fuse", (short) entity.getFuse());
+        } else {
+            return false;
         }
         return true;
     }
@@ -26,12 +24,10 @@ public abstract class TntEntityMixin extends EntityMixin implements ICustomNBTMi
         TntEntity entity = ((TntEntity)(Object)this);
         if(!nbt.contains(topLevelNbt))
             return false;
-        switch (topLevelNbt) {
-            case "Fuse":
-                entity.setFuse(nbt.getShort("Fuse"));
-                break;
-            default:
-                return false;
+        if (topLevelNbt.equals("Fuse")) {
+            entity.setFuse(nbt.getShort("Fuse"));
+        } else {
+            return false;
         }
         return true;
     }

@@ -19,18 +19,15 @@ public abstract class RaiderEntityMixin extends PatrolEntityMixin {
         RaiderEntity entity = ((RaiderEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Wave":
-                    nbt.putInt("Wave", this.wave);
-                    break;
-                case "CanJoinRaid":
-                    nbt.putBoolean("CanJoinRaid", this.ableToJoinRaid);
-                    break;
-                case "RaidId":
+                case "Wave" -> nbt.putInt("Wave", this.wave);
+                case "CanJoinRaid" -> nbt.putBoolean("CanJoinRaid", this.ableToJoinRaid);
+                case "RaidId" -> {
                     if (this.raid != null)
                         nbt.putInt("RaidId", this.raid.getRaidId());
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -43,16 +40,12 @@ public abstract class RaiderEntityMixin extends PatrolEntityMixin {
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Wave":
-                    this.wave = nbt.getInt("Wave");
-                    break;
-                case "CanJoinRaid":
-                    this.ableToJoinRaid = nbt.getBoolean("CanJoinRaid");
-                    break;
-                case "RaidId":
+                case "Wave" -> this.wave = nbt.getInt("Wave");
+                case "CanJoinRaid" -> this.ableToJoinRaid = nbt.getBoolean("CanJoinRaid");
+                case "RaidId" -> {
                     if (nbt.contains("RaidId", 3)) {
                         if (this.world instanceof ServerWorld) {
-                            this.raid = ((ServerWorld)this.world).getRaidManager().getRaid(nbt.getInt("RaidId"));
+                            this.raid = ((ServerWorld) this.world).getRaidManager().getRaid(nbt.getInt("RaidId"));
                         }
 
                         if (this.raid != null) {
@@ -62,9 +55,10 @@ public abstract class RaiderEntityMixin extends PatrolEntityMixin {
                             }
                         }
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

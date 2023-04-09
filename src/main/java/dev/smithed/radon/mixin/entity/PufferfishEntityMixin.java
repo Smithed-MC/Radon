@@ -12,12 +12,10 @@ public abstract class PufferfishEntityMixin extends FishEntityMixin implements I
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PufferfishEntity entity = ((PufferfishEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "PuffState":
-                    nbt.putInt("PuffState", entity.getPuffState());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("PuffState")) {
+                nbt.putInt("PuffState", entity.getPuffState());
+            } else {
+                return false;
             }
         }
         return true;
@@ -29,12 +27,10 @@ public abstract class PufferfishEntityMixin extends FishEntityMixin implements I
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "PuffState":;
-                    entity.setPuffState(Math.min(nbt.getInt("PuffState"), 2));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("PuffState")) {
+                entity.setPuffState(Math.min(nbt.getInt("PuffState"), 2));
+            } else {
+                return false;
             }
         }
         return true;

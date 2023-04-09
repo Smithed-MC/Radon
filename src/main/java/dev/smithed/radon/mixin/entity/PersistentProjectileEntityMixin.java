@@ -27,39 +27,22 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
         PersistentProjectileEntity entity = ((PersistentProjectileEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "life":
-                    nbt.putShort("life", (short)this.life);
-                    break;
-                case "inBlockState":
+                case "life" -> nbt.putShort("life", (short) this.life);
+                case "inBlockState" -> {
                     if (this.inBlockState != null)
                         nbt.put("inBlockState", NbtHelper.fromBlockState(this.inBlockState));
-                    break;
-                case "shake":
-                    nbt.putByte("shake", (byte)this.shake);
-                    break;
-                case "inGround":
-                    nbt.putBoolean("inGround", this.inGround);
-                    break;
-                case "pickup":
-                    nbt.putByte("pickup", (byte)entity.pickupType.ordinal());
-                    break;
-                case "damage":
-                    nbt.putDouble("damage", this.damage);
-                    break;
-                case "crit":
-                    nbt.putBoolean("crit", entity.isCritical());
-                    break;
-                case "PierceLevel":
-                    nbt.putByte("PierceLevel", entity.getPierceLevel());
-                    break;
-                case "SoundEvent":
-                    nbt.putString("SoundEvent", Registries.SOUND_EVENT.getId(this.sound).toString());
-                    break;
-                case "ShotFromCrossbow":
-                    nbt.putBoolean("ShotFromCrossbow", entity.isShotFromCrossbow());
-                    break;
-                default:
+                }
+                case "shake" -> nbt.putByte("shake", (byte) this.shake);
+                case "inGround" -> nbt.putBoolean("inGround", this.inGround);
+                case "pickup" -> nbt.putByte("pickup", (byte) entity.pickupType.ordinal());
+                case "damage" -> nbt.putDouble("damage", this.damage);
+                case "crit" -> nbt.putBoolean("crit", entity.isCritical());
+                case "PierceLevel" -> nbt.putByte("PierceLevel", entity.getPierceLevel());
+                case "SoundEvent" -> nbt.putString("SoundEvent", Registries.SOUND_EVENT.getId(this.sound).toString());
+                case "ShotFromCrossbow" -> nbt.putBoolean("ShotFromCrossbow", entity.isShotFromCrossbow());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -72,41 +55,29 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "life":
-                    this.life = nbt.getShort("life");
-                    break;
-                case "inBlockState":
+                case "life" -> this.life = nbt.getShort("life");
+                case "inBlockState" -> {
                     if (nbt.contains("inBlockState", 10))
                         this.inBlockState = NbtHelper.toBlockState(this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK), nbt.getCompound("inBlockState"));
-                    break;
-                case "shake":
-                    this.shake = nbt.getByte("shake") & 255;
-                    break;
-                case "inGround":
-                    this.inGround = nbt.getBoolean("inGround");
-                    break;
-                case "damage":
+                }
+                case "shake" -> this.shake = nbt.getByte("shake") & 255;
+                case "inGround" -> this.inGround = nbt.getBoolean("inGround");
+                case "damage" -> {
                     if (nbt.contains("damage", 99))
                         this.damage = nbt.getDouble("damage");
-                    break;
-                case "pickup":
-                    entity.pickupType = PersistentProjectileEntity.PickupPermission.fromOrdinal(nbt.getByte("pickup"));
-                    break;
-                case "crit":
-                    entity.setCritical(nbt.getBoolean("crit"));
-                    break;
-                case "PierceLevel":
-                    entity.setPierceLevel(nbt.getByte("PierceLevel"));
-                    break;
-                case "SoundEvent":
+                }
+                case "pickup" ->
+                        entity.pickupType = PersistentProjectileEntity.PickupPermission.fromOrdinal(nbt.getByte("pickup"));
+                case "crit" -> entity.setCritical(nbt.getBoolean("crit"));
+                case "PierceLevel" -> entity.setPierceLevel(nbt.getByte("PierceLevel"));
+                case "SoundEvent" -> {
                     if (nbt.contains("SoundEvent", 8))
                         this.sound = Registries.SOUND_EVENT.getOrEmpty(new Identifier(nbt.getString("SoundEvent"))).orElse(this.getHitSound());
-                    break;
-                case "ShotFromCrossbow":
-                    entity.setShotFromCrossbow(nbt.getBoolean("ShotFromCrossbow"));
-                    break;
-                default:
+                }
+                case "ShotFromCrossbow" -> entity.setShotFromCrossbow(nbt.getBoolean("ShotFromCrossbow"));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

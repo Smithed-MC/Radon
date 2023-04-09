@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Mixin(EvokerFangsEntity.class)
 public abstract class EvokerFangsEntityMixin extends EntityMixin implements ICustomNBTMixin {
+
     @Shadow int warmup;
     @Shadow UUID ownerUuid;
 
@@ -18,15 +19,14 @@ public abstract class EvokerFangsEntityMixin extends EntityMixin implements ICus
         EvokerFangsEntity entity = ((EvokerFangsEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Warmup":
-                    nbt.putInt("Warmup", this.warmup);
-                    break;
-                case "Owner":
+                case "Warmup" -> nbt.putInt("Warmup", this.warmup);
+                case "Owner" -> {
                     if (this.ownerUuid != null)
                         nbt.putUuid("Owner", this.ownerUuid);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -39,14 +39,11 @@ public abstract class EvokerFangsEntityMixin extends EntityMixin implements ICus
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Warmup":
-                    this.warmup = nbt.getInt("Warmup");
-                    break;
-                case "Owner":
-                    this.ownerUuid = nbt.getUuid("Owner");
-                    break;
-                default:
+                case "Warmup" -> this.warmup = nbt.getInt("Warmup");
+                case "Owner" -> this.ownerUuid = nbt.getUuid("Owner");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

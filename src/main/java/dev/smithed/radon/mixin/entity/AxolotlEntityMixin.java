@@ -16,14 +16,11 @@ public abstract class AxolotlEntityMixin extends AnimalEntityMixin implements IC
         AxolotlEntity entity = ((AxolotlEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Variant":
-                    nbt.putInt("Variant", entity.getVariant().getId());
-                    break;
-                case "FromBucket":
-                    nbt.putBoolean("FromBucket", entity.isFromBucket());
-                    break;
-                default:
+                case "Variant" -> nbt.putInt("Variant", entity.getVariant().getId());
+                case "FromBucket" -> nbt.putBoolean("FromBucket", entity.isFromBucket());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -36,14 +33,11 @@ public abstract class AxolotlEntityMixin extends AnimalEntityMixin implements IC
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Variant":
-                    this.setVariant(AxolotlEntity.Variant.byId(nbt.getInt("Variant")));
-                    break;
-                case "FromBucket":
-                    entity.setFromBucket(nbt.getBoolean("FromBucket"));
-                    break;
-                default:
+                case "Variant" -> this.setVariant(AxolotlEntity.Variant.byId(nbt.getInt("Variant")));
+                case "FromBucket" -> entity.setFromBucket(nbt.getBoolean("FromBucket"));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

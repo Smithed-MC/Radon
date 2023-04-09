@@ -26,32 +26,27 @@ public abstract class ItemFrameEntityMixin extends AbstractDecorationEntityMixin
         ItemFrameEntity entity = ((ItemFrameEntity)(Object)this);
 
         switch (topLevelNbt) {
-            case "Item":
+            case "Item" -> {
                 if (!entity.getHeldItemStack().isEmpty()) {
                     nbt.put("Item", entity.getHeldItemStack().writeNbt(new NbtCompound()));
                 }
-                break;
-            case "ItemRotation":
+            }
+            case "ItemRotation" -> {
                 if (!entity.getHeldItemStack().isEmpty()) {
-                    nbt.putByte("ItemRotation", (byte)entity.getRotation());
+                    nbt.putByte("ItemRotation", (byte) entity.getRotation());
                 }
-                break;
-            case "ItemDropChance":
+            }
+            case "ItemDropChance" -> {
                 if (!entity.getHeldItemStack().isEmpty()) {
                     nbt.putFloat("ItemDropChance", this.itemDropChance);
                 }
-                break;
-            case "Facing":
-                nbt.putByte("Facing", (byte)this.facing.getId());
-                break;
-            case "Invisible":
-                nbt.putBoolean("Invisible", entity.isInvisible());
-                break;
-            case "Fixed":
-                nbt.putBoolean("Fixed", this.fixed);
-                break;
-            default:
+            }
+            case "Facing" -> nbt.putByte("Facing", (byte) this.facing.getId());
+            case "Invisible" -> nbt.putBoolean("Invisible", entity.isInvisible());
+            case "Fixed" -> nbt.putBoolean("Fixed", this.fixed);
+            default -> {
                 return false;
+            }
         }
         return true;
     }
@@ -63,7 +58,7 @@ public abstract class ItemFrameEntityMixin extends AbstractDecorationEntityMixin
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Item":
+                case "Item" -> {
                     NbtCompound nbtCompound = nbt.getCompound("Item");
                     if (nbtCompound != null && !nbtCompound.isEmpty()) {
                         ItemStack itemStack = ItemStack.fromNbt(nbtCompound);
@@ -74,25 +69,18 @@ public abstract class ItemFrameEntityMixin extends AbstractDecorationEntityMixin
                             this.removeFromFrame(itemStack2);
                         entity.setHeldItemStack(itemStack, false);
                     }
-                    break;
-                case "ItemRotation":
-                    this.setRotation(nbt.getByte("ItemRotation"), false);
-                    break;
-                case "ItemDropChance":
+                }
+                case "ItemRotation" -> this.setRotation(nbt.getByte("ItemRotation"), false);
+                case "ItemDropChance" -> {
                     if (nbt.contains("ItemDropChance", 99))
                         this.itemDropChance = nbt.getFloat("ItemDropChance");
-                    break;
-                case "Facing":
-                    this.setFacing(Direction.byId(nbt.getByte("Facing")));
-                    break;
-                case "Invisible":
-                    entity.setInvisible(nbt.getBoolean("Invisible"));
-                    break;
-                case "Fixed":
-                    this.fixed = nbt.getBoolean("Fixed");
-                    break;
-                default:
+                }
+                case "Facing" -> this.setFacing(Direction.byId(nbt.getByte("Facing")));
+                case "Invisible" -> entity.setInvisible(nbt.getBoolean("Invisible"));
+                case "Fixed" -> this.fixed = nbt.getBoolean("Fixed");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

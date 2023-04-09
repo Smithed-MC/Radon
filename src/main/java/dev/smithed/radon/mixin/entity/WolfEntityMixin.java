@@ -14,15 +14,11 @@ public abstract class WolfEntityMixin extends TameableEntityMixin implements ICu
         WolfEntity entity = ((WolfEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "CollarColor":
-                    nbt.putByte("CollarColor", (byte)entity.getCollarColor().getId());
-                    break;
-                case "AngryAt":
-                case "AngerTime":
-                    entity.writeAngerToNbt(nbt);
-                    break;
-                default:
+                case "CollarColor" -> nbt.putByte("CollarColor", (byte) entity.getCollarColor().getId());
+                case "AngryAt", "AngerTime" -> entity.writeAngerToNbt(nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -35,16 +31,14 @@ public abstract class WolfEntityMixin extends TameableEntityMixin implements ICu
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "CollarColor":
+                case "CollarColor" -> {
                     if (nbt.contains("CollarColor", 99))
                         entity.setCollarColor(DyeColor.byId(nbt.getInt("CollarColor")));
-                    break;
-                case "AngryAt":
-                case "AngerTime":
-                    entity.readAngerFromNbt(this.world, nbt);
-                    break;
-                default:
+                }
+                case "AngryAt", "AngerTime" -> entity.readAngerFromNbt(this.world, nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -24,7 +24,7 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Items":
+                case "Items" -> {
                     int slot = NBTUtils.getSlot(path);
                     if (slot >= 0 && slot <= 4) {
                         ItemStack itemStack = this.inventory.get(slot);
@@ -39,15 +39,12 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
                     } else {
                         Inventories.writeNbt(nbt, this.inventory);
                     }
-                    break;
-                case "BrewTime":
-                    nbt.putShort("BrewTime", (short)this.brewTime);
-                    break;
-                case "Fuel":
-                    nbt.putByte("Fuel", (byte)this.fuel);
-                    break;
-                default:
+                }
+                case "BrewTime" -> nbt.putShort("BrewTime", (short) this.brewTime);
+                case "Fuel" -> nbt.putByte("Fuel", (byte) this.fuel);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -59,18 +56,15 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Items":
+                case "Items" -> {
                     this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
                     Inventories.readNbt(nbt, this.inventory);
-                    break;
-                case "BrewTime":
-                    this.brewTime = nbt.getShort("BrewTime");
-                    break;
-                case "Fuel":
-                    this.fuel = nbt.getByte("Fuel");
-                    break;
-                default:
+                }
+                case "BrewTime" -> this.brewTime = nbt.getShort("BrewTime");
+                case "Fuel" -> this.fuel = nbt.getByte("Fuel");
+                default -> {
                     return false;
+                }
             }
         }
         return true;
