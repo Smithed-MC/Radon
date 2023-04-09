@@ -124,21 +124,9 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
             Radon.logDebug("searching on " + size + " entities for " + container);
 
         if (set != null) {
-            set.forEach(entity -> {
-                T entityLike = (T) entity;
-                U entityLike2 = filter.downcast(entityLike);
-                if (entityLike2 != null) {
-                    action.accept(entityLike2);
-                }
-            });
+            forEachInCollection(set, filter, action);
         } else if (list != null) {
-            list.forEach(iset -> iset.forEach(entity -> {
-                T entityLike = (T) entity;
-                U entityLike2 = filter.downcast(entityLike);
-                if (entityLike2 != null) {
-                    action.accept(entityLike2);
-                }
-            }));
+            list.forEach(iset -> forEachInCollection(iset, filter, action));
         } else {
             this.forEach(filter, action);
         }
