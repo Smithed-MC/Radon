@@ -7,6 +7,15 @@ Radon is an experimental no-compromises drop-in fabric mod designed to apply tar
 
 Testing included a server with these datapacks combined: Mechanization, The Creeper's Code, Florcraft, Dinos and Dodos, Ocean Additions, Terralith, Manic, Sanguine, Grappling Hooks, Explorer's Advent, and Call of Chaos.
 
+## Proof
+Worst case senario for player NBT lookup: `data get entity @s Health` 10000 times per tick on a player with a full inv, ender chest, and all recipes unlocked.
+
+![Player NBT](https://cdn.discordapp.com/attachments/507995770109165579/1012754969088249926/player_nbt.png)
+
+Running `execute if entity @e[type=minecraft:item_frame]` 10000 times per tick while 5120 markers are loaded and 320 item frames are loaded
+
+![selector](https://cdn.discordapp.com/attachments/507995770109165579/1012754969478307890/selector.png)
+
 ## Setup
 
 Download the latest version from [Releases](https://github.com/Smithed-MC/Radon/releases) and place the mod in your [Fabric](https://fabricmc.net/) mods folder.
