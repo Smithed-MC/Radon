@@ -12,13 +12,11 @@ public abstract class ZoglinEntityMixin extends MobEntityMixin implements ICusto
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ZoglinEntity entity = ((ZoglinEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "IsBaby":
-                    if (entity.isBaby())
-                        nbt.putBoolean("IsBaby", true);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("IsBaby")) {
+                if (entity.isBaby())
+                    nbt.putBoolean("IsBaby", true);
+            } else {
+                return false;
             }
         }
         return true;
@@ -30,13 +28,11 @@ public abstract class ZoglinEntityMixin extends MobEntityMixin implements ICusto
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "IsBaby":
-                    if (nbt.getBoolean("IsBaby"))
-                        entity.setBaby(true);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("IsBaby")) {
+                if (nbt.getBoolean("IsBaby"))
+                    entity.setBaby(true);
+            } else {
+                return false;
             }
         }
         return true;

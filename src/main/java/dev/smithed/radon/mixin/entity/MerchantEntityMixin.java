@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(MerchantEntity.class)
 public abstract class MerchantEntityMixin extends PassiveEntityMixin implements ICustomNBTMixin {
+
     @Shadow SimpleInventory inventory;
     @Shadow TradeOfferList offers;
 
@@ -18,17 +19,16 @@ public abstract class MerchantEntityMixin extends PassiveEntityMixin implements 
         MerchantEntity entity = ((MerchantEntity)(Object)this);
         if(!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Offers":
+                case "Offers" -> {
                     TradeOfferList tradeOfferList = entity.getOffers();
                     if (!tradeOfferList.isEmpty()) {
                         nbt.put("Offers", tradeOfferList.toNbt());
                     }
-                    break;
-                case "Inventory":
-                    nbt.put("Inventory", this.inventory.toNbtList());
-                    break;
-                default:
+                }
+                case "Inventory" -> nbt.put("Inventory", this.inventory.toNbtList());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -41,15 +41,14 @@ public abstract class MerchantEntityMixin extends PassiveEntityMixin implements 
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Offers":
+                case "Offers" -> {
                     if (nbt.contains("Offers", 10))
                         this.offers = new TradeOfferList(nbt.getCompound("Offers"));
-                    break;
-                case "Inventory":
-                    this.inventory.readNbtList(nbt.getList("Inventory", 10));
-                    break;
-                default:
+                }
+                case "Inventory" -> this.inventory.readNbtList(nbt.getList("Inventory", 10));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

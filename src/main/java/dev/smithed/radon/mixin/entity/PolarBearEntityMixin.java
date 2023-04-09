@@ -13,12 +13,10 @@ public abstract class PolarBearEntityMixin extends AnimalEntityMixin implements 
         PolarBearEntity entity = ((PolarBearEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "AngerTime":
-                case "AngryAt":
-                    entity.writeAngerToNbt(nbt);
-                    break;
-                default:
+                case "AngerTime", "AngryAt" -> entity.writeAngerToNbt(nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -31,12 +29,10 @@ public abstract class PolarBearEntityMixin extends AnimalEntityMixin implements 
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "AngryAt":
-                case "AngerTime":
-                    entity.readAngerFromNbt(this.world, nbt);
-                    break;
-                default:
+                case "AngryAt", "AngerTime" -> entity.readAngerFromNbt(this.world, nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;

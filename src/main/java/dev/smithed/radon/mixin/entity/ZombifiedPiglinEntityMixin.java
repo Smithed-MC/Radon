@@ -13,15 +13,14 @@ public abstract class ZombifiedPiglinEntityMixin extends ZombieEntityMixin imple
         ZombifiedPiglinEntity entity = ((ZombifiedPiglinEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "AngerTime":
-                    nbt.putInt("AngerTime", entity.getAngerTime());
-                    break;
-                case "AngryAt":
+                case "AngerTime" -> nbt.putInt("AngerTime", entity.getAngerTime());
+                case "AngryAt" -> {
                     if (entity.getAngryAt() != null)
                         nbt.putUuid("AngryAt", entity.getAngryAt());
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -34,12 +33,10 @@ public abstract class ZombifiedPiglinEntityMixin extends ZombieEntityMixin imple
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "AngerAt":
-                case "AngerTime":
-                    entity.readAngerFromNbt(this.world, nbt);
-                    break;
-                default:
+                case "AngerAt", "AngerTime" -> entity.readAngerFromNbt(this.world, nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;

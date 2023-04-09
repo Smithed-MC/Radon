@@ -18,15 +18,14 @@ public abstract class HorseEntityMixin extends AbstractHorseEntityMixin implemen
         HorseEntity entity = ((HorseEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Variant":
-                    nbt.putInt("Variant", this.getHorseVariant());
-                    break;
-                case "ArmorItem":
+                case "Variant" -> nbt.putInt("Variant", this.getHorseVariant());
+                case "ArmorItem" -> {
                     if (!this.items.getStack(1).isEmpty())
                         nbt.put("ArmorItem", this.items.getStack(1).writeNbt(new NbtCompound()));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -39,10 +38,8 @@ public abstract class HorseEntityMixin extends AbstractHorseEntityMixin implemen
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Variant":
-                    this.setHorseVariant(nbt.getInt("Variant"));
-                    break;
-                case "ArmorItem":
+                case "Variant" -> this.setHorseVariant(nbt.getInt("Variant"));
+                case "ArmorItem" -> {
                     if (nbt.contains("ArmorItem", 10)) {
                         ItemStack itemStack = ItemStack.fromNbt(nbt.getCompound("ArmorItem"));
                         if (!itemStack.isEmpty() && entity.isHorseArmor(itemStack)) {
@@ -50,9 +47,10 @@ public abstract class HorseEntityMixin extends AbstractHorseEntityMixin implemen
                         }
                         this.updateSaddle();
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

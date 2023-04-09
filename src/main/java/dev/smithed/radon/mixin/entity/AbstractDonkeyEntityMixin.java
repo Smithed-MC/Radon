@@ -16,10 +16,8 @@ public abstract class AbstractDonkeyEntityMixin extends AbstractHorseEntityMixin
         AbstractDonkeyEntity entity = ((AbstractDonkeyEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "ChestedHorse":
-                    nbt.putBoolean("ChestedHorse", entity.hasChest());
-                    break;
-                case "Items":
+                case "ChestedHorse" -> nbt.putBoolean("ChestedHorse", entity.hasChest());
+                case "Items" -> {
                     if (entity.hasChest()) {
                         NbtList nbtList = new NbtList();
 
@@ -34,9 +32,10 @@ public abstract class AbstractDonkeyEntityMixin extends AbstractHorseEntityMixin
                         }
                         nbt.put("Items", nbtList);
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -49,14 +48,14 @@ public abstract class AbstractDonkeyEntityMixin extends AbstractHorseEntityMixin
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "ChestedHorse":
+                case "ChestedHorse" -> {
                     entity.setHasChest(nbt.getBoolean("ChestedHorse"));
                     this.onChestedStatusChanged();
-                    break;
-                case "Items":
+                }
+                case "Items" -> {
                     if (entity.hasChest()) {
                         NbtList nbtList = nbt.getList("Items", 10);
-                        for(int i = 0; i < nbtList.size(); ++i) {
+                        for (int i = 0; i < nbtList.size(); ++i) {
                             NbtCompound nbtCompound = nbtList.getCompound(i);
                             int j = nbtCompound.getByte("Slot") & 255;
                             if (j >= 2 && j < this.items.size()) {
@@ -65,9 +64,10 @@ public abstract class AbstractDonkeyEntityMixin extends AbstractHorseEntityMixin
                         }
                         this.updateSaddle();
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

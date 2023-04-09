@@ -18,20 +18,13 @@ public abstract class ExperienceOrbEntityMixin extends EntityMixin implements IC
         ExperienceOrbEntity entity = ((ExperienceOrbEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Health":
-                    nbt.putShort("Health", (short)this.health);
-                    break;
-                case "Age":
-                    nbt.putShort("Age", (short)this.orbAge);
-                    break;
-                case "Value":
-                    nbt.putShort("Value", (short)this.amount);
-                    break;
-                case "Count":
-                    nbt.putInt("Count", this.pickingCount);
-                    break;
-                default:
+                case "Health" -> nbt.putShort("Health", (short) this.health);
+                case "Age" -> nbt.putShort("Age", (short) this.orbAge);
+                case "Value" -> nbt.putShort("Value", (short) this.amount);
+                case "Count" -> nbt.putInt("Count", this.pickingCount);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -44,20 +37,13 @@ public abstract class ExperienceOrbEntityMixin extends EntityMixin implements IC
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Health":
-                    this.health = nbt.getShort("Health");
-                    break;
-                case "Age":
-                    this.orbAge = nbt.getShort("Age");
-                    break;
-                case "Value":
-                    this.amount = nbt.getShort("Value");
-                    break;
-                case "Count":
-                    this.pickingCount = Math.max(nbt.getInt("Count"), 1);
-                    break;
-                default:
+                case "Health" -> this.health = nbt.getShort("Health");
+                case "Age" -> this.orbAge = nbt.getShort("Age");
+                case "Value" -> this.amount = nbt.getShort("Value");
+                case "Count" -> this.pickingCount = Math.max(nbt.getInt("Count"), 1);
+                default -> {
                     return false;
+                }
             }
         }
         return true;

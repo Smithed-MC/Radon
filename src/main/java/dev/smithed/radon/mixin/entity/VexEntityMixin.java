@@ -19,24 +19,25 @@ public abstract class VexEntityMixin extends MobEntityMixin implements ICustomNB
         VexEntity entity = ((VexEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "BoundX":
+                case "BoundX" -> {
                     if (this.bounds != null)
                         nbt.putInt("BoundX", this.bounds.getX());
-                    break;
-                case "BoundY":
+                }
+                case "BoundY" -> {
                     if (this.bounds != null)
                         nbt.putInt("BoundY", this.bounds.getY());
-                    break;
-                case "BoundZ":
+                }
+                case "BoundZ" -> {
                     if (this.bounds != null)
                         nbt.putInt("BoundZ", this.bounds.getZ());
-                    break;
-                case "LifeTicks":
+                }
+                case "LifeTicks" -> {
                     if (this.alive)
                         nbt.putInt("LifeTicks", this.lifeTicks);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -49,23 +50,22 @@ public abstract class VexEntityMixin extends MobEntityMixin implements ICustomNB
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "LifeTicks":
-                    entity.setLifeTicks(nbt.getInt("LifeTicks"));
-                    break;
-                case "BoundX":
+                case "LifeTicks" -> entity.setLifeTicks(nbt.getInt("LifeTicks"));
+                case "BoundX" -> {
                     int i = nbt.getInt("BoundX");
                     this.bounds = new BlockPos(i, this.bounds.getY(), this.bounds.getZ());
-                    break;
-                case "BoundY":
+                }
+                case "BoundY" -> {
                     int j = nbt.getInt("BoundY");
                     this.bounds = new BlockPos(this.bounds.getX(), j, this.bounds.getZ());
-                    break;
-                case "BoundZ":
+                }
+                case "BoundZ" -> {
                     int k = nbt.getInt("BoundZ");
                     this.bounds = new BlockPos(this.bounds.getX(), this.bounds.getY(), k);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

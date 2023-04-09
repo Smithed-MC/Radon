@@ -17,20 +17,13 @@ public abstract class PhantomEntityMixin extends MobEntityMixin implements ICust
         PhantomEntity entity = ((PhantomEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Size":
-                    nbt.putInt("Size", entity.getPhantomSize());
-                    break;
-                case "AX":
-                    nbt.putInt("AX", this.circlingCenter.getX());
-                    break;
-                case "AY":
-                    nbt.putInt("AY", this.circlingCenter.getY());
-                    break;
-                case "AZ":
-                    nbt.putInt("AZ", this.circlingCenter.getZ());
-                    break;
-                default:
+                case "Size" -> nbt.putInt("Size", entity.getPhantomSize());
+                case "AX" -> nbt.putInt("AX", this.circlingCenter.getX());
+                case "AY" -> nbt.putInt("AY", this.circlingCenter.getY());
+                case "AZ" -> nbt.putInt("AZ", this.circlingCenter.getZ());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -43,20 +36,16 @@ public abstract class PhantomEntityMixin extends MobEntityMixin implements ICust
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "AX":
-                    this.circlingCenter = new BlockPos(nbt.getInt("AX"), this.circlingCenter.getY(), this.circlingCenter.getZ());
-                    break;
-                case "AY":
-                    this.circlingCenter = new BlockPos(this.circlingCenter.getX(), nbt.getInt("AY"), this.circlingCenter.getZ());
-                    break;
-                case "AZ":
-                    this.circlingCenter = new BlockPos(this.circlingCenter.getX(), this.circlingCenter.getY(), nbt.getInt("AZ"));
-                    break;
-                case "Size":
-                    entity.setPhantomSize(nbt.getInt("Size"));
-                    break;
-                default:
+                case "AX" ->
+                        this.circlingCenter = new BlockPos(nbt.getInt("AX"), this.circlingCenter.getY(), this.circlingCenter.getZ());
+                case "AY" ->
+                        this.circlingCenter = new BlockPos(this.circlingCenter.getX(), nbt.getInt("AY"), this.circlingCenter.getZ());
+                case "AZ" ->
+                        this.circlingCenter = new BlockPos(this.circlingCenter.getX(), this.circlingCenter.getY(), nbt.getInt("AZ"));
+                case "Size" -> entity.setPhantomSize(nbt.getInt("Size"));
+                default -> {
                     return false;
+                }
             }
 
         }

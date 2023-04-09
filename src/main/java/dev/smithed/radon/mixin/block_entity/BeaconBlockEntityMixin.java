@@ -23,24 +23,17 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Primary":
-                    nbt.putInt("Primary", StatusEffect.getRawIdNullable(this.primary));
-                    break;
-                case "Secondary":
-                    nbt.putInt("Secondary", StatusEffect.getRawIdNullable(this.secondary));
-                    break;
-                case "Levels":
-                    nbt.putInt("Levels", this.level);
-                    break;
-                case "CustomName":
+                case "Primary" -> nbt.putInt("Primary", StatusEffect.getRawIdNullable(this.primary));
+                case "Secondary" -> nbt.putInt("Secondary", StatusEffect.getRawIdNullable(this.secondary));
+                case "Levels" -> nbt.putInt("Levels", this.level);
+                case "CustomName" -> {
                     if (this.customName != null)
                         nbt.putString("CustomName", Text.Serializer.toJson(this.customName));
-                    break;
-                case "Lock":
-                    this.lock.writeNbt(nbt);
-                    break;
-                default:
+                }
+                case "Lock" -> this.lock.writeNbt(nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -52,21 +45,16 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Primary":
-                    this.primary = getPotionEffectById(nbt.getInt("Primary"));
-                    break;
-                case "Secondary":
-                    this.secondary = getPotionEffectById(nbt.getInt("Secondary"));
-                    break;
-                case "CustomName":
+                case "Primary" -> this.primary = getPotionEffectById(nbt.getInt("Primary"));
+                case "Secondary" -> this.secondary = getPotionEffectById(nbt.getInt("Secondary"));
+                case "CustomName" -> {
                     if (nbt.contains("CustomName", 8))
                         this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
-                    break;
-                case "Lock":
-                    this.lock = ContainerLock.fromNbt(nbt);
-                    break;
-                default:
+                }
+                case "Lock" -> this.lock = ContainerLock.fromNbt(nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;

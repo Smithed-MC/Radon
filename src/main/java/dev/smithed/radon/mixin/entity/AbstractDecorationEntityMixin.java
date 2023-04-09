@@ -22,22 +22,22 @@ public abstract class AbstractDecorationEntityMixin extends EntityMixin implemen
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         AbstractDecorationEntity entity = ((AbstractDecorationEntity)(Object)this);
 
-        BlockPos blockPos;
         switch (topLevelNbt) {
-            case "TileX":
-                blockPos = entity.getDecorationBlockPos();
+            case "TileX" -> {
+                BlockPos blockPos = entity.getDecorationBlockPos();
                 nbt.putInt("TileX", blockPos.getX());
-                break;
-            case "TileY":
-                blockPos = entity.getDecorationBlockPos();
+            }
+            case "TileY" -> {
+                BlockPos blockPos = entity.getDecorationBlockPos();
                 nbt.putInt("TileY", blockPos.getX());
-                break;
-            case "TileZ":
-                blockPos = entity.getDecorationBlockPos();
+            }
+            case "TileZ" -> {
+                BlockPos blockPos = entity.getDecorationBlockPos();
                 nbt.putInt("TileZ", blockPos.getX());
-                break;
-            default:
+            }
+            default -> {
                 return false;
+            }
         }
         return true;
     }
@@ -48,29 +48,30 @@ public abstract class AbstractDecorationEntityMixin extends EntityMixin implemen
         if(!nbt.contains(topLevelNbt))
             return false;
         switch (topLevelNbt) {
-            case "TileX":
+            case "TileX" -> {
                 BlockPos blockPosX = new BlockPos(nbt.getInt("TileX"), this.attachmentPos.getY(), this.attachmentPos.getZ());
                 if (!blockPosX.isWithinDistance(entity.getBlockPos(), 16.0))
                     LOGGER.error("Hanging entity at invalid position: {}", blockPosX);
                 else
                     this.attachmentPos = blockPosX;
-                break;
-            case "TileY":
+            }
+            case "TileY" -> {
                 BlockPos blockPosY = new BlockPos(this.attachmentPos.getX(), nbt.getInt("TileY"), this.attachmentPos.getZ());
                 if (!blockPosY.isWithinDistance(entity.getBlockPos(), 16.0))
                     LOGGER.error("Hanging entity at invalid position: {}", blockPosY);
                 else
                     this.attachmentPos = blockPosY;
-                break;
-            case "TileZ":
+            }
+            case "TileZ" -> {
                 BlockPos blockPosZ = new BlockPos(this.attachmentPos.getX(), this.attachmentPos.getY(), nbt.getInt("TileZ"));
                 if (!blockPosZ.isWithinDistance(entity.getBlockPos(), 16.0))
                     LOGGER.error("Hanging entity at invalid position: {}", blockPosZ);
                 else
                     this.attachmentPos = blockPosZ;
-                break;
-            default:
+            }
+            default -> {
                 return false;
+            }
         }
         return true;
     }

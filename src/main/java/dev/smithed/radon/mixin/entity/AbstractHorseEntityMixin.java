@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @Mixin(AbstractHorseEntity.class)
 public abstract class AbstractHorseEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
+
     @Shadow SimpleInventory items;
     @Shadow abstract void updateSaddle();
     @Shadow abstract void onChestedStatusChanged();
@@ -23,29 +24,21 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntityMixin impleme
         AbstractHorseEntity entity = ((AbstractHorseEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "EatingHaystack":
-                    nbt.putBoolean("EatingHaystack", entity.isEatingGrass());
-                    break;
-                case "Bred":
-                    nbt.putBoolean("Bred", entity.isBred());
-                    break;
-                case "Temper":
-                    nbt.putInt("Temper", entity.getTemper());
-                    break;
-                case "Tame":
-                    nbt.putBoolean("Tame", entity.isTame());
-                    break;
-                case "Owner":
+                case "EatingHaystack" -> nbt.putBoolean("EatingHaystack", entity.isEatingGrass());
+                case "Bred" -> nbt.putBoolean("Bred", entity.isBred());
+                case "Temper" -> nbt.putInt("Temper", entity.getTemper());
+                case "Tame" -> nbt.putBoolean("Tame", entity.isTame());
+                case "Owner" -> {
                     if (entity.getOwnerUuid() != null)
                         nbt.putUuid("Owner", entity.getOwnerUuid());
-                    break;
-                case "SaddleItem":
-                    if (nbt.contains("SaddleItem", 10))
-                        if (!this.items.getStack(0).isEmpty())
-                            nbt.put("SaddleItem", this.items.getStack(0).writeNbt(new NbtCompound()));
-                    break;
-                default:
+                }
+                case "SaddleItem" -> {
+                    if (!this.items.getStack(0).isEmpty())
+                        nbt.put("SaddleItem", this.items.getStack(0).writeNbt(new NbtCompound()));
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -57,19 +50,11 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntityMixin impleme
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "EatingHaystack":
-                    entity.setEatingGrass(nbt.getBoolean("EatingHaystack"));
-                    break;
-                case "Bred":
-                    entity.setBred(nbt.getBoolean("Bred"));
-                    break;
-                case "Temper":
-                    entity.setTemper(nbt.getInt("Temper"));
-                    break;
-                case "Tame":
-                    entity.setTame(nbt.getBoolean("Tame"));
-                    break;
-                case "Owner":
+                case "EatingHaystack" -> entity.setEatingGrass(nbt.getBoolean("EatingHaystack"));
+                case "Bred" -> entity.setBred(nbt.getBoolean("Bred"));
+                case "Temper" -> entity.setTemper(nbt.getInt("Temper"));
+                case "Tame" -> entity.setTame(nbt.getBoolean("Tame"));
+                case "Owner" -> {
                     UUID uUID;
                     if (nbt.containsUuid("Owner")) {
                         uUID = nbt.getUuid("Owner");
@@ -79,15 +64,16 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntityMixin impleme
                     }
                     if (uUID != null)
                         entity.setOwnerUuid(uUID);
-                    break;
-                case "ChestedHorse":
+                }
+                case "SaddleItem" -> {
                     ItemStack itemStack = ItemStack.fromNbt(nbt.getCompound("SaddleItem"));
                     if (itemStack.isOf(Items.SADDLE))
                         this.items.setStack(0, itemStack);
                     this.updateSaddle();
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

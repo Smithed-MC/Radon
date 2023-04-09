@@ -39,25 +39,13 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
         LivingEntity entity = ((LivingEntity)(Object)this);
 
         switch (topLevelNbt) {
-            case "Health":
-                nbt.putFloat("Health", entity.getHealth());
-                break;
-            case "HurtTime":
-                nbt.putShort("HurtTime", (short) entity.hurtTime);
-                break;
-            case "HurtByTimestamp":
-                nbt.putInt("HurtByTimestamp", this.lastAttackedTime);
-                break;
-            case "DeathTime":
-                nbt.putShort("DeathTime", (short) entity.deathTime);
-                break;
-            case "AbsorptionAmount":
-                nbt.putFloat("AbsorptionAmount", entity.getAbsorptionAmount());
-                break;
-            case "Attributes":
-                nbt.put("Attributes", entity.getAttributes().toNbt());
-                break;
-            case "ActiveEffects":
+            case "Health" -> nbt.putFloat("Health", entity.getHealth());
+            case "HurtTime" -> nbt.putShort("HurtTime", (short) entity.hurtTime);
+            case "HurtByTimestamp" -> nbt.putInt("HurtByTimestamp", this.lastAttackedTime);
+            case "DeathTime" -> nbt.putShort("DeathTime", (short) entity.deathTime);
+            case "AbsorptionAmount" -> nbt.putFloat("AbsorptionAmount", entity.getAbsorptionAmount());
+            case "Attributes" -> nbt.put("Attributes", entity.getAttributes().toNbt());
+            case "ActiveEffects" -> {
                 if (!this.activeStatusEffects.isEmpty()) {
                     NbtList nbtList = new NbtList();
                     Iterator var3 = this.activeStatusEffects.values().iterator();
@@ -69,29 +57,24 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
 
                     nbt.put("ActiveEffects", nbtList);
                 }
-                break;
-            case "FallFlying":
-                nbt.putBoolean("FallFlying", entity.isFallFlying());
-                break;
-            case "SleepingX":
-            case "SleepingY":
-            case "SleepingZ":
-                entity.getSleepingPosition().ifPresent((pos) -> {
-                    nbt.putInt("SleepingX", pos.getX());
-                    nbt.putInt("SleepingY", pos.getY());
-                    nbt.putInt("SleepingZ", pos.getZ());
-                });
-                break;
-            case "brain":
+            }
+            case "FallFlying" -> nbt.putBoolean("FallFlying", entity.isFallFlying());
+            case "SleepingX", "SleepingY", "SleepingZ" -> entity.getSleepingPosition().ifPresent((pos) -> {
+                nbt.putInt("SleepingX", pos.getX());
+                nbt.putInt("SleepingY", pos.getY());
+                nbt.putInt("SleepingZ", pos.getZ());
+            });
+            case "brain" -> {
                 DataResult<NbtElement> dataResult = this.brain.encode(NbtOps.INSTANCE);
                 Logger var10001 = LOGGER;
                 java.util.Objects.requireNonNull(var10001);
                 dataResult.resultOrPartial(var10001::error).ifPresent((brain) -> {
                     nbt.put("Brain", brain);
                 });
-                break;
-            default:
+            }
+            default -> {
                 return false;
+            }
         }
         return true;
     }
@@ -102,14 +85,12 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
         if(!nbt.contains(topLevelNbt))
             return false;
         switch (topLevelNbt) {
-            case "AbsorptionAmount":
-                entity.setAbsorptionAmount(nbt.getFloat("AbsorptionAmount"));
-                break;
-            case "Attributes":
+            case "AbsorptionAmount" -> entity.setAbsorptionAmount(nbt.getFloat("AbsorptionAmount"));
+            case "Attributes" -> {
                 if (nbt.contains("Attributes", 9) && this.world != null && !this.world.isClient)
                     entity.getAttributes().readNbt(nbt.getList("Attributes", 10));
-                break;
-            case "ActiveEffects":
+            }
+            case "ActiveEffects" -> {
                 if (nbt.contains("ActiveEffects", 9)) {
                     NbtList nbtList = nbt.getList("ActiveEffects", 10);
                     for (int i = 0; i < nbtList.size(); ++i) {
@@ -120,21 +101,15 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
                         }
                     }
                 }
-                break;
-            case "Health":
+            }
+            case "Health" -> {
                 if (nbt.contains("Health", 99))
                     entity.setHealth(nbt.getFloat("Health"));
-                break;
-            case "HurtTime":
-                entity.hurtTime = nbt.getShort("HurtTime");
-                break;
-            case "DeathTime":
-                entity.deathTime = nbt.getShort("DeathTime");
-                break;
-            case "HurtByTimestamp":
-                this.lastAttackedTime = nbt.getInt("HurtByTimestamp");
-                break;
-            case "Team":
+            }
+            case "HurtTime" -> entity.hurtTime = nbt.getShort("HurtTime");
+            case "DeathTime" -> entity.deathTime = nbt.getShort("DeathTime");
+            case "HurtByTimestamp" -> this.lastAttackedTime = nbt.getInt("HurtByTimestamp");
+            case "Team" -> {
                 if (nbt.contains("Team", 8)) {
                     String string = nbt.getString("Team");
                     Team team = this.world.getScoreboard().getTeam(string);
@@ -143,33 +118,32 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
                         LOGGER.warn("Unable to add mob to team \"{}\" (that team probably doesn't exist)", string);
                     }
                 }
-                break;
-            case "FallFlying":
+            }
+            case "FallFlying" -> {
                 if (nbt.getBoolean("FallFlying"))
                     this.setFlag(7, true);
-                break;
-            case "Brain":
+            }
+            case "Brain" -> {
                 if (nbt.contains("Brain", 10))
-                    this.brain = this.deserializeBrain(new Dynamic(NbtOps.INSTANCE, nbt.get("Brain")));
-                break;
-            case "SleepingX":
-            case "SleepingY":
-            case "SleepingZ":
+                    this.brain = this.deserializeBrain(new Dynamic<>(NbtOps.INSTANCE, nbt.get("Brain")));
+            }
+            case "SleepingX", "SleepingY", "SleepingZ" -> {
                 Optional<BlockPos> currentPos = entity.getSleepingPosition();
-                if(currentPos.isPresent()) {
+                if (currentPos.isPresent()) {
                     int i = nbt.contains("SleepingX") ? nbt.getInt("SleepingX") : currentPos.get().getX();
                     int j = nbt.contains("SleepingY") ? nbt.getInt("SleepingY") : currentPos.get().getY();
                     int k = nbt.contains("SleepingZ") ? nbt.getInt("SleepingZ") : currentPos.get().getZ();
-                    BlockPos blockPos = new BlockPos(i,j,k);
+                    BlockPos blockPos = new BlockPos(i, j, k);
                     entity.setSleepingPosition(blockPos);
                     this.dataTracker.set(POSE, EntityPose.SLEEPING);
                     if (!this.firstUpdate) {
                         this.setPositionInBed(blockPos);
                     }
                 }
-                break;
-            default:
+            }
+            default -> {
                 return false;
+            }
         }
         return true;
     }

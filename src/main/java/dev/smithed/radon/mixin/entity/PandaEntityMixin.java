@@ -13,14 +13,11 @@ public abstract class PandaEntityMixin extends AnimalEntityMixin implements ICus
         PandaEntity entity = ((PandaEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "MainGene":
-                    nbt.putString("MainGene", entity.getMainGene().asString());
-                    break;
-                case "HiddenGene":
-                    nbt.putString("HiddenGene", entity.getHiddenGene().asString());
-                    break;
-                default:
+                case "MainGene" -> nbt.putString("MainGene", entity.getMainGene().asString());
+                case "HiddenGene" -> nbt.putString("HiddenGene", entity.getHiddenGene().asString());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -33,14 +30,11 @@ public abstract class PandaEntityMixin extends AnimalEntityMixin implements ICus
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "MainGene":
-                    entity.setMainGene(PandaEntity.Gene.byName(nbt.getString("MainGene")));
-                    break;
-                case "HiddenGene":
-                    entity.setHiddenGene(PandaEntity.Gene.byName(nbt.getString("HiddenGene")));
-                    break;
-                default:
+                case "MainGene" -> entity.setMainGene(PandaEntity.Gene.byName(nbt.getString("MainGene")));
+                case "HiddenGene" -> entity.setHiddenGene(PandaEntity.Gene.byName(nbt.getString("HiddenGene")));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

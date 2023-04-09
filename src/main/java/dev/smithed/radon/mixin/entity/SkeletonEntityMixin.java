@@ -16,12 +16,10 @@ public abstract class SkeletonEntityMixin extends AbstractSkeletonEntityMixin im
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SkeletonEntity entity = ((SkeletonEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "StrayConversionTime":
-                    nbt.putInt("StrayConversionTime", entity.isConverting() ? this.conversionTime : -1);
-                default:
-                    return false;
+            if (topLevelNbt.equals("StrayConversionTime")) {
+                nbt.putInt("StrayConversionTime", entity.isConverting() ? this.conversionTime : -1);
             }
+            return false;
         }
         return true;
     }
@@ -32,13 +30,11 @@ public abstract class SkeletonEntityMixin extends AbstractSkeletonEntityMixin im
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "StrayConversionTime":
-                    if (nbt.contains("StrayConversionTime", 99) && nbt.getInt("StrayConversionTime") > -1)
-                        this.setConversionTime(nbt.getInt("StrayConversionTime"));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("StrayConversionTime")) {
+                if (nbt.contains("StrayConversionTime", 99) && nbt.getInt("StrayConversionTime") > -1)
+                    this.setConversionTime(nbt.getInt("StrayConversionTime"));
+            } else {
+                return false;
             }
         }
         return true;

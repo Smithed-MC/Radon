@@ -16,12 +16,10 @@ public abstract class TropicalFishEntityMixin extends FishEntityMixin implements
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TropicalFishEntity entity = ((TropicalFishEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Variant":
-                    nbt.putInt("Variant", this.getTropicalFishVariant());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Variant")) {
+                nbt.putInt("Variant", this.getTropicalFishVariant());
+            } else {
+                return false;
             }
         }
         return true;
@@ -33,12 +31,10 @@ public abstract class TropicalFishEntityMixin extends FishEntityMixin implements
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Variant":
-                    this.setTropicalFishVariant(nbt.getInt("Variant"));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Variant")) {
+                this.setTropicalFishVariant(nbt.getInt("Variant"));
+            } else {
+                return false;
             }
         }
         return true;

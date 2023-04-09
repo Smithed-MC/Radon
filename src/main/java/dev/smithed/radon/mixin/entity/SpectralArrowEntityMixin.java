@@ -15,12 +15,10 @@ public abstract class SpectralArrowEntityMixin extends PersistentProjectileEntit
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SpectralArrowEntity entity = ((SpectralArrowEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Duration":
-                    nbt.putInt("Duration", this.duration);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Duration")) {
+                nbt.putInt("Duration", this.duration);
+            } else {
+                return false;
             }
         }
         return true;
@@ -32,12 +30,10 @@ public abstract class SpectralArrowEntityMixin extends PersistentProjectileEntit
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Duration":
-                    this.duration = nbt.getInt("Duration");
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Duration")) {
+                this.duration = nbt.getInt("Duration");
+            } else {
+                return false;
             }
         }
         return true;

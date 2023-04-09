@@ -16,14 +16,11 @@ public abstract class SlimeEntityMixin extends MobEntityMixin implements ICustom
         SlimeEntity entity = ((SlimeEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Size":
-                    nbt.putInt("Size", entity.getSize() - 1);
-                    break;
-                case "wasOnGround":
-                    nbt.putBoolean("wasOnGround", this.onGroundLastTick);
-                    break;
-                default:
+                case "Size" -> nbt.putInt("Size", entity.getSize() - 1);
+                case "wasOnGround" -> nbt.putBoolean("wasOnGround", this.onGroundLastTick);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -36,14 +33,11 @@ public abstract class SlimeEntityMixin extends MobEntityMixin implements ICustom
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Size":
-                    entity.setSize(nbt.getInt("Size") + 1, false);
-                    break;
-                case "Tag":
-                    this.onGroundLastTick = nbt.getBoolean("wasOnGround");
-                    break;
-                default:
+                case "Size" -> entity.setSize(nbt.getInt("Size") + 1, false);
+                case "wasOnGround" -> this.onGroundLastTick = nbt.getBoolean("wasOnGround");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

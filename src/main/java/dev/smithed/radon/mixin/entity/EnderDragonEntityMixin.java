@@ -19,14 +19,11 @@ public abstract class EnderDragonEntityMixin extends MobEntityMixin implements I
         EnderDragonEntity entity = ((EnderDragonEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "DragonPhase":
-                    nbt.putInt("DragonPhase", this.phaseManager.getCurrent().getType().getTypeId());
-                    break;
-                case "DragonDeathTime":
-                    nbt.putInt("DragonDeathTime", entity.ticksSinceDeath);
-                    break;
-                default:
+                case "DragonPhase" -> nbt.putInt("DragonPhase", this.phaseManager.getCurrent().getType().getTypeId());
+                case "DragonDeathTime" -> nbt.putInt("DragonDeathTime", entity.ticksSinceDeath);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -39,16 +36,17 @@ public abstract class EnderDragonEntityMixin extends MobEntityMixin implements I
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "DragonPhase":
+                case "DragonPhase" -> {
                     if (nbt.contains("DragonPhase"))
                         this.phaseManager.setPhase(PhaseType.getFromId(nbt.getInt("DragonPhase")));
-                    break;
-                case "DragonDeathTime":
+                }
+                case "DragonDeathTime" -> {
                     if (nbt.contains("DragonDeathTime"))
                         entity.ticksSinceDeath = nbt.getInt("DragonDeathTime");
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
 
         }

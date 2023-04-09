@@ -22,14 +22,11 @@ public abstract class TridentEntityMixin extends PersistentProjectileEntityMixin
         TridentEntity entity = ((TridentEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Trident":
-                    nbt.put("Trident", this.tridentStack.writeNbt(new NbtCompound()));
-                    break;
-                case "DealtDamage":
-                    nbt.putBoolean("DealtDamage", this.dealtDamage);
-                    break;
-                default:
+                case "Trident" -> nbt.put("Trident", this.tridentStack.writeNbt(new NbtCompound()));
+                case "DealtDamage" -> nbt.putBoolean("DealtDamage", this.dealtDamage);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -42,17 +39,16 @@ public abstract class TridentEntityMixin extends PersistentProjectileEntityMixin
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Trident":
+                case "Trident" -> {
                     if (nbt.contains("Trident", 10)) {
                         this.tridentStack = ItemStack.fromNbt(nbt.getCompound("Trident"));
                         this.dataTracker.set(LOYALTY, (byte) EnchantmentHelper.getLoyalty(this.tridentStack));
                     }
-                    break;
-                case "DealtDamage":
-                    this.dealtDamage = nbt.getBoolean("DealtDamage");
-                    break;
-                default:
+                }
+                case "DealtDamage" -> this.dealtDamage = nbt.getBoolean("DealtDamage");
+                default -> {
                     return false;
+                }
             }
 
         }

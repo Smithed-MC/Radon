@@ -18,17 +18,12 @@ public abstract class RavagerEntityMixin extends RaiderEntityMixin implements IC
         RavagerEntity entity = ((RavagerEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "AttackTick":
-                    nbt.putInt("AttackTick", this.attackTick);
-                    break;
-                case "StunTick":
-                    nbt.putInt("StunTick", this.stunTick);
-                    break;
-                case "RoarTick":
-                    nbt.putInt("RoarTick", this.roarTick);
-                    break;
-                default:
+                case "AttackTick" -> nbt.putInt("AttackTick", this.attackTick);
+                case "StunTick" -> nbt.putInt("StunTick", this.stunTick);
+                case "RoarTick" -> nbt.putInt("RoarTick", this.roarTick);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -41,17 +36,12 @@ public abstract class RavagerEntityMixin extends RaiderEntityMixin implements IC
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "AttackTick":
-                    this.attackTick = nbt.getInt("AttackTick");
-                    break;
-                case "StunTick":
-                    this.stunTick = nbt.getInt("StunTick");
-                    break;
-                case "RoarTick":
-                    this.roarTick = nbt.getInt("RoarTick");
-                    break;
-                default:
+                case "AttackTick" -> this.attackTick = nbt.getInt("AttackTick");
+                case "StunTick" -> this.stunTick = nbt.getInt("StunTick");
+                case "RoarTick" -> this.roarTick = nbt.getInt("RoarTick");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

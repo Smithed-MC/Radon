@@ -20,18 +20,15 @@ public abstract class PatrolEntityMixin extends MobEntityMixin implements ICusto
         PatrolEntity entity = ((PatrolEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "PatrolTarget":
+                case "PatrolTarget" -> {
                     if (this.patrolTarget != null)
                         nbt.put("PatrolTarget", NbtHelper.fromBlockPos(this.patrolTarget));
-                    break;
-                case "PatrolLeader":
-                    nbt.putBoolean("PatrolLeader", this.patrolLeader);
-                    break;
-                case "Patrolling":
-                    nbt.putBoolean("Patrolling", this.patrolling);
-                    break;
-                default:
+                }
+                case "PatrolLeader" -> nbt.putBoolean("PatrolLeader", this.patrolLeader);
+                case "Patrolling" -> nbt.putBoolean("Patrolling", this.patrolling);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -44,17 +41,12 @@ public abstract class PatrolEntityMixin extends MobEntityMixin implements ICusto
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "PatrolTarget":
-                    this.patrolTarget = NbtHelper.toBlockPos(nbt.getCompound("PatrolTarget"));
-                    break;
-                case "PatrolLeader":
-                    this.patrolLeader = nbt.getBoolean("PatrolLeader");
-                    break;
-                case "Patrolling":
-                    this.patrolling = nbt.getBoolean("Patrolling");
-                    break;
-                default:
+                case "PatrolTarget" -> this.patrolTarget = NbtHelper.toBlockPos(nbt.getCompound("PatrolTarget"));
+                case "PatrolLeader" -> this.patrolLeader = nbt.getBoolean("PatrolLeader");
+                case "Patrolling" -> this.patrolling = nbt.getBoolean("Patrolling");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

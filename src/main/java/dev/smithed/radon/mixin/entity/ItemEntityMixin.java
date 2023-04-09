@@ -24,31 +24,27 @@ public abstract class ItemEntityMixin extends EntityMixin implements ICustomNBTM
         ItemEntity entity = ((ItemEntity)(Object)this);
 
         switch (topLevelNbt) {
-            case "Health":
-                nbt.putShort("Health", (short)this.health);
-                break;
-            case "Age":
-                nbt.putShort("Age", (short)this.itemAge);
-                break;
-            case "PickupDelay":
-                nbt.putShort("PickupDelay", (short)this.pickupDelay);
-                break;
-            case "Thrower":
-                if (entity.getThrower() != null) {
-                    nbt.putUuid("Thrower", entity.getThrower());
+            case "Health" -> nbt.putShort("Health", (short)this.health);
+            case "Age" -> nbt.putShort("Age", (short)this.itemAge);
+            case "PickupDelay" -> nbt.putShort("PickupDelay", (short)this.pickupDelay);
+            case "Thrower" -> {
+                if (this.thrower != null) {
+                    nbt.putUuid("Thrower", this.thrower);
                 }
-                break;
-            case "Owner":
+            }
+            case "Owner" -> {
                 if (entity.getOwner() != null) {
-                    nbt.putUuid("Owner", entity.getOwner());
+                    nbt.putUuid("Owner", this.owner);
                 }
-            case "Item":
+            }
+            case "Item" -> {
                 if (!entity.getStack().isEmpty()) {
                     nbt.put("Item", entity.getStack().writeNbt(new NbtCompound()));
                 }
-                break;
-            default:
+            }
+            default -> {
                 return false;
+            }
         }
         return true;
     }
@@ -60,30 +56,21 @@ public abstract class ItemEntityMixin extends EntityMixin implements ICustomNBTM
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Health":
-                    this.health = nbt.getShort("Health");
-                    break;
-                case "Age":
-                    this.itemAge = nbt.getShort("Age");
-                    break;
-                case "PickupDelay":
-                    this.pickupDelay = nbt.getShort("PickupDelay");
-                    break;
-                case "Owner":
-                    this.owner = nbt.getUuid("Owner");
-                    break;
-                case "Thrower":
-                    this.thrower = nbt.getUuid("Thrower");
-                    break;
-                case "Item":
+                case "Health" -> this.health = nbt.getShort("Health");
+                case "Age" -> this.itemAge = nbt.getShort("Age");
+                case "PickupDelay" -> this.pickupDelay = nbt.getShort("PickupDelay");
+                case "Owner" -> this.owner = nbt.getUuid("Owner");
+                case "Thrower" -> this.thrower = nbt.getUuid("Thrower");
+                case "Item" -> {
                     NbtCompound nbtCompound = nbt.getCompound("Item");
                     entity.setStack(ItemStack.fromNbt(nbtCompound));
                     if (entity.getStack().isEmpty()) {
                         entity.discard();
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

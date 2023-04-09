@@ -34,28 +34,23 @@ public abstract class BlockEntityMixin implements IEntityMixin, ICustomNBTMixin 
         BlockEntity entity = ((BlockEntity) (Object) this);
 
         switch (topLevelNbt) {
-            case "x":
-                nbt.putInt("x", this.pos.getX());
-                break;
-            case "y":
-                nbt.putInt("y", this.pos.getY());
-                break;
-            case "z":
-                nbt.putInt("z", this.pos.getZ());
-                break;
-            case "id":
+            case "x" -> nbt.putInt("x", this.pos.getX());
+            case "y" -> nbt.putInt("y", this.pos.getY());
+            case "z" -> nbt.putInt("z", this.pos.getZ());
+            case "id" -> {
                 Identifier identifier = BlockEntityType.getId(entity.getType());
                 if (identifier == null) {
                     throw new RuntimeException(this.getClass() + " is missing a mapping! This is a bug!");
                 } else {
                     nbt.putString("id", identifier.toString());
                 }
-                break;
-            default:
-                if(this.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt))
+            }
+            default -> {
+                if (this.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt))
                     return nbt;
                 else
                     return null;
+            }
         }
         return nbt;
     }

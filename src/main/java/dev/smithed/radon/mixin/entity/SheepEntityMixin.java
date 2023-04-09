@@ -14,14 +14,11 @@ public abstract class SheepEntityMixin extends AnimalEntityMixin implements ICus
         SheepEntity entity = ((SheepEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Sheared":
-                    nbt.putBoolean("Sheared", entity.isSheared());
-                    break;
-                case "Color":
-                    nbt.putByte("Color", (byte)entity.getColor().getId());
-                    break;
-                default:
+                case "Sheared" -> nbt.putBoolean("Sheared", entity.isSheared());
+                case "Color" -> nbt.putByte("Color", (byte) entity.getColor().getId());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -34,14 +31,11 @@ public abstract class SheepEntityMixin extends AnimalEntityMixin implements ICus
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Sheared":
-                    entity.setSheared(nbt.getBoolean("Sheared"));
-                    break;
-                case "Color":
-                    entity.setColor(DyeColor.byId(nbt.getByte("Color")));
-                    break;
-                default:
+                case "Sheared" -> entity.setSheared(nbt.getBoolean("Sheared"));
+                case "Color" -> entity.setColor(DyeColor.byId(nbt.getByte("Color")));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -15,16 +15,14 @@ public abstract class RabbitEntityMixin extends AnimalEntityMixin implements ICu
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         RabbitEntity entity = ((RabbitEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                //TODO: access private id field
-                //case "RabbitType":
-                //    nbt.putInt("RabbitType", this.getVariant().id);
-                //    break;
-                case "MoreCarrotTicks":
-                    nbt.putInt("MoreCarrotTicks", this.moreCarrotTicks);
-                    break;
-                default:
-                    return false;
+            //TODO: access private id field
+            //case "RabbitType":
+            //    nbt.putInt("RabbitType", this.getVariant().id);
+            //    break;
+            if (topLevelNbt.equals("MoreCarrotTicks")) {
+                nbt.putInt("MoreCarrotTicks", this.moreCarrotTicks);
+            } else {
+                return false;
             }
         }
         return true;
@@ -37,14 +35,11 @@ public abstract class RabbitEntityMixin extends AnimalEntityMixin implements ICu
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "RabbitType":
-                    entity.setVariant(RabbitEntity.RabbitType.byId(nbt.getInt("RabbitType")));
-                    break;
-                case "MoreCarrotTicks":
-                    this.moreCarrotTicks = nbt.getInt("MoreCarrotTicks");
-                    break;
-                default:
+                case "RabbitType" -> entity.setVariant(RabbitEntity.RabbitType.byId(nbt.getInt("RabbitType")));
+                case "MoreCarrotTicks" -> this.moreCarrotTicks = nbt.getInt("MoreCarrotTicks");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

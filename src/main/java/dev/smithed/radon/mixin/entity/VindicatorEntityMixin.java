@@ -15,13 +15,11 @@ public abstract class VindicatorEntityMixin extends RaiderEntityMixin implements
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         VindicatorEntity entity = ((VindicatorEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Johnny":
-                    if (this.johnny)
-                        nbt.putBoolean("Johnny", true);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Johnny")) {
+                if (this.johnny)
+                    nbt.putBoolean("Johnny", true);
+            } else {
+                return false;
             }
         }
         return true;
@@ -33,13 +31,11 @@ public abstract class VindicatorEntityMixin extends RaiderEntityMixin implements
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Johnny":
-                    if (nbt.contains("Johnny", 99))
-                        this.johnny = nbt.getBoolean("Johnny");
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Johnny")) {
+                if (nbt.contains("Johnny", 99))
+                    this.johnny = nbt.getBoolean("Johnny");
+            } else {
+                return false;
             }
         }
         return true;

@@ -14,12 +14,10 @@ public abstract class ComparatorBlockEntityMixin extends BlockEntityMixin implem
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "OutputSignal":
-                    nbt.putInt("OutputSignal", this.outputSignal);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("OutputSignal")) {
+                nbt.putInt("OutputSignal", this.outputSignal);
+            } else {
+                return false;
             }
         }
         return true;
@@ -30,12 +28,10 @@ public abstract class ComparatorBlockEntityMixin extends BlockEntityMixin implem
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "OutputSignal":
-                    this.outputSignal = nbt.getInt("OutputSignal");
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("OutputSignal")) {
+                this.outputSignal = nbt.getInt("OutputSignal");
+            } else {
+                return false;
             }
         }
         return true;

@@ -18,19 +18,18 @@ public abstract class MooshroomEntityMixin extends AnimalEntityMixin implements 
         MooshroomEntity entity = ((MooshroomEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Type":
-                    nbt.putString("Type", entity.getVariant().asString());
-                    break;
-                case "EffectId":
+                case "Type" -> nbt.putString("Type", entity.getVariant().asString());
+                case "EffectId" -> {
                     if (this.stewEffect != null)
                         nbt.putInt("EffectId", StatusEffect.getRawId(this.stewEffect));
-                    break;
-                case "EffectDuration":
+                }
+                case "EffectDuration" -> {
                     if (this.stewEffect != null)
                         nbt.putInt("EffectDuration", this.stewEffectDuration);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -43,16 +42,17 @@ public abstract class MooshroomEntityMixin extends AnimalEntityMixin implements 
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "EffectId":
+                case "EffectId" -> {
                     if (nbt.contains("EffectId", 1))
                         this.stewEffect = StatusEffect.byRawId(nbt.getInt("EffectId"));
-                    break;
-                case "EffectDuration":
+                }
+                case "EffectDuration" -> {
                     if (nbt.contains("EffectDuration", 3))
                         this.stewEffectDuration = nbt.getInt("EffectDuration");
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -17,12 +17,10 @@ public abstract class WitherEntityMixin extends MobEntityMixin implements ICusto
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         WitherEntity entity = ((WitherEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Invul":
-                    nbt.putInt("Invul", entity.getInvulnerableTimer());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Invul")) {
+                nbt.putInt("Invul", entity.getInvulnerableTimer());
+            } else {
+                return false;
             }
         }
         return true;
@@ -34,12 +32,10 @@ public abstract class WitherEntityMixin extends MobEntityMixin implements ICusto
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Invul":
-                    entity.setInvulTimer(nbt.getInt("Invul"));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Invul")) {
+                entity.setInvulTimer(nbt.getInt("Invul"));
+            } else {
+                return false;
             }
         }
         if (entity.hasCustomName())

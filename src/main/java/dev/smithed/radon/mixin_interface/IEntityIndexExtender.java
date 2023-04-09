@@ -11,6 +11,6 @@ public interface IEntityIndexExtender<T extends EntityLike> {
 
     void removeEntityFromTagMap(String tag, EntityLike entity);
 
-    <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, LazyIterationConsumer<U> action, SelectorContainer container);
+    <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, SelectorContainer container, LazyIterationConsumer<U> action);
 
 }

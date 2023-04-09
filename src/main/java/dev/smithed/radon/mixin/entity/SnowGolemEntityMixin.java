@@ -12,12 +12,10 @@ public abstract class SnowGolemEntityMixin extends MobEntityMixin implements ICu
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SnowGolemEntity entity = ((SnowGolemEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Pumpkin":
-                    nbt.putBoolean("Pumpkin", entity.hasPumpkin());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Pumpkin")) {
+                nbt.putBoolean("Pumpkin", entity.hasPumpkin());
+            } else {
+                return false;
             }
         }
         return true;
@@ -29,12 +27,10 @@ public abstract class SnowGolemEntityMixin extends MobEntityMixin implements ICu
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Pumpkin":
-                    entity.setHasPumpkin(nbt.getBoolean("Pumpkin"));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Pumpkin")) {
+                entity.setHasPumpkin(nbt.getBoolean("Pumpkin"));
+            } else {
+                return false;
             }
         }
         return true;

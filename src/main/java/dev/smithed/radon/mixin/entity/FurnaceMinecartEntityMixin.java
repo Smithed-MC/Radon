@@ -15,17 +15,12 @@ public abstract class FurnaceMinecartEntityMixin extends AbstractMinecartEntityM
         FurnaceMinecartEntity entity = ((FurnaceMinecartEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "PushX":
-                    nbt.putDouble("PushX", entity.pushX);
-                    break;
-                case "PushZ":
-                    nbt.putDouble("PushZ", entity.pushZ);
-                    break;
-                case "Fuel":
-                    nbt.putShort("Fuel", (short)this.fuel);
-                    break;
-                default:
+                case "PushX" -> nbt.putDouble("PushX", entity.pushX);
+                case "PushZ" -> nbt.putDouble("PushZ", entity.pushZ);
+                case "Fuel" -> nbt.putShort("Fuel", (short) this.fuel);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -38,17 +33,12 @@ public abstract class FurnaceMinecartEntityMixin extends AbstractMinecartEntityM
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "PushX":
-                    entity.pushX = nbt.getDouble("PushX");
-                    break;
-                case "PushZ":
-                    entity.pushZ = nbt.getDouble("PushZ");
-                    break;
-                case "Fuel":
-                    this.fuel = nbt.getShort("Fuel");
-                    break;
-                default:
+                case "PushX" -> entity.pushX = nbt.getDouble("PushX");
+                case "PushZ" -> entity.pushZ = nbt.getDouble("PushZ");
+                case "Fuel" -> this.fuel = nbt.getShort("Fuel");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

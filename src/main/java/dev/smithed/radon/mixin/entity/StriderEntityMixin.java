@@ -17,12 +17,10 @@ public abstract class StriderEntityMixin extends AnimalEntityMixin implements IC
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         StriderEntity entity = ((StriderEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Saddle":
-                    this.saddledComponent.writeNbt(nbt);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("Saddle")) {
+                this.saddledComponent.writeNbt(nbt);
+            } else {
+                return false;
             }
         }
         return true;
@@ -34,12 +32,10 @@ public abstract class StriderEntityMixin extends AnimalEntityMixin implements IC
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Saddle":
-                    this.saddledComponent.readNbt(nbt);
-                default:
-                    return false;
+            if (topLevelNbt.equals("Saddle")) {
+                this.saddledComponent.readNbt(nbt);
             }
+            return false;
         }
         return true;
     }

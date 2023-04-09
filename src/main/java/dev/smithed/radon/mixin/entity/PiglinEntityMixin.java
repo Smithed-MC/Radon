@@ -20,19 +20,18 @@ public abstract class PiglinEntityMixin extends AbstractPiglinEntityMixin implem
         PiglinEntity entity = ((PiglinEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "IsBaby":
+                case "IsBaby" -> {
                     if (entity.isBaby())
                         nbt.putBoolean("IsBaby", true);
-                    break;
-                case "CannotHunt":
+                }
+                case "CannotHunt" -> {
                     if (this.cannotHunt)
                         nbt.putBoolean("CannotHunt", true);
-                    break;
-                case "Inventory":
-                    nbt.put("Inventory", this.inventory.toNbtList());
-                    break;
-                default:
+                }
+                case "Inventory" -> nbt.put("Inventory", this.inventory.toNbtList());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -45,17 +44,12 @@ public abstract class PiglinEntityMixin extends AbstractPiglinEntityMixin implem
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "IsBaby":
-                    entity.setBaby(nbt.getBoolean("IsBaby"));
-                    break;
-                case "CannotHunt":
-                    this.setCannotHunt(nbt.getBoolean("CannotHunt"));
-                    break;
-                case "Inventory":
-                    this.inventory.readNbtList(nbt.getList("Inventory", 10));
-                    break;
-                default:
+                case "IsBaby" -> entity.setBaby(nbt.getBoolean("IsBaby"));
+                case "CannotHunt" -> this.setCannotHunt(nbt.getBoolean("CannotHunt"));
+                case "Inventory" -> this.inventory.readNbtList(nbt.getList("Inventory", 10));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

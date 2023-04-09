@@ -28,27 +28,20 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Items":
-                    Inventories.writeNbt(nbt, this.inventory);
-                    break;
-                case "BurnTime":
-                    nbt.putShort("BurnTime", (short)this.burnTime);
-                    break;
-                case "CookTime":
-                    nbt.putShort("CookTime", (short)this.cookTime);
-                    break;
-                case "CookTimeTotal":
-                    nbt.putShort("CookTimeTotal", (short)this.cookTimeTotal);
-                    break;
-                case "RecipesUsed":
+                case "Items" -> Inventories.writeNbt(nbt, this.inventory);
+                case "BurnTime" -> nbt.putShort("BurnTime", (short) this.burnTime);
+                case "CookTime" -> nbt.putShort("CookTime", (short) this.cookTime);
+                case "CookTimeTotal" -> nbt.putShort("CookTimeTotal", (short) this.cookTimeTotal);
+                case "RecipesUsed" -> {
                     NbtCompound nbtCompound = new NbtCompound();
                     this.recipesUsed.forEach((identifier, count) -> {
                         nbtCompound.putInt(identifier.toString(), count);
                     });
                     nbt.put("RecipesUsed", nbtCompound);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -60,27 +53,22 @@ public abstract class AbstractFurnaceBlockEntityMixin extends LockableContainerB
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Items":
+                case "Items" -> {
                     this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
                     Inventories.readNbt(nbt, this.inventory);
                     this.fuelTime = this.getFuelTime(this.inventory.get(1));
-                    break;
-                case "BurnTime":
-                    this.burnTime = nbt.getShort("BurnTime");
-                    break;
-                case "CookTime":
-                    this.cookTime = nbt.getShort("CookTime");
-                    break;
-                case "CookTimeTotal":
-                    this.cookTimeTotal = nbt.getShort("CookTimeTotal");
-                    break;
-                case "Tag":
+                }
+                case "BurnTime" -> this.burnTime = nbt.getShort("BurnTime");
+                case "CookTime" -> this.cookTime = nbt.getShort("CookTime");
+                case "CookTimeTotal" -> this.cookTimeTotal = nbt.getShort("CookTimeTotal");
+                case "Tag" -> {
                     NbtCompound nbtCompound = nbt.getCompound("RecipesUsed");
                     for (String string : nbtCompound.getKeys())
                         this.recipesUsed.put(new Identifier(string), nbtCompound.getInt(string));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

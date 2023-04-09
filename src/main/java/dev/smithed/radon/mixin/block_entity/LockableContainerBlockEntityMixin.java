@@ -17,15 +17,14 @@ public abstract class LockableContainerBlockEntityMixin extends BlockEntityMixin
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         switch (topLevelNbt) {
-            case "CustomName":
+            case "CustomName" -> {
                 if (this.customName != null)
                     nbt.putString("CustomName", Text.Serializer.toJson(this.customName));
-                break;
-            case "Lock":
-                this.lock.writeNbt(nbt);
-                break;
-            default:
+            }
+            case "Lock" -> this.lock.writeNbt(nbt);
+            default -> {
                 return false;
+            }
         }
         return true;
     }
@@ -36,15 +35,14 @@ public abstract class LockableContainerBlockEntityMixin extends BlockEntityMixin
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Lock":
-                    this.lock = ContainerLock.fromNbt(nbt);
-                    break;
-                case "CustomName":
+                case "Lock" -> this.lock = ContainerLock.fromNbt(nbt);
+                case "CustomName" -> {
                     if (nbt.contains("CustomName", 8))
                         this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

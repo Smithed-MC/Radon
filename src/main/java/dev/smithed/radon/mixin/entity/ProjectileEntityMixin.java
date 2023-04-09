@@ -20,19 +20,18 @@ public abstract class ProjectileEntityMixin extends EntityMixin implements ICust
         ProjectileEntity entity = ((ProjectileEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "HasBeenShot":
-                    nbt.putBoolean("HasBeenShot", this.shot);
-                    break;
-                case "LeftOwner":
+                case "HasBeenShot" -> nbt.putBoolean("HasBeenShot", this.shot);
+                case "LeftOwner" -> {
                     if (this.leftOwner)
                         nbt.putBoolean("LeftOwner", true);
-                    break;
-                case "Owner":
+                }
+                case "Owner" -> {
                     if (this.ownerUuid != null)
                         nbt.putUuid("Owner", this.ownerUuid);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -45,18 +44,15 @@ public abstract class ProjectileEntityMixin extends EntityMixin implements ICust
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Owner":
+                case "Owner" -> {
                     if (nbt.containsUuid("Owner"))
                         this.ownerUuid = nbt.getUuid("Owner");
-                    break;
-                case "LeftOwner":
-                    this.leftOwner = nbt.getBoolean("LeftOwner");
-                    break;
-                case "HasBeenShot":
-                    this.shot = nbt.getBoolean("HasBeenShot");
-                    break;
-                default:
+                }
+                case "LeftOwner" -> this.leftOwner = nbt.getBoolean("LeftOwner");
+                case "HasBeenShot" -> this.shot = nbt.getBoolean("HasBeenShot");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

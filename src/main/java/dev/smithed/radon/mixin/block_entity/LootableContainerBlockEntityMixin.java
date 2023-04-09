@@ -18,16 +18,17 @@ public abstract class LootableContainerBlockEntityMixin extends LockableContaine
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "LootTable":
+                case "LootTable" -> {
                     if (nbt.contains("LootTable", 8))
                         this.lootTableId = new Identifier(nbt.getString("LootTable"));
-                    break;
-                case "LootTableSeed":
+                }
+                case "LootTableSeed" -> {
                     if (nbt.contains("LootTable", 8))
                         this.lootTableSeed = nbt.getLong("LootTableSeed");
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

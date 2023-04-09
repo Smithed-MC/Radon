@@ -24,16 +24,17 @@ public abstract class LecternBlockEntityMixin extends BlockEntityMixin implement
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Book":
+                case "Book" -> {
                     if (!this.getBook().isEmpty())
                         nbt.put("Book", this.getBook().writeNbt(new NbtCompound()));
-                    break;
-                case "Page":
+                }
+                case "Page" -> {
                     if (!this.getBook().isEmpty())
                         nbt.putInt("Page", this.currentPage);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -45,19 +46,18 @@ public abstract class LecternBlockEntityMixin extends BlockEntityMixin implement
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Book":
+                case "Book" -> {
                     if (nbt.contains("Book", 10)) {
-                        this.book = this.resolveBook(ItemStack.fromNbt(nbt.getCompound("Book")), (PlayerEntity)null);
+                        this.book = this.resolveBook(ItemStack.fromNbt(nbt.getCompound("Book")), (PlayerEntity) null);
                     } else {
                         this.book = ItemStack.EMPTY;
                     }
                     this.pageCount = WrittenBookItem.getPageCount(this.book);
-                    break;
-                case "Page":
-                    this.currentPage = MathHelper.clamp(nbt.getInt("Page"), 0, this.pageCount - 1);
-                    break;
-                default:
+                }
+                case "Page" -> this.currentPage = MathHelper.clamp(nbt.getInt("Page"), 0, this.pageCount - 1);
+                default -> {
                     return false;
+                }
             }
         }
         return true;

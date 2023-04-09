@@ -19,19 +19,17 @@ public abstract class PillagerEntityMixin extends RaiderEntityMixin implements I
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PillagerEntity entity = ((PillagerEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "Inventory":
-                    NbtList nbtList = new NbtList();
-                    for(int i = 0; i < this.inventory.size(); ++i) {
-                        ItemStack itemStack = this.inventory.getStack(i);
-                        if (!itemStack.isEmpty()) {
-                            nbtList.add(itemStack.writeNbt(new NbtCompound()));
-                        }
+            if (topLevelNbt.equals("Inventory")) {
+                NbtList nbtList = new NbtList();
+                for (int i = 0; i < this.inventory.size(); ++i) {
+                    ItemStack itemStack = this.inventory.getStack(i);
+                    if (!itemStack.isEmpty()) {
+                        nbtList.add(itemStack.writeNbt(new NbtCompound()));
                     }
-                    nbt.put("Inventory", nbtList);
-                    break;
-                default:
-                    return false;
+                }
+                nbt.put("Inventory", nbtList);
+            } else {
+                return false;
             }
         }
         return true;
@@ -43,18 +41,16 @@ public abstract class PillagerEntityMixin extends RaiderEntityMixin implements I
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "Inventory":
-                    NbtList nbtList = nbt.getList("Inventory", 10);
-                    for(int i = 0; i < nbtList.size(); ++i) {
-                        ItemStack itemStack = ItemStack.fromNbt(nbtList.getCompound(i));
-                        if (!itemStack.isEmpty()) {
-                            this.inventory.addStack(itemStack);
-                        }
+            if (topLevelNbt.equals("Inventory")) {
+                NbtList nbtList = nbt.getList("Inventory", 10);
+                for (int i = 0; i < nbtList.size(); ++i) {
+                    ItemStack itemStack = ItemStack.fromNbt(nbtList.getCompound(i));
+                    if (!itemStack.isEmpty()) {
+                        this.inventory.addStack(itemStack);
                     }
-                    break;
-                default:
-                    return false;
+                }
+            } else {
+                return false;
             }
         } else {
             entity.setCanPickUpLoot(true);

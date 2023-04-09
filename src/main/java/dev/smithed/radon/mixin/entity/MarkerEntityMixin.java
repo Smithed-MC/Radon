@@ -14,12 +14,10 @@ public abstract class MarkerEntityMixin extends EntityMixin implements ICustomNB
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         MarkerEntity entity = ((MarkerEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "data":
-                    nbt.put("data", this.data.copy());
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("data")) {
+                nbt.put("data", this.data.copy());
+            } else {
+                return false;
             }
         }
         return true;
@@ -30,12 +28,10 @@ public abstract class MarkerEntityMixin extends EntityMixin implements ICustomNB
         MarkerEntity entity = ((MarkerEntity)(Object)this);
         if(!nbt.contains(topLevelNbt))
             return false;
-        switch (topLevelNbt) {
-            case "data":
-                this.data = nbt.getCompound("data");
-                break;
-            default:
-                return false;
+        if (topLevelNbt.equals("data")) {
+            this.data = nbt.getCompound("data");
+        } else {
+            return false;
         }
         return true;
     }

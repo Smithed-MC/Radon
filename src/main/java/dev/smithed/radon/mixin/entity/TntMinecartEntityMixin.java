@@ -15,12 +15,10 @@ public abstract class TntMinecartEntityMixin extends AbstractMinecartEntityMixin
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TntMinecartEntity entity = ((TntMinecartEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
-            switch (topLevelNbt) {
-                case "TNTFuse":
-                    nbt.putInt("TNTFuse", this.fuseTicks);
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("TNTFuse")) {
+                nbt.putInt("TNTFuse", this.fuseTicks);
+            } else {
+                return false;
             }
         }
         return true;
@@ -32,13 +30,11 @@ public abstract class TntMinecartEntityMixin extends AbstractMinecartEntityMixin
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "TNTFuse":
-                    if (nbt.contains("TNTFuse", 99))
-                        this.fuseTicks = nbt.getInt("TNTFuse");
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("TNTFuse")) {
+                if (nbt.contains("TNTFuse", 99))
+                    this.fuseTicks = nbt.getInt("TNTFuse");
+            } else {
+                return false;
             }
         }
         return true;

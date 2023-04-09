@@ -28,20 +28,24 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @Mixin(EntitySelector.class)
-public class EntitySelectorMixin implements IEntitySelectorExtender {
+public abstract class EntitySelectorMixin implements IEntitySelectorExtender {
 
     @Shadow private Box box;
     @Shadow private TypeFilter<Entity, ?> entityFilter;
+    @Shadow abstract int getAppendLimit();
 
-    /**
-     * @author dragoncommands
-     * TODO: make this a redirect to avoid double implementation
-     */
     @Inject(method = "appendEntitiesFromWorld", at=@At("HEAD"), cancellable = true)
-    void appendEntitiesFromWorldInject(List<Entity> result, ServerWorld world, Vec3d pos, Predicate<Entity> predicate, CallbackInfo ci) {
-        if(Radon.CONFIG.entitySelectorOptimizations && world instanceof IServerWorldExtender extender) {
-            result.addAll(extender.getEntitiesByTag(entityFilter, predicate, this.container));
-            ci.cancel();
+    void appendEntitiesFromWorldInject(List<Entity> entities, ServerWorld world, Vec3d pos, Predicate<Entity> predicate, CallbackInfo ci) {
+        int i = this.getAppendLimit();
+        if (entities.size() < i) {
+            if(Radon.CONFIG.entitySelectorOptimizations && world instanceof IServerWorldExtender extender) {
+                if (this.box != null) {
+                    world.collectEntitiesByType(this.entityFilter, this.box.offset(pos), predicate, entities, i);
+                } else {
+                    extender.collectEntitiesByType(this.entityFilter, predicate, entities, i, container);
+                }
+                ci.cancel();
+            }
         }
     }
 

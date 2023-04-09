@@ -20,15 +20,14 @@ public abstract class BeehiveBlockEntityMixin extends BlockEntityMixin implement
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Bees":
-                    nbt.put("Bees", this.getBees());
-                    break;
-                case "FlowerPos":
+                case "Bees" -> nbt.put("Bees", this.getBees());
+                case "FlowerPos" -> {
                     if (this.hasFlowerPos())
                         nbt.put("FlowerPos", NbtHelper.fromBlockPos(this.flowerPos));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -39,13 +38,11 @@ public abstract class BeehiveBlockEntityMixin extends BlockEntityMixin implement
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
-            switch (topLevelNbt) {
-                case "FlowerPos":
-                    this.flowerPos = null;
-                    this.flowerPos = NbtHelper.toBlockPos(nbt.getCompound("FlowerPos"));
-                    break;
-                default:
-                    return false;
+            if (topLevelNbt.equals("FlowerPos")) {
+                this.flowerPos = null;
+                this.flowerPos = NbtHelper.toBlockPos(nbt.getCompound("FlowerPos"));
+            } else {
+                return false;
             }
         }
         return true;

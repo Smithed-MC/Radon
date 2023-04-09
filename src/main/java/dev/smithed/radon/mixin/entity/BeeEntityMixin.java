@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BeeEntity.class)
 public abstract class BeeEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
+
     @Shadow int ticksSincePollination;
     @Shadow int cannotEnterHiveTicks;
     @Shadow int cropsGrownSincePollination;
@@ -24,35 +25,24 @@ public abstract class BeeEntityMixin extends AnimalEntityMixin implements ICusto
         BeeEntity entity = ((BeeEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "HivePos":
+                case "HivePos" -> {
                     if (entity.hasHive())
                         nbt.put("HivePos", NbtHelper.fromBlockPos(entity.getHivePos()));
-                    break;
-                case "FlowerPos":
+                }
+                case "FlowerPos" -> {
                     if (entity.hasFlower())
                         nbt.put("FlowerPos", NbtHelper.fromBlockPos(entity.getFlowerPos()));
-                    break;
-                case "HasNectar":
-                    nbt.putBoolean("HasNectar", entity.hasNectar());
-                    break;
-                case "HasStung":
-                    nbt.putBoolean("HasStung", entity.hasStung());
-                    break;
-                case "TicksSincePollination":
-                    nbt.putInt("TicksSincePollination", this.ticksSincePollination);
-                    break;
-                case "CannotEnterHiveTicks":
-                    nbt.putInt("CannotEnterHiveTicks", this.cannotEnterHiveTicks);
-                    break;
-                case "CropsGrownSincePollination":
-                    nbt.putInt("CropsGrownSincePollination", this.cropsGrownSincePollination);
-                    break;
-                case "AngerTime":
-                case "AngerAt":
-                    entity.writeAngerToNbt(nbt);
-                    break;
-                default:
+                }
+                case "HasNectar" -> nbt.putBoolean("HasNectar", entity.hasNectar());
+                case "HasStung" -> nbt.putBoolean("HasStung", entity.hasStung());
+                case "TicksSincePollination" -> nbt.putInt("TicksSincePollination", this.ticksSincePollination);
+                case "CannotEnterHiveTicks" -> nbt.putInt("CannotEnterHiveTicks", this.cannotEnterHiveTicks);
+                case "CropsGrownSincePollination" ->
+                        nbt.putInt("CropsGrownSincePollination", this.cropsGrownSincePollination);
+                case "AngerTime", "AngerAt" -> entity.writeAngerToNbt(nbt);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -65,35 +55,24 @@ public abstract class BeeEntityMixin extends AnimalEntityMixin implements ICusto
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "HivePos":
+                case "HivePos" -> {
                     this.hivePos = null;
                     this.hivePos = NbtHelper.toBlockPos(nbt.getCompound("HivePos"));
-                    break;
-                case "FlowerPos":
+                }
+                case "FlowerPos" -> {
                     this.flowerPos = null;
                     this.flowerPos = NbtHelper.toBlockPos(nbt.getCompound("FlowerPos"));
-                    break;
-                case "HasNectar":
-                    this.setHasNectar(nbt.getBoolean("HasNectar"));
-                    break;
-                case "HasStung":
-                    this.setHasStung(nbt.getBoolean("HasStung"));
-                    break;
-                case "TicksSincePollination":
-                    this.ticksSincePollination = nbt.getInt("TicksSincePollination");
-                    break;
-                case "CannotEnterHiveTicks":
-                    this.cannotEnterHiveTicks = nbt.getInt("CannotEnterHiveTicks");
-                    break;
-                case "CropsGrownSincePollination":
-                    this.cropsGrownSincePollination = nbt.getInt("CropsGrownSincePollination");
-                    break;
-                case "AngerTime":
-                case "AngryAt":
-                    entity.readAngerFromNbt(this.world, nbt);
-                    break;
-                default:
+                }
+                case "HasNectar" -> this.setHasNectar(nbt.getBoolean("HasNectar"));
+                case "HasStung" -> this.setHasStung(nbt.getBoolean("HasStung"));
+                case "TicksSincePollination" -> this.ticksSincePollination = nbt.getInt("TicksSincePollination");
+                case "CannotEnterHiveTicks" -> this.cannotEnterHiveTicks = nbt.getInt("CannotEnterHiveTicks");
+                case "CropsGrownSincePollination" ->
+                        this.cropsGrownSincePollination = nbt.getInt("CropsGrownSincePollination");
+                case "AngerTime", "AngryAt" -> entity.readAngerFromNbt(this.world, nbt);
+                default -> {
                     return false;
+                }
             }
 
         }

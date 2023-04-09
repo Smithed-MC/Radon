@@ -14,20 +14,21 @@ public abstract class AbstractMinecartEntityMixin extends EntityMixin implements
         AbstractMinecartEntity entity = ((AbstractMinecartEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "CustomDisplayTile":
+                case "CustomDisplayTile" -> {
                     if (entity.hasCustomBlock())
                         nbt.putBoolean("CustomDisplayTile", true);
-                    break;
-                case "DisplayState":
+                }
+                case "DisplayState" -> {
                     if (entity.hasCustomBlock())
                         nbt.put("DisplayState", NbtHelper.fromBlockState(entity.getContainedBlock()));
-                    break;
-                case "DisplayOffset":
+                }
+                case "DisplayOffset" -> {
                     if (entity.hasCustomBlock())
                         nbt.putInt("DisplayOffset", entity.getBlockOffset());
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

@@ -25,33 +25,23 @@ public abstract class FoxEntityMixin extends AnimalEntityMixin implements ICusto
         FoxEntity entity = ((FoxEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Trusted":
+                case "Trusted" -> {
                     List<UUID> list = this.getTrustedUuids();
                     NbtList nbtList = new NbtList();
-                    Iterator var4 = list.iterator();
-
-                    while(var4.hasNext()) {
-                        UUID uUID = (UUID)var4.next();
+                    for (UUID uUID : list) {
                         if (uUID != null) {
                             nbtList.add(NbtHelper.fromUuid(uUID));
                         }
                     }
                     nbt.put("Trusted", nbtList);
-                    break;
-                case "AngryAt":
-                    nbt.putBoolean("Sleeping", entity.isSleeping());
-                    break;
-                case "Type":
-                    nbt.putString("Type", entity.getVariant().asString());
-                    break;
-                case "Sitting":
-                    nbt.putBoolean("Sitting", entity.isSitting());
-                    break;
-                case "Crouching":
-                    nbt.putBoolean("Crouching", entity.isInSneakingPose());
-                    break;
-                default:
+                }
+                case "AngryAt" -> nbt.putBoolean("Sleeping", entity.isSleeping());
+                case "Type" -> nbt.putString("Type", entity.getVariant().asString());
+                case "Sitting" -> nbt.putBoolean("Sitting", entity.isSitting());
+                case "Crouching" -> nbt.putBoolean("Crouching", entity.isInSneakingPose());
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -64,26 +54,19 @@ public abstract class FoxEntityMixin extends AnimalEntityMixin implements ICusto
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Trusted":
+                case "Trusted" -> {
                     NbtList nbtList = nbt.getList("Trusted", 11);
-                    for(int i = 0; i < nbtList.size(); ++i) {
-                        this.addTrustedUuid(NbtHelper.toUuid(nbtList.get(i)));
+                    for (net.minecraft.nbt.NbtElement nbtElement : nbtList) {
+                        this.addTrustedUuid(NbtHelper.toUuid(nbtElement));
                     }
-                    break;
-                case "Sleeping":
-                    this.setSleeping(nbt.getBoolean("Sleeping"));
-                    break;
-                case "Type":
-                    entity.setVariant(FoxEntity.Type.byName(nbt.getString("Type")));
-                    break;
-                case "Sitting":
-                    entity.setSitting(nbt.getBoolean("Sitting"));
-                    break;
-                case "Crouching":
-                    entity.setCrouching(nbt.getBoolean("Crouching"));
-                    break;
-                default:
+                }
+                case "Sleeping" -> this.setSleeping(nbt.getBoolean("Sleeping"));
+                case "Type" -> entity.setVariant(FoxEntity.Type.byName(nbt.getString("Type")));
+                case "Sitting" -> entity.setSitting(nbt.getBoolean("Sitting"));
+                case "Crouching" -> entity.setCrouching(nbt.getBoolean("Crouching"));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

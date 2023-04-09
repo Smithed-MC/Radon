@@ -43,21 +43,16 @@ public abstract class ZombieEntityMixin extends MobEntityMixin implements ICusto
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "IsBaby":
-                    entity.setBaby(nbt.getBoolean("IsBaby"));
-                    break;
-                case "CanBreakDoors":
-                    entity.setCanBreakDoors(nbt.getBoolean("CanBreakDoors"));
-                    break;
-                case "InWaterTime":
-                    this.inWaterTime = nbt.getInt("InWaterTime");
-                    break;
-                case "DrownedConversionTime":
+                case "IsBaby" -> entity.setBaby(nbt.getBoolean("IsBaby"));
+                case "CanBreakDoors" -> entity.setCanBreakDoors(nbt.getBoolean("CanBreakDoors"));
+                case "InWaterTime" -> this.inWaterTime = nbt.getInt("InWaterTime");
+                case "DrownedConversionTime" -> {
                     if (nbt.contains("DrownedConversionTime", 99) && nbt.getInt("DrownedConversionTime") > -1)
                         this.setTicksUntilWaterConversion(nbt.getInt("DrownedConversionTime"));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;

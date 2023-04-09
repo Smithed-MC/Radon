@@ -78,32 +78,33 @@ public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implem
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Offers":
+                case "Offers" -> {
                     if (nbt.contains("Offers", 10))
                         this.offerData = nbt.getCompound("Offers");
-                    break;
-                case "Gossips":
+                }
+                case "Gossips" -> {
                     if (nbt.contains("Gossips", 10))
                         this.gossipData = nbt.getList("Gossips", 10);
-                    break;
-                case "ConversionTime":
+                }
+                case "ConversionTime" -> {
                     if (nbt.contains("ConversionTime", 99) && nbt.getInt("ConversionTime") > -1)
                         this.setConverting(nbt.containsUuid("ConversionPlayer") ? nbt.getUuid("ConversionPlayer") : null, nbt.getInt("ConversionTime"));
-                    break;
-                case "Xp":
+                }
+                case "Xp" -> {
                     if (nbt.contains("Xp", 3))
                         this.xp = nbt.getInt("Xp");
-                    break;
-                case "VillagerData":
+                }
+                case "VillagerData" -> {
                     if (nbt.contains("VillagerData", 10)) {
                         DataResult<VillagerData> dataResult = VillagerData.CODEC.parse(new Dynamic(NbtOps.INSTANCE, nbt.get("VillagerData")));
                         Logger var10001 = Radon.LOGGER;
                         Objects.requireNonNull(var10001);
                         dataResult.resultOrPartial(var10001::error).ifPresent(entity::setVillagerData);
                     }
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
 
 

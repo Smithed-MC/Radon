@@ -48,7 +48,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     @Shadow int portalCooldown;
     @Shadow boolean glowing;
     @Shadow boolean hasVisualFire;
-    @Shadow Set<String> scoreboardTags;
+    @Shadow Set<String> commandTags;
     @Shadow UUID uuid;
     @Shadow float fallDistance;
     @Shadow String uuidString;
@@ -66,8 +66,8 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
      * Add entity to tag cache when a tag is added
      */
     @Overwrite
-    public boolean addScoreboardTag(String tag) {
-        if(this.scoreboardTags.size() < 1024 && this.scoreboardTags.add(tag)) {
+    public boolean addCommandTag(String tag) {
+        if(this.commandTags.size() < 1024 && this.commandTags.add(tag)) {
             if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
                 index.addEntityToTagMap(tag, (Entity)(Object)this);
             return true;
@@ -82,7 +82,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
      */
     @Overwrite
     public boolean removeScoreboardTag(String tag) {
-        if(this.scoreboardTags.remove(tag)) {
+        if(this.commandTags.remove(tag)) {
             if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
                 index.removeEntityFromTagMap(tag, (Entity)(Object)this);
             return true;
@@ -96,7 +96,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
     @Inject(method = "readNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"))
     private void clearTags(CallbackInfo ci) {
         if (this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
-            this.scoreboardTags.forEach(tag -> index.removeEntityFromTagMap(tag, (Entity)(Object)this));
+            this.commandTags.forEach(tag -> index.removeEntityFromTagMap(tag, (Entity)(Object)this));
     }
 
     /**
@@ -204,10 +204,10 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
                     break;
                 case "Tags":
                     NbtList nbtList;
-                    Iterator var6;
-                    if (!this.scoreboardTags.isEmpty()) {
+                    Iterator<?> var6;
+                    if (!this.commandTags.isEmpty()) {
                         nbtList = new NbtList();
-                        var6 = this.scoreboardTags.iterator();
+                        var6 = this.commandTags.iterator();
 
                         while (var6.hasNext()) {
                             String string = (String) var6.next();
@@ -257,24 +257,24 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
 
         try {
             switch (topLevelNbt) {
-                case "Pos":
+                case "Pos" -> {
                     NbtList nbtList = nbt.getList("Pos", 6);
                     entity.setPos(MathHelper.clamp(nbtList.getDouble(0), -3.0000512E7, 3.0000512E7), MathHelper.clamp(nbtList.getDouble(1), -2.0E7, 2.0E7), MathHelper.clamp(nbtList.getDouble(2), -3.0000512E7, 3.0000512E7));
                     entity.resetPosition();
-                    if (Double.isFinite(entity.getX()) && Double.isFinite(entity.getY()) && Double.isFinite(entity.getZ()) ) {
+                    if (Double.isFinite(entity.getX()) && Double.isFinite(entity.getY()) && Double.isFinite(entity.getZ())) {
                         this.refreshPosition();
                     } else {
                         throw new IllegalStateException("Entity has invalid position");
                     }
-                    break;
-                case "Motion":
+                }
+                case "Motion" -> {
                     NbtList nbtList2 = nbt.getList("Motion", 6);
                     double d = nbtList2.getDouble(0);
                     double e = nbtList2.getDouble(1);
                     double f = nbtList2.getDouble(2);
                     entity.setVelocity(Math.abs(d) > 10.0 ? 0.0 : d, Math.abs(e) > 10.0 ? 0.0 : e, Math.abs(f) > 10.0 ? 0.0 : f);
-                    break;
-                case "Rotation":
+                }
+                case "Rotation" -> {
                     NbtList nbtList3 = nbt.getList("Rotation", 5);
                     entity.setYaw(nbtList3.getFloat(0));
                     entity.setPitch(nbtList3.getFloat(1));
@@ -287,74 +287,49 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
                     } else {
                         throw new IllegalStateException("Entity has invalid rotation");
                     }
-                    break;
-                case "FallDistance":
-                    this.fallDistance = nbt.getFloat("FallDistance");
-                    break;
-                case "Fire":
-                    this.fireTicks = nbt.getShort("Fire");
-                    break;
-                case "Air":
-                    entity.setAir(nbt.getShort("Air"));
-                    break;
-                case "OnGround":
-                    this.onGround = nbt.getBoolean("OnGround");
-                    break;
-                case "Invulnerable":
-                    this.invulnerable = nbt.getBoolean("Invulnerable");
-                    break;
-                case "PortalCooldown":
-                    this.portalCooldown = nbt.getInt("PortalCooldown");
-                    break;
-                case "UUID":
+                }
+                case "FallDistance" -> this.fallDistance = nbt.getFloat("FallDistance");
+                case "Fire" -> this.fireTicks = nbt.getShort("Fire");
+                case "Air" -> entity.setAir(nbt.getShort("Air"));
+                case "OnGround" -> this.onGround = nbt.getBoolean("OnGround");
+                case "Invulnerable" -> this.invulnerable = nbt.getBoolean("Invulnerable");
+                case "PortalCooldown" -> this.portalCooldown = nbt.getInt("PortalCooldown");
+                case "UUID" -> {
                     this.uuid = nbt.getUuid("UUID");
                     this.uuidString = this.uuid.toString();
-                    break;
-                case "CustomName":
+                }
+                case "CustomName" -> {
                     String string = nbt.getString("CustomName");
                     try {
                         entity.setCustomName(Text.Serializer.fromJson(string));
                     } catch (Exception var16) {
                         Radon.LOGGER.warn("Failed to parse entity custom name {}", string, var16);
                     }
-                    break;
-                case "CustomNameVisible":
-                    entity.setCustomNameVisible(nbt.getBoolean("CustomNameVisible"));
-                    break;
-                case "Silent":
-                    entity.setSilent(nbt.getBoolean("Silent"));
-                    break;
-                case "NoGravity":
-                    entity.setNoGravity(nbt.getBoolean("NoGravity"));
-                    break;
-                case "Glowing":
-                    entity.setGlowing(nbt.getBoolean("Glowing"));
-                    break;
-                case "TicksFrozen":
-                    entity.setFrozenTicks(nbt.getInt("TicksFrozen"));
-                    break;
-                case "HasVisualFire":
-                    this.hasVisualFire = nbt.getBoolean("HasVisualFire");
-                    break;
-                case "Tags":
-                    this.scoreboardTags.clear();
+                }
+                case "CustomNameVisible" -> entity.setCustomNameVisible(nbt.getBoolean("CustomNameVisible"));
+                case "Silent" -> entity.setSilent(nbt.getBoolean("Silent"));
+                case "NoGravity" -> entity.setNoGravity(nbt.getBoolean("NoGravity"));
+                case "Glowing" -> entity.setGlowing(nbt.getBoolean("Glowing"));
+                case "TicksFrozen" -> entity.setFrozenTicks(nbt.getInt("TicksFrozen"));
+                case "HasVisualFire" -> this.hasVisualFire = nbt.getBoolean("HasVisualFire");
+                case "Tags" -> {
+                    this.commandTags.clear();
                     NbtList nbtList4 = nbt.getList("Tags", 8);
                     int i = Math.min(nbtList4.size(), 1024);
-
-                    for(int j = 0; j < i; ++j) {
-                        this.scoreboardTags.add(nbtList4.getString(j));
+                    for (int j = 0; j < i; ++j) {
+                        this.commandTags.add(nbtList4.getString(j));
                     }
-                    break;
-                default:
-                    if(this.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
+                }
+                default -> {
+                    if (this.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
                         if (this.shouldSetPositionOnLoad())
                             this.refreshPosition();
-                        if(topLevelNbt.equals("ArmorItems") || topLevelNbt.equals("HandItems"))
+                        if (topLevelNbt.equals("ArmorItems") || topLevelNbt.equals("HandItems"))
                             IntegrationRouter.triggerEquipmentUpdate(this);
                     } else {
                         return false;
                     }
-                    break;
+                }
             }
             return true;
         } catch (Throwable var17) {

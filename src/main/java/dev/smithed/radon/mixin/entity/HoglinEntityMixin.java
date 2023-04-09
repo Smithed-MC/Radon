@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(HoglinEntity.class)
 public abstract class HoglinEntityMixin extends AnimalEntityMixin implements ICustomNBTMixin {
+
     @Shadow int timeInOverworld;
     @Shadow boolean cannotBeHunted;
     @Shadow abstract boolean isImmuneToZombification();
@@ -18,19 +19,18 @@ public abstract class HoglinEntityMixin extends AnimalEntityMixin implements ICu
         HoglinEntity entity = ((HoglinEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "AngerTime":
+                case "IsImmuneToZombification" -> {
                     if (this.isImmuneToZombification())
                         nbt.putBoolean("IsImmuneToZombification", true);
-                    break;
-                case "TimeInOverworld":
-                    nbt.putInt("TimeInOverworld", this.timeInOverworld);
-                    break;
-                case "CannotBeHunted":
+                }
+                case "TimeInOverworld" -> nbt.putInt("TimeInOverworld", this.timeInOverworld);
+                case "CannotBeHunted" -> {
                     if (this.cannotBeHunted)
                         nbt.putBoolean("CannotBeHunted", true);
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -43,17 +43,13 @@ public abstract class HoglinEntityMixin extends AnimalEntityMixin implements ICu
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "IsImmuneToZombification":
-                    entity.setImmuneToZombification(nbt.getBoolean("IsImmuneToZombification"));
-                    break;
-                case "TimeInOverworld":
-                    this.timeInOverworld = nbt.getInt("TimeInOverworld");
-                    break;
-                case "CannotBeHunted":
-                    this.setCannotBeHunted(nbt.getBoolean("CannotBeHunted"));
-                    break;
-                default:
+                case "IsImmuneToZombification" ->
+                        entity.setImmuneToZombification(nbt.getBoolean("IsImmuneToZombification"));
+                case "TimeInOverworld" -> this.timeInOverworld = nbt.getInt("TimeInOverworld");
+                case "CannotBeHunted" -> this.setCannotBeHunted(nbt.getBoolean("CannotBeHunted"));
+                default -> {
                     return false;
+                }
             }
         }
         return true;

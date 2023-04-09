@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(AbstractPiglinEntity.class)
 public abstract class AbstractPiglinEntityMixin extends MobEntityMixin implements ICustomNBTMixin {
+
     @Shadow int timeInOverworld;
     @Shadow abstract boolean isImmuneToZombification();
 
@@ -16,15 +17,14 @@ public abstract class AbstractPiglinEntityMixin extends MobEntityMixin implement
         AbstractPiglinEntity entity = ((AbstractPiglinEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "IsImmuneToZombification":
+                case "IsImmuneToZombification" -> {
                     if (this.isImmuneToZombification())
                         nbt.putBoolean("IsImmuneToZombification", true);
-                    break;
-                case "TimeInOverworld":
-                    nbt.putInt("TimeInOverworld", this.timeInOverworld);
-                    break;
-                default:
+                }
+                case "TimeInOverworld" -> nbt.putInt("TimeInOverworld", this.timeInOverworld);
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -37,14 +37,12 @@ public abstract class AbstractPiglinEntityMixin extends MobEntityMixin implement
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "IsImmuneToZombification":
-                    entity.setImmuneToZombification(nbt.getBoolean("IsImmuneToZombification"));
-                    break;
-                case "TimeInOverworld":
-                    this.timeInOverworld = nbt.getInt("TimeInOverworld");
-                    break;
-                default:
+                case "IsImmuneToZombification" ->
+                        entity.setImmuneToZombification(nbt.getBoolean("IsImmuneToZombification"));
+                case "TimeInOverworld" -> this.timeInOverworld = nbt.getInt("TimeInOverworld");
+                default -> {
                     return false;
+                }
             }
         }
         return true;

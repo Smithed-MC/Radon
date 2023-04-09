@@ -21,17 +21,12 @@ public abstract class ShulkerEntityMixin extends MobEntityMixin implements ICust
         ShulkerEntity entity = ((ShulkerEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "AttachFace":
-                    nbt.putByte("AttachFace", (byte)entity.getAttachedFace().getId());
-                    break;
-                case "Peek":
-                    nbt.putByte("Peek", (Byte)this.dataTracker.get(PEEK_AMOUNT));
-                    break;
-                case "Color":
-                    nbt.putByte("Color", (Byte)this.dataTracker.get(COLOR));
-                    break;
-                default:
+                case "AttachFace" -> nbt.putByte("AttachFace", (byte) entity.getAttachedFace().getId());
+                case "Peek" -> nbt.putByte("Peek", (Byte) this.dataTracker.get(PEEK_AMOUNT));
+                case "Color" -> nbt.putByte("Color", (Byte) this.dataTracker.get(COLOR));
+                default -> {
                     return false;
+                }
             }
         }
         return true;
@@ -44,18 +39,15 @@ public abstract class ShulkerEntityMixin extends MobEntityMixin implements ICust
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "AttachFace":
-                    this.setAttachedFace(Direction.byId(nbt.getByte("AttachFace")));
-                    break;
-                case "Peek":
-                    this.dataTracker.set(PEEK_AMOUNT, nbt.getByte("Peek"));
-                    break;
-                case "Color":
+                case "AttachFace" -> this.setAttachedFace(Direction.byId(nbt.getByte("AttachFace")));
+                case "Peek" -> this.dataTracker.set(PEEK_AMOUNT, nbt.getByte("Peek"));
+                case "Color" -> {
                     if (nbt.contains("Color", 99))
                         this.dataTracker.set(COLOR, nbt.getByte("Color"));
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         }
         return true;
