@@ -21,7 +21,7 @@ public abstract class SimpleEntityLookupMixin<T extends EntityLike> implements I
     @Override
     public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, LazyIterationConsumer<U> action, SelectorContainer container) {
         if(this.index instanceof IEntityIndexExtender tagged)
-            tagged.forEachTaggedEntity(filter, action, container);
+            tagged.forEachTaggedEntity(filter, container, action);
         else
             this.index.forEach(filter, action);
     }

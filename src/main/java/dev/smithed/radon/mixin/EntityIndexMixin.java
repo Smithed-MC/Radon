@@ -4,6 +4,7 @@ import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.utils.NBTUtils;
 import dev.smithed.radon.utils.SelectorContainer;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.function.LazyIterationConsumer;
@@ -15,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 @Mixin(EntityIndex.class)
 public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityIndexExtender<T> {
@@ -72,7 +72,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
      * retrieved for the @e search instead of all entities.
      */
     @Override
-    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, LazyIterationConsumer<U> action, SelectorContainer container) {
+    public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, SelectorContainer container, LazyIterationConsumer<U> action) {
         List<EntityLike> set = null;
         List<List<EntityLike>> list = null;
         int size = Integer.MAX_VALUE;
@@ -142,5 +142,19 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
         } else {
             this.forEach(filter, action);
         }
+    }
+
+    public <U extends T> void forEachInCollection(Collection<EntityLike> collection, TypeFilter<T, U> filter, LazyIterationConsumer<U> consumer) {
+        Iterator<EntityLike> iterator = collection.iterator();
+
+        U entityLike2;
+        do {
+            if (!iterator.hasNext()) {
+                return;
+            }
+            T entityLike = (T)iterator.next();
+            entityLike2 = filter.downcast(entityLike);
+        } while(entityLike2 == null || !consumer.accept(entityLike2).shouldAbort());
+
     }
 }
