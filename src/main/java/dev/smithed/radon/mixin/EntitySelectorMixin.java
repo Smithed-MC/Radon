@@ -40,7 +40,7 @@ public abstract class EntitySelectorMixin implements IEntitySelectorExtender {
         if (entities.size() < i) {
             if(Radon.CONFIG.entitySelectorOptimizations && world instanceof IServerWorldExtender extender) {
                 if (this.box != null) {
-                    extender.collectEntitiesByType(this.entityFilter, this.box.offset(pos), predicate, entities, i, container);
+                    world.collectEntitiesByType(this.entityFilter, this.box.offset(pos), predicate, entities, i);
                 } else {
                     extender.collectEntitiesByType(this.entityFilter, predicate, entities, i, container);
                 }

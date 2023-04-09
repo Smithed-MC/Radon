@@ -15,8 +15,6 @@ public interface IServerWorldExtender {
 
     EntityIndex<?> getEntityIndex();
 
-    <T extends Entity> void collectEntitiesByType(TypeFilter<Entity, T> filter, Box box, Predicate<? super T> predicate, List<? super T> result, int limit, SelectorContainer container);
-
     <T extends Entity> void collectEntitiesByType(TypeFilter<Entity, T> filter, Predicate<? super T> predicate, List<? super T> result, int limit, SelectorContainer container);
 
 }
