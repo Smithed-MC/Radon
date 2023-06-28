@@ -76,7 +76,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
                     nbt.put("recipeBook", this.recipeBook.toNbt());
                     break;
                 case "Dimension":
-                    nbt.putString("Dimension", entity.world.getRegistryKey().getValue().toString());
+                    nbt.putString("Dimension", entity.getWorld().getRegistryKey().getValue().toString());
                     break;
                 case "SpawnX":
                     if (this.spawnPointPosition != null)

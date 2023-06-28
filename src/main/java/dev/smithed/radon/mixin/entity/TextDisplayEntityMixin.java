@@ -12,6 +12,9 @@ public abstract class TextDisplayEntityMixin extends DisplayEntityMixin {
 
     @Shadow abstract int getBackground();
     @Shadow abstract byte getTextOpacity();
+    @Shadow abstract Text getText();
+    @Shadow abstract int getLineWidth();
+    @Shadow abstract  byte getDisplayFlags();
     @Shadow abstract void setLineWidth(int lineWidth);
     @Shadow abstract void setTextOpacity(byte textOpacity);
     @Shadow abstract void setBackground(int background);
@@ -22,12 +25,12 @@ public abstract class TextDisplayEntityMixin extends DisplayEntityMixin {
         DisplayEntity.TextDisplayEntity entity = ((DisplayEntity.TextDisplayEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "text" -> nbt.putString("text", Text.Serializer.toJson(entity.getText()));
-                case "line_width" -> nbt.putInt("line_width", entity.getLineWidth());
+                case "text" -> nbt.putString("text", Text.Serializer.toJson(this.getText()));
+                case "line_width" -> nbt.putInt("line_width", this.getLineWidth());
                 case "background" -> nbt.putInt("background", this.getBackground());
                 case "text_opacity" -> nbt.putByte("text_opacity", this.getTextOpacity());
                 case "alignment" -> {
-                    byte b = entity.getDisplayFlags();
+                    byte b = this.getDisplayFlags();
                     writeFlag(b, nbt, "shadow", (byte) 1);
                     writeFlag(b, nbt, "see_through", (byte) 2);
                     writeFlag(b, nbt, "default_background", (byte) 4);

@@ -41,7 +41,7 @@ public abstract class DisplayEntityMixin extends EntityMixin {
     @Shadow abstract void setBrightness(@Nullable Brightness brightness);
     @Shadow abstract void setViewRange(float viewRange);
     @Shadow abstract void setShadowRadius(float shadowRadius);
-    @Shadow abstract void setDIsplayWidth(float width);
+    @Shadow abstract void setDisplayWidth(float width);
     @Shadow abstract void setDisplayHeight(float height);
     @Shadow abstract void setShadowStrength(float shadowStrength);
     @Shadow abstract void setGlowColorOverride(int glowColorOverride);
@@ -51,6 +51,7 @@ public abstract class DisplayEntityMixin extends EntityMixin {
         DisplayEntity entity = ((DisplayEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
+                //TODO: add billboard
                 case "brightness" -> {
                     Brightness brightness = this.getBrightnessUnpacked();
                     if (brightness != null) {
@@ -62,10 +63,6 @@ public abstract class DisplayEntityMixin extends EntityMixin {
                 case "transformation" ->
                         AffineTransformation.ANY_CODEC.encodeStart(NbtOps.INSTANCE, getTransformation(this.dataTracker)).result().ifPresent((transformations) -> {
                             nbt.put("transformation", transformations);
-                        });
-                case "billboard" ->
-                        DisplayEntity.BillboardMode.CODEC.encodeStart(NbtOps.INSTANCE, entity.getBillboardMode()).result().ifPresent((billboard) -> {
-                            nbt.put("billboard", billboard);
                         });
                 case "interpolation_duration" -> nbt.putInt("interpolation_duration", this.getInterpolationDuration());
                 case "view_range" -> nbt.putFloat("view_range", this.getViewRange());
@@ -153,7 +150,7 @@ public abstract class DisplayEntityMixin extends EntityMixin {
                     }}
                 case "width" -> {
                     if (nbt.contains("width", 99)) {
-                        this.setDIsplayWidth(nbt.getFloat("width"));
+                        this.setDisplayWidth(nbt.getFloat("width"));
                     }}
                 case "height" -> {
                     if (nbt.contains("height", 99)) {

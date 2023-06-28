@@ -1,38 +1,53 @@
 package dev.smithed.radon.mixin.block_entity;
 
+import com.mojang.logging.LogUtils;
+import com.mojang.serialization.DataResult;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.block.entity.SignBlockEntity;
+import net.minecraft.block.entity.SignText;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.OrderedText;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import java.util.Objects;
+
 @Mixin(SignBlockEntity.class)
 public abstract class SignBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
 
-    @Shadow DyeColor textColor;
-    @Shadow boolean glowingText;
-    @Shadow boolean editable;
-    @Shadow @Final Text[] texts;
-    @Shadow @Final Text[] filteredTexts;
-    @Shadow @Final static String[] TEXT_KEYS;
-    @Shadow @Final static String[] FILTERED_TEXT_KEYS;
-    @Shadow OrderedText[] textsBeingEdited;
-    @Shadow abstract Text parseTextFromJson(String json);
+    @Shadow public SignText frontText;
+    @Shadow public SignText backText;
+    @Shadow public boolean waxed;
+    @Shadow @Final public static Logger LOGGER;
+
+    @Shadow public abstract SignText parseLines(SignText signText);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "GlowingText" -> nbt.putBoolean("GlowingText", this.glowingText);
-                case "Color" -> nbt.putString("Color", this.textColor.getName());
-                case "Text1" -> writeSignLineToNbt(0, nbt);
-                case "Text2" -> writeSignLineToNbt(1, nbt);
-                case "Text3" -> writeSignLineToNbt(2, nbt);
-                case "Text4" -> writeSignLineToNbt(3, nbt);
+                case "front_text" -> {
+                    DataResult<NbtElement> var10000 = SignText.CODEC.encodeStart(NbtOps.INSTANCE, this.frontText);
+                    Logger var10001 = LOGGER;
+                    Objects.requireNonNull(var10001);
+                    var10000.resultOrPartial(var10001::error).ifPresent((frontText) -> {
+                        nbt.put("front_text", frontText);
+                    });
+                }
+                case "back_text" -> {
+                    DataResult<NbtElement> var10000 = SignText.CODEC.encodeStart(NbtOps.INSTANCE, this.backText);
+                    Logger var10001 = LOGGER;
+                    Objects.requireNonNull(var10001);
+                    var10000.resultOrPartial(var10001::error).ifPresent((backText) -> {
+                        nbt.put("back_text", backText);
+                    });
+                }
+                case "is_waxed" -> nbt.putBoolean("is_waxed", this.waxed);
                 default -> {
                     return false;
                 }
@@ -43,57 +58,30 @@ public abstract class SignBlockEntityMixin extends BlockEntityMixin implements I
 
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        this.editable = false;
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if(!nbt.contains(topLevelNbt))
                 return false;
             switch (topLevelNbt) {
-                case "Color" -> this.textColor = DyeColor.byName(nbt.getString("Color"), DyeColor.BLACK);
-                case "GlowingText" -> this.glowingText = nbt.getBoolean("GlowingText");
-                case "Text1" -> {
-                    readSignLineFromNbt(0, nbt);
-                    this.textsBeingEdited = null;
+                case "front_text" -> {
+                    DataResult<SignText> var10000 = SignText.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));
+                    Logger var10001 = LOGGER;
+                    Objects.requireNonNull(var10001);
+                    var10000.resultOrPartial(var10001::error).ifPresent((signText) -> {
+                        this.frontText = this.parseLines(signText);
+                    });
                 }
-                case "Text2" -> {
-                    readSignLineFromNbt(1, nbt);
-                    this.textsBeingEdited = null;
+                case "back_text" -> {
+                    DataResult<SignText> var10000 = SignText.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("back_text"));
+                    Logger var10001 = LOGGER;
+                    Objects.requireNonNull(var10001);
+                    var10000.resultOrPartial(var10001::error).ifPresent((signText) -> {
+                        this.backText = this.parseLines(signText);
+                    });
                 }
-                case "Text3" -> {
-                    readSignLineFromNbt(2, nbt);
-                    this.textsBeingEdited = null;
-                }
-                case "Text4" -> {
-                    readSignLineFromNbt(3, nbt);
-                    this.textsBeingEdited = null;
-                }
-                default -> {
-                    return false;
-                }
+                case "is_waxed" -> this.waxed = nbt.getBoolean("is_waxed");
             }
-
         }
         return true;
     }
 
-    private void writeSignLineToNbt(int line, NbtCompound nbt) {
-        Text text = this.texts[line];
-        String string = Text.Serializer.toJson(text);
-        nbt.putString(TEXT_KEYS[line], string);
-        Text text2 = this.filteredTexts[line];
-        if (!text2.equals(text)) {
-            nbt.putString(FILTERED_TEXT_KEYS[line], Text.Serializer.toJson(text2));
-        }
-    }
-
-    private void readSignLineFromNbt(int line, NbtCompound nbt) {
-        String string = nbt.getString(TEXT_KEYS[line]);
-        Text text = this.parseTextFromJson(string);
-        this.texts[line] = text;
-        String string2 = FILTERED_TEXT_KEYS[line];
-        if (nbt.contains(string2, 8)) {
-            this.filteredTexts[line] = this.parseTextFromJson(nbt.getString(string2));
-        } else {
-            this.filteredTexts[line] = text;
-        }
-    }
 }

@@ -19,6 +19,8 @@ import java.util.Objects;
 @Mixin(DisplayEntity.ItemDisplayEntity.class)
 public abstract class ItemDisplayEntityMixin extends DisplayEntityMixin {
 
+    @Shadow abstract ItemStack getItemStack();
+    @Shadow abstract  ModelTransformationMode getTransformationMode();
     @Shadow abstract void setItemStack(ItemStack stack);
     @Shadow abstract void setTransformationMode(ModelTransformationMode transformationMode);
 
@@ -27,9 +29,9 @@ public abstract class ItemDisplayEntityMixin extends DisplayEntityMixin {
         DisplayEntity.ItemDisplayEntity entity = ((DisplayEntity.ItemDisplayEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "item" -> nbt.put("item", entity.getItemStack().writeNbt(new NbtCompound()));
+                case "item" -> nbt.put("item", this.getItemStack().writeNbt(new NbtCompound()));
                 case "DuplicationCooldown" ->
-                    ModelTransformationMode.CODEC.encodeStart(NbtOps.INSTANCE, entity.getTransformationMode()).result().ifPresent((nbtx) -> {
+                    ModelTransformationMode.CODEC.encodeStart(NbtOps.INSTANCE, this.getTransformationMode()).result().ifPresent((nbtx) -> {
                     nbt.put("item_display", nbtx);
                 });
                 default -> {

@@ -1,7 +1,6 @@
 package dev.smithed.radon.mixin.entity;
 
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Dynamic;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.passive.AllayEntity;
@@ -9,8 +8,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.world.event.listener.EntityGameEventHandler;
-import net.minecraft.world.event.listener.VibrationListener;
+import net.minecraft.world.event.Vibrations;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,8 +22,7 @@ public abstract class AllayEntityMixin extends MobEntityMixin implements ICustom
     @Shadow @Final SimpleInventory inventory;
     @Shadow @Final static TrackedData<Boolean> CAN_DUPLICATE;
     @Shadow long duplicationCooldown;
-    @Shadow @Final VibrationListener.Callback listenerCallback;
-    @Shadow @Final EntityGameEventHandler<VibrationListener> gameEventHandler;
+    @Shadow @Final Vibrations.ListenerData vibrationListenerData;
     @Shadow abstract boolean canDuplicate();
 
     @Override
@@ -37,7 +34,7 @@ public abstract class AllayEntityMixin extends MobEntityMixin implements ICustom
                 case "DuplicationCooldown" -> nbt.putLong("DuplicationCooldown", this.duplicationCooldown);
                 case "CanDuplicate" -> nbt.putBoolean("CanDuplicate", this.canDuplicate());
                 case "listener" -> {
-                    DataResult<NbtElement> var10000 = VibrationListener.createCodec(this.listenerCallback).encodeStart(NbtOps.INSTANCE, (VibrationListener)this.gameEventHandler.getListener());
+                    DataResult<NbtElement> var10000 = Vibrations.ListenerData.CODEC.encodeStart(NbtOps.INSTANCE, this.vibrationListenerData);
                     Logger var10001 = LOGGER;
                     Objects.requireNonNull(var10001);
                     var10000.resultOrPartial(var10001::error).ifPresent((nbtElement) -> {
