@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 @Mixin(DataCommand.class)
 public abstract class DataCommandMixin {
@@ -82,7 +81,7 @@ public abstract class DataCommandMixin {
                 int i = modifier.modify(context, nbtCompound, nbtPath, elements);
                 if (i != 0) {
                     if (mixin.setNbtFiltered(nbtCompound, nbtPath.toString())) {
-                        ((ServerCommandSource)context.getSource()).sendFeedback(dataCommandObject::feedbackModify, true);
+                        context.getSource().sendFeedback(dataCommandObject::feedbackModify, true);
                         cir.setReturnValue(i);
                     }
                 } else {
@@ -159,7 +158,8 @@ public abstract class DataCommandMixin {
     private static void radon_getValues(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType, CallbackInfoReturnable<List<NbtElement>> cir) throws CommandSyntaxException {
         DataCommandObject dataCommandObject = objectType.getObject(context);
         if (Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
-            cir.setReturnValue(Collections.singletonList(mixin.getNbtFiltered(context.getInput())));
+            NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "sourcePath");
+            cir.setReturnValue(Collections.singletonList(mixin.getNbtFiltered(nbtPath.toString())));
         }
     }
 
@@ -177,7 +177,8 @@ public abstract class DataCommandMixin {
         DataCommandObject dataCommandObject = objectType.getObject(context);
         if (Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
             NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "sourcePath");
-            cir.setReturnValue(nbtPath.get(mixin.getNbtFiltered(context.getInput())));
+            List<NbtElement> nbt = nbtPath.get(mixin.getNbtFiltered(nbtPath.toString()));
+            cir.setReturnValue(nbt);
         }
     }
 }
