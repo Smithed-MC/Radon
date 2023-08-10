@@ -33,26 +33,24 @@ public abstract class BlockDataObjectMixin implements IDataCommandObjectMixin {
      * Overwrites standard lambda variable to include support for not loading chunks when if block is processed
      * @reason afaik, there is no way to inject code into a lambda
      */
-    @Shadow @Final public static final Function<String, DataCommand.ObjectType> TYPE_FACTORY = (argumentName) -> {
-        return new DataCommand.ObjectType() {
-            public DataCommandObject getObject(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-                BlockPos blockPos = BlockPosArgumentType.getLoadedBlockPos(context, argumentName + "Pos");
-                BlockEntity blockEntity;
-                if(Radon.CONFIG.fixBlockAccessForceload && context.getSource().getWorld() instanceof IWorldExtender mixin)
-                    blockEntity = mixin.getBlockEntityNoLoad(blockPos);
-                else
-                    blockEntity = context.getSource().getWorld().getBlockEntity(blockPos);
-                if (blockEntity == null) {
-                    throw INVALID_BLOCK_EXCEPTION.create();
-                } else {
-                    return new BlockDataObject(blockEntity, blockPos);
-                }
+    @Shadow @Final public static final Function<String, DataCommand.ObjectType> TYPE_FACTORY = (argumentName) -> new DataCommand.ObjectType() {
+        public DataCommandObject getObject(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+            BlockPos blockPos = BlockPosArgumentType.getLoadedBlockPos(context, argumentName + "Pos");
+            BlockEntity blockEntity;
+            if(Radon.CONFIG.fixBlockAccessForceload && context.getSource().getWorld() instanceof IWorldExtender mixin)
+                blockEntity = mixin.getBlockEntityNoLoad(blockPos);
+            else
+                blockEntity = context.getSource().getWorld().getBlockEntity(blockPos);
+            if (blockEntity == null) {
+                throw INVALID_BLOCK_EXCEPTION.create();
+            } else {
+                return new BlockDataObject(blockEntity, blockPos);
             }
+        }
 
-            public ArgumentBuilder<ServerCommandSource, ?> addArgumentsToBuilder(ArgumentBuilder<ServerCommandSource, ?> argument, Function<ArgumentBuilder<ServerCommandSource, ?>, ArgumentBuilder<ServerCommandSource, ?>> argumentAdder) {
-                return argument.then(CommandManager.literal("block").then(argumentAdder.apply(CommandManager.argument(argumentName + "Pos", BlockPosArgumentType.blockPos()))));
-            }
-        };
+        public ArgumentBuilder<ServerCommandSource, ?> addArgumentsToBuilder(ArgumentBuilder<ServerCommandSource, ?> argument, Function<ArgumentBuilder<ServerCommandSource, ?>, ArgumentBuilder<ServerCommandSource, ?>> argumentAdder) {
+            return argument.then(CommandManager.literal("block").then(argumentAdder.apply(CommandManager.argument(argumentName + "Pos", BlockPosArgumentType.blockPos()))));
+        }
     };
 
     @Shadow @Final BlockEntity blockEntity;

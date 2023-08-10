@@ -1,7 +1,9 @@
 package dev.smithed.radon.mixin;
 
 import com.mojang.datafixers.DataFixer;
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
+import dev.smithed.radon.mixin_interface.IMinecraftServerExtender;
 import dev.smithed.radon.mixin_interface.IServerWorldExtender;
 import dev.smithed.radon.mixin_interface.ISimpleEntityLookupExtender;
 import dev.smithed.radon.utils.SelectorContainer;
@@ -49,6 +51,13 @@ public abstract class ServerWorldMixin implements IServerWorldExtender {
     public <T extends Entity> void collectEntitiesByType(TypeFilter<Entity, T> filter, Predicate<? super T> predicate, List<? super T> result, int limit, SelectorContainer container) {
         IEntityIndexExtender<Entity> extender = getEntityLookupExtender();
         if (extender != null) {
+            if(container.isTypeTag) {
+                if (server instanceof IMinecraftServerExtender mixin)
+                    container.entityTypes = mixin.getEntityTagEntries(container.type);
+                if (container.entityTypes == null)
+                    return;
+            }
+
             extender.forEachTaggedEntity(filter, container, (entity) -> {
                 if (predicate.test(entity)) {
                     result.add(entity);
