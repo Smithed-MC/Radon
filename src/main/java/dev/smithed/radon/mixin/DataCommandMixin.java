@@ -145,25 +145,7 @@ public abstract class DataCommandMixin {
         }
 
     }
-
-    /**
-     * @author ImCoolYeah105
-     * Overrides default method. Reads filtered data and cancels main function if successful.
-     * Otherwise, main function runs normally.
-     */
-    @Inject(
-            method = "getValues",
-            at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
-    )
-    private static void radon_getValues(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType, CallbackInfoReturnable<List<NbtElement>> cir) throws CommandSyntaxException {
-        DataCommandObject dataCommandObject = objectType.getObject(context);
-        if (Radon.CONFIG.nbtOptimizations && dataCommandObject instanceof IDataCommandObjectMixin mixin) {
-            NbtPathArgumentType.NbtPath nbtPath = NbtPathArgumentType.getNbtPath(context, "sourcePath");
-            cir.setReturnValue(Collections.singletonList(mixin.getNbtFiltered(nbtPath.toString())));
-        }
-    }
-
-
+    
     /**
      * @author ImCoolYeah105
      * Overrides default method. Reads filtered data and cancels main function if successful.
