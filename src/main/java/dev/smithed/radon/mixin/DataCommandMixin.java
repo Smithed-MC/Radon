@@ -138,7 +138,8 @@ public abstract class DataCommandMixin {
             if (i == 0) {
                 throw MERGE_FAILED_EXCEPTION.create();
             } else {
-                object.setNbt(nbtCompound);
+                mixin.setNbtFiltered(nbtCompound,path.toString());
+                //object.setNbt(nbtCompound);
                 source.sendFeedback(object::feedbackModify, true);
                 cir.setReturnValue(i);
             }
