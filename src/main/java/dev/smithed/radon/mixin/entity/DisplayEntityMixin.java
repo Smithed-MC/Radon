@@ -22,7 +22,7 @@ import java.util.Objects;
 @Mixin(DisplayEntity.class)
 public abstract class DisplayEntityMixin extends EntityMixin {
 
-    @Shadow @Final static Logger field_42397 = LogUtils.getLogger();
+    @Shadow @Final static Logger field_42397;
 
     @Shadow static AffineTransformation getTransformation(DataTracker dataTracker) { return null; }
     @Shadow abstract Brightness getBrightnessUnpacked();
