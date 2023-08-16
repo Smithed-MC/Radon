@@ -5,6 +5,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IDataCommandObjectMixin;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
+import dev.smithed.radon.utils.NBTUtils;
 import net.minecraft.command.EntityDataObject;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.entity.Entity;
@@ -28,25 +29,33 @@ public class EntityDataObjectMixin implements IDataCommandObjectMixin {
 
     @Override
     public NbtCompound getNbtFiltered(String path) {
-        NbtCompound nbtCompound = null;
+        final NbtCompound nbtCompound = new NbtCompound();
         if (Radon.CONFIG.nbtOptimizations && this.entity instanceof IEntityMixin mixin) {
-            if (this.entity instanceof PlayerEntity player && path.startsWith("SelectedItem")) {
-                nbtCompound = new NbtCompound();
-                ItemStack itemStack = player.getInventory().getMainHandStack();
-                if (!itemStack.isEmpty()) {
-                    nbtCompound.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
-                }
+            if(path.startsWith("{")) {
+                for(String str: NBTUtils.getTopLevelPaths(path))
+                    getNbt(mixin,nbtCompound,str);
             } else {
-                nbtCompound = mixin.writeNbtFiltered(new NbtCompound(), path);
+                getNbt(mixin,nbtCompound,path);
             }
         }
-        if (nbtCompound == null) {
+        if (nbtCompound.getSize() > 0) {
             Radon.logDebug("Failed to get NBT data at " + path + " for " + this.entity.getClass());
-            nbtCompound = entity.writeNbt(new NbtCompound());
+            entity.writeNbt(nbtCompound);
         }
         if(Radon.CONFIG.debug)
             Radon.logDebug("Retrieved NBT for " + this.entity.getClass() + " -> " + nbtCompound);
         return nbtCompound;
+    }
+
+    private void getNbt(IEntityMixin mixin, NbtCompound nbtCompound, String path) {
+        if (this.entity instanceof PlayerEntity player && path.startsWith("SelectedItem")) {
+            ItemStack itemStack = player.getInventory().getMainHandStack();
+            if (!itemStack.isEmpty()) {
+                nbtCompound.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
+            }
+        } else {
+            mixin.writeNbtFiltered(nbtCompound, path);
+        }
     }
 
     @Override
