@@ -94,7 +94,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
      * remove entity from tag cache completely when tags are cleared
      */
     @Inject(method = "readNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"))
-    private void clearTags(CallbackInfo ci) {
+    private void radon_readNbt(CallbackInfo ci) {
         if (this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
             this.commandTags.forEach(tag -> index.removeEntityFromTagMap(tag, (Entity)(Object)this));
     }
@@ -103,7 +103,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
      * add entity to tag cache when tags are added via NBT data
      */
     @Inject(method = "readNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-    private void addTags(NbtCompound nbt, CallbackInfo ci) {
+    private void radon_readNbt(NbtCompound nbt, CallbackInfo ci) {
         if (nbt.contains("Tags", 9) && this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index) {
             NbtList nbtList4 = nbt.getList("Tags", 8);
             int i = Math.min(nbtList4.size(), 1024);
@@ -318,6 +318,11 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
                     int i = Math.min(nbtList4.size(), 1024);
                     for (int j = 0; j < i; ++j) {
                         this.commandTags.add(nbtList4.getString(j));
+                    }
+                    if (this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index) {
+                        for(int j = 0; j < i; ++j) {
+                            index.addEntityToTagMap(nbtList4.getString(j), (Entity)(Object)this);
+                        }
                     }
                 }
                 default -> {
