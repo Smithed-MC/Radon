@@ -4,7 +4,6 @@ import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.IEntityIndexExtender;
 import dev.smithed.radon.utils.NBTUtils;
 import dev.smithed.radon.utils.SelectorContainer;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.function.LazyIterationConsumer;
@@ -120,8 +119,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
         if (size == 0)
             return;
 
-        if(Radon.CONFIG.debug)
-            Radon.logDebug("searching on " + size + " entities for " + container);
+        Radon.logDebug("searching on " + size + " entities for " + container);
 
         if (set != null) {
             forEachInCollection(set, filter, action);
