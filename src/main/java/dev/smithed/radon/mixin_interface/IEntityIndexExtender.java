@@ -5,6 +5,8 @@ import net.minecraft.util.TypeFilter;
 import net.minecraft.util.function.LazyIterationConsumer;
 import net.minecraft.world.entity.EntityLike;
 
+import java.util.Map;
+
 public interface IEntityIndexExtender<T extends EntityLike> {
 
     void addEntityToTagMap(String tag, EntityLike entity);

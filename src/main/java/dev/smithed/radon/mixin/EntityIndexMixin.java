@@ -21,17 +21,17 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
 
     @Shadow abstract <U extends T> void forEach(TypeFilter<T, U> filter, LazyIterationConsumer<U> consumer);
     private static final int REASONABLESEARCHSIZE = 100;
-    private final Map<String, List<EntityLike>> entityMap = new HashMap<>();
+    private final Map<String, Set<EntityLike>> entityMap = new HashMap<>();
 
     @Override
     public void addEntityToTagMap(String tag, EntityLike entity) {
-        List<EntityLike> set = entityMap.computeIfAbsent(tag, k -> new ArrayList<>());
+        Set<EntityLike> set = entityMap.computeIfAbsent(tag, k -> new HashSet<>());
         set.add(entity);
     }
 
     @Override
     public void removeEntityFromTagMap(String tag, EntityLike entity) {
-        List<EntityLike> set = entityMap.get(tag);
+        Set<EntityLike> set = entityMap.get(tag);
         if(set != null)
             set.removeAll(Collections.singleton(entity));
     }
@@ -41,11 +41,13 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
      * Add entity type to map when loaded
      */
     @Inject(method = "add", at = @At("HEAD"))
-    private void radon_addInject(T entity, CallbackInfo ci) {
-        if(entity instanceof Entity ent) {
-            String name = NBTUtils.translationToTypeName(ent.getType().getTranslationKey());
+    private void radon_add(T entityLike, CallbackInfo ci) {
+        if(entityLike instanceof Entity entity) {
+            String name = NBTUtils.translationToTypeName(entity.getType().getTranslationKey());
             if(name.length() > 0)
-                this.addEntityToTagMap(name, entity);
+                this.addEntityToTagMap(name, entityLike);
+            if(!entity.getCommandTags().isEmpty())
+                entity.getCommandTags().forEach(tag -> addEntityToTagMap(tag, entityLike));
         }
     }
 
@@ -54,14 +56,13 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
      * Remove entity type & tags from map when unloaded
      */
     @Inject(method = "remove", at = @At("HEAD"))
-    private void radon_removeInject(T entity, CallbackInfo ci) {
-        if(entity instanceof Entity le && !le.getCommandTags().isEmpty()) {
-            le.getCommandTags().forEach(tag -> removeEntityFromTagMap(tag, entity));
-        }
-        if(entity instanceof Entity ent) {
-            String name = NBTUtils.translationToTypeName(ent.getType().getTranslationKey());
+    private void radon_remove(T entityLike, CallbackInfo ci) {
+        if(entityLike instanceof Entity entity) {
+            String name = NBTUtils.translationToTypeName(entity.getType().getTranslationKey());
             if(name.length() > 0)
                 this.removeEntityFromTagMap(name, entity);
+            if(!entity.getCommandTags().isEmpty())
+                entity.getCommandTags().forEach(tag -> removeEntityFromTagMap(tag, entityLike));
         }
     }
 
@@ -72,12 +73,12 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
      */
     @Override
     public <U extends T> void forEachTaggedEntity(TypeFilter<T, U> filter, SelectorContainer container, LazyIterationConsumer<U> action) {
-        List<EntityLike> set = null;
-        List<List<EntityLike>> list = null;
+        Set<EntityLike> set = null;
+        List<Set<EntityLike>> list = null;
         int size = Integer.MAX_VALUE;
 
         for (String tag : container.selectorTags) {
-            List<EntityLike> result = this.entityMap.get(tag);
+            Set<EntityLike> result = this.entityMap.get(tag);
             if (result != null && result.size() < size) {
                 set = result;
                 size = result.size();
@@ -96,7 +97,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
                     list = new LinkedList<>();
                     int mergeSize = 0;
                     for (String type : container.entityTypes) {
-                        List<EntityLike> result = this.entityMap.get(type);
+                        Set<EntityLike> result = this.entityMap.get(type);
                         if (result != null) {
                             mergeSize += result.size();
                             list.add(result);
@@ -107,7 +108,7 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
                         set = null;
                     }
                 } else {
-                    List<EntityLike> result = this.entityMap.get(container.type);
+                    Set<EntityLike> result = this.entityMap.get(container.type);
                     if (result != null && result.size() < size) {
                         set = result;
                         size = result.size();

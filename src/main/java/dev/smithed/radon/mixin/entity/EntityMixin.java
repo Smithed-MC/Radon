@@ -104,7 +104,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
      */
     @Inject(method = "readNbt(Lnet/minecraft/nbt/NbtCompound;)V", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     private void radon_readNbt(NbtCompound nbt, CallbackInfo ci) {
-        if (nbt.contains("Tags", 9) && this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index) {
+        if (nbt.contains("Tags", 9) && this.world instanceof IServerWorldExtender world && world.getEntityIndex().get(uuid) != null && world.getEntityIndex() instanceof IEntityIndexExtender index) {
             NbtList nbtList4 = nbt.getList("Tags", 8);
             int i = Math.min(nbtList4.size(), 1024);
 
