@@ -42,8 +42,7 @@ public class EntityDataObjectMixin implements IDataCommandObjectMixin {
             Radon.logDebug("Failed to get NBT data at " + path + " for " + this.entity.getClass());
             entity.writeNbt(nbtCompound);
         }
-        if(Radon.CONFIG.debug)
-            Radon.logDebug("Retrieved NBT for " + this.entity.getClass() + " -> " + nbtCompound);
+        Radon.logDebug("Retrieved NBT for " + this.entity.getClass() + " -> " + nbtCompound);
         return nbtCompound;
     }
 

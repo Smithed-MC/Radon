@@ -32,8 +32,6 @@ public abstract class LockableContainerBlockEntityMixin extends BlockEntityMixin
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "Lock" -> this.lock = ContainerLock.fromNbt(nbt);
                 case "CustomName" -> {

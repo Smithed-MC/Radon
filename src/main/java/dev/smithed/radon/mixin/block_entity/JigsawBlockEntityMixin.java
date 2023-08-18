@@ -41,8 +41,6 @@ public abstract class JigsawBlockEntityMixin extends BlockEntityMixin implements
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "name" -> this.name = new Identifier(nbt.getString("name"));
                 case "target" -> this.target = new Identifier(nbt.getString("target"));

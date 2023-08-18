@@ -36,8 +36,6 @@ public abstract class BeehiveBlockEntityMixin extends BlockEntityMixin implement
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             if (topLevelNbt.equals("FlowerPos")) {
                 this.flowerPos = null;
                 this.flowerPos = NbtHelper.toBlockPos(nbt.getCompound("FlowerPos"));

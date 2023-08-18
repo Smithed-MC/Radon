@@ -25,20 +25,7 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "Items" -> {
-                    int slot = NBTUtils.getSlot(path);
-                    if (slot >= 0 && slot <= 4) {
-                        ItemStack itemStack = this.inventory.get(slot);
-                        if (!itemStack.isEmpty()) {
-                            NbtList nbtList = new NbtList();
-                            NbtCompound nbtCompound = new NbtCompound();
-                            nbtCompound.putByte("Slot", (byte) slot);
-                            itemStack.writeNbt(nbtCompound);
-                            nbtList.add(nbtCompound);
-                            nbt.put("Items", nbtList);
-                        }
-                    } else {
-                        Inventories.writeNbt(nbt, this.inventory);
-                    }
+                    Inventories.writeNbt(nbt, this.inventory);
                 }
                 case "BrewTime" -> nbt.putShort("BrewTime", (short) this.brewTime);
                 case "Fuel" -> nbt.putByte("Fuel", (byte) this.fuel);
@@ -53,8 +40,6 @@ public abstract class BrewingStandBlockEntityMixin extends LockableContainerBloc
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "Items" -> {
                     this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);

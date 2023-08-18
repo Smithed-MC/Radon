@@ -31,8 +31,6 @@ public abstract class ConduitBlockEntityMixin extends BlockEntityMixin implement
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             if (topLevelNbt.equals("Target")) {
                 if (nbt.containsUuid("Target")) {
                     this.targetUuid = nbt.getUuid("Target");

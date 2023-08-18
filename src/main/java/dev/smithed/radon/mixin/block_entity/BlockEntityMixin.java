@@ -1,5 +1,6 @@
 package dev.smithed.radon.mixin.block_entity;
 
+import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import dev.smithed.radon.mixin_interface.IEntityMixin;
 import net.minecraft.block.BlockState;
@@ -57,6 +58,9 @@ public abstract class BlockEntityMixin implements IEntityMixin, ICustomNBTMixin 
 
     @Override
     public boolean readNbtFiltered(NbtCompound nbt, String path) {
-        return false;
+        String topLevelNbt = path.split("[\\[.{]")[0];
+        BlockEntity entity = ((BlockEntity) (Object) this);
+
+        return this.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt);
     }
 }

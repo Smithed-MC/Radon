@@ -39,8 +39,6 @@ public abstract class CommandBlockEntityMixin extends BlockEntityMixin implement
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "Command", "SuccessCount", "CustomName", "TrackOutput", "LastOutput", "UpdateLastExecution", "LastExecution" ->
                         this.commandExecutor.readNbt(nbt);

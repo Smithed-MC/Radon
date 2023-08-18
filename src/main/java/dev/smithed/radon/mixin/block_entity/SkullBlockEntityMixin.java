@@ -37,8 +37,6 @@ public abstract class SkullBlockEntityMixin extends BlockEntityMixin implements 
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "SkullOwner" -> {
                     if (nbt.contains("SkullOwner", 10))

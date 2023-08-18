@@ -66,8 +66,6 @@ public abstract class StructureBlockEntityMixin extends BlockEntityMixin impleme
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "name" -> this.setTemplateName(nbt.getString("name"));
                 case "author" -> this.author = nbt.getString("author");

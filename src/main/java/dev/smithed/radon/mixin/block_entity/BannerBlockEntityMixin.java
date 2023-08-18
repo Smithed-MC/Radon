@@ -44,8 +44,6 @@ public abstract class BannerBlockEntityMixin extends BlockEntityMixin implements
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "CustomName" -> {
                     if (nbt.contains("CustomName", 8))

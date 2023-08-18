@@ -35,8 +35,6 @@ public abstract class CampfireBlockEntityMixin extends BlockEntityMixin implemen
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             int[] is;
             switch (topLevelNbt) {
                 case "Items" -> {

@@ -30,8 +30,6 @@ public abstract class EnchantingTableBlockEntityMixin extends BlockEntityMixin i
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             if (topLevelNbt.equals("CustomName")) {
                 if (nbt.contains("CustomName", 8))
                     this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));

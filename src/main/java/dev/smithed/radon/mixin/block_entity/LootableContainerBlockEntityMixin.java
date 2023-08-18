@@ -13,6 +13,7 @@ public abstract class LootableContainerBlockEntityMixin extends LockableContaine
     @Shadow Identifier lootTableId;
     @Shadow long lootTableSeed;
     @Shadow abstract boolean deserializeLootTable(NbtCompound nbt);
+    @Shadow abstract boolean serializeLootTable(NbtCompound nbt);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {

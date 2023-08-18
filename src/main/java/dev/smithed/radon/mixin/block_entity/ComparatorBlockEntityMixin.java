@@ -26,8 +26,6 @@ public abstract class ComparatorBlockEntityMixin extends BlockEntityMixin implem
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             if (topLevelNbt.equals("OutputSignal")) {
                 this.outputSignal = nbt.getInt("OutputSignal");
             } else {

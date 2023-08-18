@@ -59,8 +59,6 @@ public abstract class SignBlockEntityMixin extends BlockEntityMixin implements I
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "front_text" -> {
                     DataResult<SignText> var10000 = SignText.CODEC.parse(NbtOps.INSTANCE, nbt.getCompound("front_text"));

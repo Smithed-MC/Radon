@@ -42,8 +42,6 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "Primary" -> this.primary = getPotionEffectById(nbt.getInt("Primary"));
                 case "Secondary" -> this.secondary = getPotionEffectById(nbt.getInt("Secondary"));

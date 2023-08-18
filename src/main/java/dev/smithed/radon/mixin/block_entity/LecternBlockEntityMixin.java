@@ -43,8 +43,6 @@ public abstract class LecternBlockEntityMixin extends BlockEntityMixin implement
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "Book" -> {
                     if (nbt.contains("Book", 10)) {

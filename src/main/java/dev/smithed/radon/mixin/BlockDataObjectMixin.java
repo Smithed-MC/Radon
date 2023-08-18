@@ -65,6 +65,7 @@ public abstract class BlockDataObjectMixin implements IDataCommandObjectMixin {
             Radon.logDebug("Failed to write nbt data at " + path + " with " + this.blockEntity.getClass());
             nbtCompound = this.blockEntity.createNbtWithIdentifyingData();
         }
+        Radon.logDebug("Retrieved NBT for " + this.blockEntity.getClass() + " -> " + nbtCompound);
         return nbtCompound;
     }
 

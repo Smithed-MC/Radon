@@ -41,8 +41,6 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntityMixin implement
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "RecordItem" -> {
                     if (nbt.contains("RecordItem", 10))

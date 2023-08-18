@@ -24,28 +24,8 @@ public abstract class ShulkerBoxBlockEntityMixin extends LootableContainerBlockE
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "Items" -> {
-                    if (this.lootTableId == null) {
-                        int slot = NBTUtils.getSlot(path);
-                        if (slot >= 0 && slot <= 26) {
-                            ItemStack itemStack = this.inventory.get(slot);
-                            if (!itemStack.isEmpty()) {
-                                NbtList nbtList = new NbtList();
-                                NbtCompound nbtCompound = new NbtCompound();
-                                nbtCompound.putByte("Slot", (byte) slot);
-                                itemStack.writeNbt(nbtCompound);
-                                nbtList.add(nbtCompound);
-                                nbt.put("Items", nbtList);
-                            }
-                        } else {
-                            Inventories.writeNbt(nbt, this.inventory);
-                        }
-                    }
-                }
-                case "LootTable", "LootTableSeed" -> {
-                    if (this.lootTableId != null) {
-                        nbt.putString("LootTable", this.lootTableId.toString());
-                        if (this.lootTableSeed != 0L)
-                            nbt.putLong("LootTableSeed", this.lootTableSeed);
+                    if (!this.serializeLootTable(nbt)) {
+                        Inventories.writeNbt(nbt, this.inventory);
                     }
                 }
                 default -> {
@@ -59,18 +39,10 @@ public abstract class ShulkerBoxBlockEntityMixin extends LootableContainerBlockE
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "Items" -> {
                     this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
                     Inventories.readNbt(nbt, this.inventory);
-                }
-                case "LootTable", "LootTableSeed" -> {
-                    if (nbt.contains("LootTable", 8)) {
-                        this.lootTableId = new Identifier(nbt.getString("LootTable"));
-                        this.lootTableSeed = nbt.getLong("LootTableSeed");
-                    }
                 }
                 default -> {
                     return false;
