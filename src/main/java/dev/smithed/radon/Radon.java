@@ -6,6 +6,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 public class Radon implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("radon");
@@ -17,9 +20,9 @@ public class Radon implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> RadonCommand.register(dispatcher));
     }
 
-    public static void logDebug(Object obj) {
-        if(CONFIG.debug && obj != null)
-            LOGGER.info(obj.toString());
+    public static void logDebug(Object message) {
+        if(CONFIG.debug && message != null)
+            LOGGER.info(message.toString());
     }
 
     public static class RadonConfig {

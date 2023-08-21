@@ -120,7 +120,8 @@ public abstract class EntityIndexMixin<T extends EntityLike> implements IEntityI
         if (size == 0)
             return;
 
-        Radon.logDebug("searching on " + size + " entities for " + container);
+        if(Radon.CONFIG.debug)
+            Radon.logDebug("searching on " + size + " entities for " + container);
 
         if (set != null) {
             forEachInCollection(set, filter, action);

@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
+import net.minecraft.block.entity.SculkShriekerWarningManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -27,13 +28,15 @@ import java.util.Objects;
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implements ICustomNBTMixin {
 
+    @Shadow @Final static Logger LOGGER;
+    @Shadow @Final ServerRecipeBook recipeBook;
     @Shadow Vec3d enteredNetherPos;
     @Shadow boolean seenCredits;
-    @Shadow @Final ServerRecipeBook recipeBook;
     @Shadow BlockPos spawnPointPosition;
     @Shadow boolean spawnForced;
     @Shadow float spawnAngle;
     @Shadow RegistryKey<World> spawnPointDimension;
+    @Shadow SculkShriekerWarningManager sculkShriekerWarningManager;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
@@ -106,6 +109,14 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
                             nbt.put("SpawnDimension", nbtElement);
                         });
                     }
+                    break;
+                case "warden_spawn_tracker":
+                    DataResult<NbtElement> var10000 = SculkShriekerWarningManager.CODEC.encodeStart(NbtOps.INSTANCE, this.sculkShriekerWarningManager);
+                    Logger var10001 = LOGGER;
+                    Objects.requireNonNull(var10001);
+                    var10000.resultOrPartial(var10001::error).ifPresent((encoded) -> {
+                        nbt.put("warden_spawn_tracker", encoded);
+                    });
                     break;
                 default:
                     return false;

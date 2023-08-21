@@ -15,6 +15,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.predicate.NbtPredicate;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,31 +30,38 @@ public class EntityDataObjectMixin implements IDataCommandObjectMixin {
 
     @Override
     public NbtCompound getNbtFiltered(String path) {
-        final NbtCompound nbtCompound = new NbtCompound();
+        NbtCompound nbtCompound = null;
         if (Radon.CONFIG.nbtOptimizations && this.entity instanceof IEntityMixin mixin) {
             if(path.startsWith("{")) {
-                for(String str: NBTUtils.getTopLevelPaths(path))
-                    getNbt(mixin,nbtCompound,str);
+                nbtCompound = new NbtCompound();
+                for(String str: NBTUtils.getTopLevelPaths(path)) {
+                    nbtCompound = getFilteredNbt(mixin, nbtCompound, str);
+                    if(nbtCompound == null)
+                        break;
+                }
             } else {
-                getNbt(mixin,nbtCompound,path);
+                nbtCompound = getFilteredNbt(mixin,new NbtCompound(),path);
             }
         }
-        if (nbtCompound.getSize() == 0) {
-            Radon.logDebug("Failed to get NBT data at " + path + " for " + this.entity.getClass());
-            entity.writeNbt(nbtCompound);
+        if (nbtCompound == null) {
+            if(Radon.CONFIG.debug)
+                Radon.logDebug("Failed to get NBT data at " + path + " for " + this.entity.getClass());
+            nbtCompound = NbtPredicate.entityToNbt(this.entity);
         }
-        Radon.logDebug("Retrieved NBT for " + this.entity.getClass() + " -> " + nbtCompound);
+        final NbtCompound finalNbtCompound = nbtCompound;
+        if(Radon.CONFIG.debug)
+            Radon.logDebug("Retrieved NBT for " + this.entity.getClass() + " -> " + finalNbtCompound);
         return nbtCompound;
     }
 
-    private void getNbt(IEntityMixin mixin, NbtCompound nbtCompound, String path) {
+    private NbtCompound getFilteredNbt(IEntityMixin mixin, NbtCompound nbtCompound, String path) {
         if (this.entity instanceof PlayerEntity player && path.startsWith("SelectedItem")) {
             ItemStack itemStack = player.getInventory().getMainHandStack();
-            if (!itemStack.isEmpty()) {
+            if (!itemStack.isEmpty())
                 nbtCompound.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
-            }
+            return nbtCompound;
         } else {
-            mixin.writeNbtFiltered(nbtCompound, path);
+            return mixin.writeNbtFiltered(nbtCompound, path);
         }
     }
 
@@ -69,7 +77,8 @@ public class EntityDataObjectMixin implements IDataCommandObjectMixin {
                 this.entity.setUuid(uUID);
                 return true;
             } else {
-                Radon.logDebug("Failed to save NBT data " + nbt + " at " + path + " for " + this.entity.getClass());
+                if(Radon.CONFIG.debug)
+                    Radon.logDebug("Failed to save NBT data " + nbt + " at " + path + " for " + this.entity.getClass());
                 return false;
             }
         }

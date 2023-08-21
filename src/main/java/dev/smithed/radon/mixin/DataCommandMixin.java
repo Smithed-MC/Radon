@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,12 +30,6 @@ public abstract class DataCommandMixin {
 
     @Shadow @Final static SimpleCommandExceptionType MERGE_FAILED_EXCEPTION;
     @Shadow @Final static SimpleCommandExceptionType GET_MULTIPLE_EXCEPTION;
-    @Shadow @Final static List<DataCommand.ObjectType> TARGET_OBJECT_TYPES;
-    @Shadow @Final static List<DataCommand.ObjectType> SOURCE_OBJECT_TYPES;
-    @Shadow static int executeModify(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType, DataCommand.ModifyOperation modifier, List<NbtElement> elements) { return 0; }
-    @Shadow static List<NbtElement> mapValues(List<NbtElement> list, DataCommand.Processor processor) throws CommandSyntaxException { return null; }
-    @Shadow static List<NbtElement> getValuesByPath(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType) throws CommandSyntaxException { return null; }
-    @Shadow static List<NbtElement> getValues(CommandContext<ServerCommandSource> context, DataCommand.ObjectType objectType) throws CommandSyntaxException { return null; }
 
     /**
      * @author ImCoolYeah105
@@ -54,7 +47,7 @@ public abstract class DataCommandMixin {
         //END
 
         Iterator<NbtElement> iterator = collection.iterator();
-        NbtElement nbtElement = (NbtElement)iterator.next();
+        NbtElement nbtElement = iterator.next();
         if (iterator.hasNext()) {
             throw GET_MULTIPLE_EXCEPTION.create();
         } else {
