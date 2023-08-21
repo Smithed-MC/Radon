@@ -39,10 +39,12 @@ public class InventoriesNbtFilter {
         } else {
             NbtList nbtList = nbt.getList("Items", 10);
 
-            NbtCompound nbtCompound = nbtList.getCompound(slot);
-            int j = nbtCompound.getByte("Slot") & 255;
-            if (j < stacks.size()) {
-                stacks.set(j, ItemStack.fromNbt(nbtCompound));
+            for(int i = 0; i < nbtList.size(); ++i) {
+                NbtCompound nbtCompound = nbtList.getCompound(i);
+                int j = nbtCompound.getByte("Slot") & 255;
+                if (j < stacks.size()) {
+                    stacks.set(j, ItemStack.fromNbt(nbtCompound));
+                }
             }
         }
         return nbt;

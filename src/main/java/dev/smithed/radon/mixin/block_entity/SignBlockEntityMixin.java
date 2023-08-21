@@ -20,12 +20,12 @@ import java.util.Objects;
 @Mixin(SignBlockEntity.class)
 public abstract class SignBlockEntityMixin extends BlockEntityMixin implements ICustomNBTMixin {
 
-    @Shadow public SignText frontText;
-    @Shadow public SignText backText;
-    @Shadow public boolean waxed;
-    @Shadow @Final public static Logger LOGGER;
+    @Shadow @Final static Logger LOGGER;
+    @Shadow SignText frontText;
+    @Shadow SignText backText;
+    @Shadow boolean waxed;
 
-    @Shadow public abstract SignText parseLines(SignText signText);
+    @Shadow abstract SignText parseLines(SignText signText);
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
