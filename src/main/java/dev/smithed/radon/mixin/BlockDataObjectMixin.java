@@ -14,6 +14,7 @@ import net.minecraft.command.BlockDataObject;
 import net.minecraft.command.DataCommandObject;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.NbtPathArgumentType;
+import net.minecraft.entity.decoration.AbstractDecorationEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.DataCommand;
@@ -62,10 +63,10 @@ public abstract class BlockDataObjectMixin implements IDataCommandObjectMixin {
         if (Radon.CONFIG.nbtOptimizations && this.blockEntity instanceof IEntityMixin mixin)
             nbtCompound = mixin.writeNbtFiltered(new NbtCompound(), path);
         if(nbtCompound == null) {
-            Radon.logDebug("Failed to write nbt data at " + path + " with " + this.blockEntity.getClass());
+            Radon.logDebugFormat("Failed to write nbt data at %s with %s", path, this.blockEntity.getClass());
             nbtCompound = this.blockEntity.createNbtWithIdentifyingData();
         }
-        Radon.logDebug("Retrieved NBT for " + this.blockEntity.getClass() + " -> " + nbtCompound);
+        Radon.logDebugFormat("Retrieved NBT for %s -> %s", this.blockEntity.getClass(), nbtCompound);
         return nbtCompound;
     }
 
@@ -79,7 +80,7 @@ public abstract class BlockDataObjectMixin implements IDataCommandObjectMixin {
                 return true;
             }
         }
-        Radon.logDebug("Failed to read nbt " + nbt + " at " + path + " with " + this.blockEntity.getClass());
+        Radon.logDebugFormat("Failed to read nbt %s at %s with %s", nbt, path, this.blockEntity.getClass());
         return false;
     }
 

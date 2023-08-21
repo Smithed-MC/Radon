@@ -87,8 +87,7 @@ public class EntitySelectorOptionsMixin {
                         }
                     }
                 }
-                if(Radon.CONFIG.debug)
-                    Radon.logDebug(nbtCompound);
+                Radon.logDebugFormat("nbt = %s", nbtCompound);
                 return NbtHelper.matches(nbtCompound, nbtCompound2, true) != bl;
             });
         }, (reader) -> true, Text.translatable("argument.entity.options.nbt.description"));

@@ -44,13 +44,10 @@ public class EntityDataObjectMixin implements IDataCommandObjectMixin {
             }
         }
         if (nbtCompound == null) {
-            if(Radon.CONFIG.debug)
-                Radon.logDebug("Failed to get NBT data at " + path + " for " + this.entity.getClass());
+            Radon.logDebugFormat("Failed to get NBT data at %s for %s", path, this.entity.getClass());
             nbtCompound = NbtPredicate.entityToNbt(this.entity);
         }
-        final NbtCompound finalNbtCompound = nbtCompound;
-        if(Radon.CONFIG.debug)
-            Radon.logDebug("Retrieved NBT for " + this.entity.getClass() + " -> " + finalNbtCompound);
+        Radon.logDebugFormat("Retrieved NBT for %s -> %s", this.entity.getClass(), nbtCompound);
         return nbtCompound;
     }
 
@@ -73,12 +70,12 @@ public class EntityDataObjectMixin implements IDataCommandObjectMixin {
             UUID uUID = this.entity.getUuid();
             if(this.entity instanceof IEntityMixin mixin && mixin.readNbtFiltered(nbt, path)) {
                 if(Radon.CONFIG.debug)
-                    Radon.logDebug("Set NBT for " + this.entity.getClass() + " -> " + nbt);
+                    Radon.logDebugFormat("Set NBT for %s -> %s", this.entity.getClass(), nbt);
                 this.entity.setUuid(uUID);
                 return true;
             } else {
                 if(Radon.CONFIG.debug)
-                    Radon.logDebug("Failed to save NBT data " + nbt + " at " + path + " for " + this.entity.getClass());
+                    Radon.logDebugFormat("Failed to save NBT data %s at %s for %s", nbt, path, this.entity.getClass());
                 return false;
             }
         }

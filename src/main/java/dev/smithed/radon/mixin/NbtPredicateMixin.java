@@ -47,8 +47,7 @@ public class NbtPredicateMixin {
             }
             if(nbt == null)
                 nbt = NbtPredicate.entityToNbt(entity);
-            if(Radon.CONFIG.debug)
-                Radon.logDebug(nbt);
+            Radon.logDebugFormat("retrieved predicate nbt -> %s", nbt);
             return predicate.test(nbt);
         }
     }

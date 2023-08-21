@@ -25,6 +25,11 @@ public class Radon implements ModInitializer {
             LOGGER.info(message.toString());
     }
 
+    public static void logDebugFormat(String message, Object ... args) {
+        if(CONFIG.debug && message != null)
+            LOGGER.info(String.format(message, args));
+    }
+
     public static class RadonConfig {
 
         public boolean debug = false;
