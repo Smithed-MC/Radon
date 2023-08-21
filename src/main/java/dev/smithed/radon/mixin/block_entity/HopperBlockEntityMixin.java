@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin.block_entity;
 
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
+import dev.smithed.radon.utils.InventoriesNbtFilter;
 import dev.smithed.radon.utils.NBTUtils;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.inventory.Inventories;
@@ -26,7 +27,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
             switch (topLevelNbt) {
                 case "Items" -> {
                     if (!this.serializeLootTable(nbt)) {
-                        Inventories.writeNbt(nbt, this.inventory);
+                        InventoriesNbtFilter.writeFilteredNbt(nbt, this.inventory, path);
                     }
                 }
                 case "TransferCooldown" -> nbt.putInt("TransferCooldown", this.transferCooldown);
@@ -43,8 +44,12 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "Items" -> {
-                    this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-                    Inventories.readNbt(nbt, this.inventory);
+                    if (!this.deserializeLootTable(nbt)) {
+                        if (InventoriesNbtFilter.readFilteredNbt(nbt, this.inventory, path) == null) {
+                            this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+                            Inventories.readNbt(nbt, this.inventory);
+                        }
+                    }
                 }
                 case "TransferCooldown" -> this.transferCooldown = nbt.getInt("TransferCooldown");
                 default -> {

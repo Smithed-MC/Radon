@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin.block_entity;
 
 import dev.smithed.radon.Radon;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
+import dev.smithed.radon.utils.InventoriesNbtFilter;
 import dev.smithed.radon.utils.NBTUtils;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.inventory.Inventories;
@@ -25,7 +26,7 @@ public abstract class DispenserBlockEntityMixin extends LootableContainerBlockEn
             switch (topLevelNbt) {
                 case "Items" -> {
                     if (!this.serializeLootTable(nbt)) {
-                        Inventories.writeNbt(nbt, this.inventory);
+                        InventoriesNbtFilter.writeFilteredNbt(nbt, this.inventory, path);
                     }
                 }
                 default -> {
@@ -41,8 +42,10 @@ public abstract class DispenserBlockEntityMixin extends LootableContainerBlockEn
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "Items" -> {
-                    this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
-                    Inventories.readNbt(nbt, this.inventory);
+                    if(InventoriesNbtFilter.readFilteredNbt(nbt, this.inventory, path) == null) {
+                        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+                        Inventories.readNbt(nbt, this.inventory);
+                    }
                 }
                 default -> {
                     return false;
