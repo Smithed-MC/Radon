@@ -46,6 +46,10 @@ public class InventoriesNbtFilter {
                     stacks.set(j, ItemStack.fromNbt(nbtCompound));
                 }
             }
+
+            if(nbtList.size() == 0) {
+                stacks.set(slot, ItemStack.EMPTY);
+            }
         }
         return nbt;
     }
