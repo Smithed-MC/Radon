@@ -27,8 +27,7 @@ public abstract class GhastEntityMixin extends MobEntityMixin implements ICustom
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         GhastEntity entity = ((GhastEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("ExplosionPower")) {
                 if (nbt.contains("ExplosionPower", 99))
                     this.fireballStrength = nbt.getByte("ExplosionPower");

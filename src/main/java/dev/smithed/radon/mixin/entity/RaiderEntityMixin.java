@@ -37,8 +37,7 @@ public abstract class RaiderEntityMixin extends PatrolEntityMixin {
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         RaiderEntity entity = ((RaiderEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Wave" -> this.wave = nbt.getInt("Wave");
                 case "CanJoinRaid" -> this.ableToJoinRaid = nbt.getBoolean("CanJoinRaid");

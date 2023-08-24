@@ -41,8 +41,7 @@ public abstract class ProjectileEntityMixin extends EntityMixin implements ICust
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ProjectileEntity entity = ((ProjectileEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Owner" -> {
                     if (nbt.containsUuid("Owner"))

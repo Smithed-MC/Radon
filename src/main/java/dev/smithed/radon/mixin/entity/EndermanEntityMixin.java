@@ -34,8 +34,7 @@ public abstract class EndermanEntityMixin extends MobEntityMixin implements ICus
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         EndermanEntity entity = ((EndermanEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "carriedBlockState" -> {
                     BlockState blockState = null;

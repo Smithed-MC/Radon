@@ -36,8 +36,7 @@ public abstract class TameableEntityMixin extends AnimalEntityMixin implements I
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TameableEntity entity = ((TameableEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Owner":
                     UUID uUID;

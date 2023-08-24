@@ -33,8 +33,7 @@ public abstract class PhantomEntityMixin extends MobEntityMixin implements ICust
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PhantomEntity entity = ((PhantomEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "AX" ->
                         this.circlingCenter = new BlockPos(nbt.getInt("AX"), this.circlingCenter.getY(), this.circlingCenter.getZ());

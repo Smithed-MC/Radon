@@ -36,8 +36,7 @@ public abstract class ShulkerEntityMixin extends MobEntityMixin implements ICust
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ShulkerEntity entity = ((ShulkerEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "AttachFace" -> this.setAttachedFace(Direction.byId(nbt.getByte("AttachFace")));
                 case "Peek" -> this.dataTracker.set(PEEK_AMOUNT, nbt.getByte("Peek"));

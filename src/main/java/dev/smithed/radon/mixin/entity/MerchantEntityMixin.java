@@ -38,8 +38,7 @@ public abstract class MerchantEntityMixin extends PassiveEntityMixin implements 
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         MerchantEntity entity = ((MerchantEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Offers" -> {
                     if (nbt.contains("Offers", 10))

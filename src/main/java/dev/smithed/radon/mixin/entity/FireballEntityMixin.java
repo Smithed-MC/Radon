@@ -28,8 +28,7 @@ public abstract class FireballEntityMixin extends AbstractFireballEntityMixin im
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FireballEntity entity = ((FireballEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("ExplosionPower")) {
                 if (nbt.contains("ExplosionPower", 99))
                     this.explosionPower = nbt.getByte("ExplosionPower");

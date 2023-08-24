@@ -33,8 +33,7 @@ public abstract class EnderDragonEntityMixin extends MobEntityMixin implements I
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         EnderDragonEntity entity = ((EnderDragonEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "DragonPhase" -> {
                     if (nbt.contains("DragonPhase"))

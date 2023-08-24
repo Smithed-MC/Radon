@@ -36,8 +36,7 @@ public abstract class EvokerFangsEntityMixin extends EntityMixin implements ICus
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         EvokerFangsEntity entity = ((EvokerFangsEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Warmup" -> this.warmup = nbt.getInt("Warmup");
                 case "Owner" -> this.ownerUuid = nbt.getUuid("Owner");

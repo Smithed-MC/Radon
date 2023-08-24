@@ -43,8 +43,7 @@ public abstract class FireworkRocketEntityMixin extends ProjectileEntityMixin im
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FireworkRocketEntity entity = ((FireworkRocketEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Life" -> this.life = nbt.getInt("Life");
                 case "LifeTime" -> this.lifeTime = nbt.getInt("LifeTime");

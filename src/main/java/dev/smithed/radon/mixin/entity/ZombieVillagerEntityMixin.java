@@ -75,8 +75,7 @@ public abstract class ZombieVillagerEntityMixin extends ZombieEntityMixin implem
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ZombieVillagerEntity entity = ((ZombieVillagerEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Offers" -> {
                     if (nbt.contains("Offers", 10))

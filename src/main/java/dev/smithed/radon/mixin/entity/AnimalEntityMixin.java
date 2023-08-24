@@ -36,8 +36,7 @@ public abstract class AnimalEntityMixin extends PassiveEntityMixin implements IC
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         AnimalEntity entity = ((AnimalEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "InLove" -> this.loveTicks = nbt.getInt("InLove");
                 case "LoveCause" -> this.lovingPlayer = nbt.containsUuid("LoveCause") ? nbt.getUuid("LoveCause") : null;

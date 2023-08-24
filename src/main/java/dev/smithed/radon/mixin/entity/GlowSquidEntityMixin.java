@@ -28,8 +28,7 @@ public abstract class GlowSquidEntityMixin extends MobEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         GlowSquidEntity entity = ((GlowSquidEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("DarkTicksRemaining")) {
                 this.setDarkTicksRemaining(nbt.getInt("DarkTicksRemaining"));
             } else {

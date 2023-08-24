@@ -30,8 +30,7 @@ public abstract class StriderEntityMixin extends AnimalEntityMixin implements IC
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         StriderEntity entity = ((StriderEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Saddle")) {
                 this.saddledComponent.readNbt(nbt);
             }

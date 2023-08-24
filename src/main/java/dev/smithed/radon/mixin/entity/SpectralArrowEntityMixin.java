@@ -28,8 +28,7 @@ public abstract class SpectralArrowEntityMixin extends PersistentProjectileEntit
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SpectralArrowEntity entity = ((SpectralArrowEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Duration")) {
                 this.duration = nbt.getInt("Duration");
             } else {

@@ -30,8 +30,7 @@ public abstract class SlimeEntityMixin extends MobEntityMixin implements ICustom
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SlimeEntity entity = ((SlimeEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Size" -> entity.setSize(nbt.getInt("Size") + 1, false);
                 case "wasOnGround" -> this.onGroundLastTick = nbt.getBoolean("wasOnGround");

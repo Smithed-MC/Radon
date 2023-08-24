@@ -39,8 +39,7 @@ public abstract class PillagerEntityMixin extends RaiderEntityMixin implements I
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PillagerEntity entity = ((PillagerEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Inventory")) {
                 NbtList nbtList = nbt.getList("Inventory", 10);
                 for (int i = 0; i < nbtList.size(); ++i) {

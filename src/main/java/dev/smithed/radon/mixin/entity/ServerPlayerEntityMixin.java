@@ -129,8 +129,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntityMixin implemen
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ServerPlayerEntity entity = ((ServerPlayerEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "enteredNetherPosition" -> {
                     if (nbt.contains("enteredNetherPosition", 10)) {

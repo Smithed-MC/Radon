@@ -29,8 +29,7 @@ public abstract class TropicalFishEntityMixin extends FishEntityMixin implements
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TropicalFishEntity entity = ((TropicalFishEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Variant")) {
                 this.setTropicalFishVariant(nbt.getInt("Variant"));
             } else {

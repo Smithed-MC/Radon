@@ -34,8 +34,7 @@ public abstract class GoatEntityMixin extends AnimalEntityMixin implements ICust
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         GoatEntity entity = ((GoatEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "IsScreamingGoat" -> entity.setScreaming(nbt.getBoolean("IsScreamingGoat"));
                 case "HasLeftHorn" -> this.dataTracker.set(LEFT_HORN, nbt.getBoolean("HasLeftHorn"));

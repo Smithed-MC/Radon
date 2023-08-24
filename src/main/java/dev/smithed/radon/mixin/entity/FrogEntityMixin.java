@@ -28,8 +28,7 @@ public abstract class FrogEntityMixin extends AnimalEntityMixin implements ICust
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FrogEntity entity = ((FrogEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("variant")) {
                 FrogVariant frogVariant = Registries.FROG_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));
                 if (frogVariant != null)

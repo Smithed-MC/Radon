@@ -41,8 +41,7 @@ public abstract class PiglinEntityMixin extends AbstractPiglinEntityMixin implem
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PiglinEntity entity = ((PiglinEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "IsBaby" -> entity.setBaby(nbt.getBoolean("IsBaby"));
                 case "CannotHunt" -> this.setCannotHunt(nbt.getBoolean("CannotHunt"));

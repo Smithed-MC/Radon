@@ -29,8 +29,7 @@ public abstract class OcelotEntityMixin extends AnimalEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         OcelotEntity entity = ((OcelotEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Trusting")) {
                 this.setTrusting(nbt.getBoolean("Trusting"));
             } else {

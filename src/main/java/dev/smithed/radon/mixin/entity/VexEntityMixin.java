@@ -47,8 +47,7 @@ public abstract class VexEntityMixin extends MobEntityMixin implements ICustomNB
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         VexEntity entity = ((VexEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "LifeTicks" -> entity.setLifeTicks(nbt.getInt("LifeTicks"));
                 case "BoundX" -> {

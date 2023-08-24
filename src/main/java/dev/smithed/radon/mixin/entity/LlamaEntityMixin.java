@@ -39,8 +39,7 @@ public abstract class LlamaEntityMixin extends AbstractDonkeyEntityMixin impleme
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         LlamaEntity entity = ((LlamaEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Strength" -> this.setStrength(nbt.getInt("Strength"));
                 case "Variant" -> entity.setVariant(LlamaEntity.Variant.byId(nbt.getInt("Variant")));

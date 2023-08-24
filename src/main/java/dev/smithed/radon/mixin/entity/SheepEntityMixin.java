@@ -28,8 +28,7 @@ public abstract class SheepEntityMixin extends AnimalEntityMixin implements ICus
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SheepEntity entity = ((SheepEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Sheared" -> entity.setSheared(nbt.getBoolean("Sheared"));
                 case "Color" -> entity.setColor(DyeColor.byId(nbt.getByte("Color")));

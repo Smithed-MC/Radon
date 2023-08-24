@@ -133,8 +133,7 @@ public abstract class MobEntityMixin extends LivingEntityMixin implements ICusto
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         MobEntity entity = ((MobEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             NbtList nbtList;
             switch (topLevelNbt) {
                 case "CanPickUpLoot" -> {

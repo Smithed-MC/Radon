@@ -29,8 +29,7 @@ public abstract class VindicatorEntityMixin extends RaiderEntityMixin implements
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         VindicatorEntity entity = ((VindicatorEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Johnny")) {
                 if (nbt.contains("Johnny", 99))
                     this.johnny = nbt.getBoolean("Johnny");

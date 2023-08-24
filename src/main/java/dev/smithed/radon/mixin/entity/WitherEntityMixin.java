@@ -30,8 +30,7 @@ public abstract class WitherEntityMixin extends MobEntityMixin implements ICusto
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         WitherEntity entity = ((WitherEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Invul")) {
                 entity.setInvulTimer(nbt.getInt("Invul"));
             } else {

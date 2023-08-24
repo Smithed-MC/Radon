@@ -56,8 +56,7 @@ public abstract class ShulkerBulletEntityMixin extends ProjectileEntityMixin imp
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ShulkerBulletEntity entity = ((ShulkerBulletEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Steps" -> this.stepCount = nbt.getInt("Steps");
                 case "TXD" -> this.targetX = nbt.getDouble("TXD");

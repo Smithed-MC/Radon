@@ -47,8 +47,7 @@ public abstract class AbstractHorseEntityMixin extends AnimalEntityMixin impleme
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         AbstractHorseEntity entity = ((AbstractHorseEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "EatingHaystack" -> entity.setEatingGrass(nbt.getBoolean("EatingHaystack"));
                 case "Bred" -> entity.setBred(nbt.getBoolean("Bred"));

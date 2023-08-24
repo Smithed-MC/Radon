@@ -26,8 +26,7 @@ public abstract class ZoglinEntityMixin extends MobEntityMixin implements ICusto
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ZoglinEntity entity = ((ZoglinEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("IsBaby")) {
                 if (nbt.getBoolean("IsBaby"))
                     entity.setBaby(true);

@@ -30,8 +30,7 @@ public abstract class FurnaceMinecartEntityMixin extends AbstractMinecartEntityM
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FurnaceMinecartEntity entity = ((FurnaceMinecartEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "PushX" -> entity.pushX = nbt.getDouble("PushX");
                 case "PushZ" -> entity.pushZ = nbt.getDouble("PushZ");

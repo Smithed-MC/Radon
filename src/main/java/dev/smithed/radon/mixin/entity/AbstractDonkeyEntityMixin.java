@@ -45,8 +45,7 @@ public abstract class AbstractDonkeyEntityMixin extends AbstractHorseEntityMixin
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         AbstractDonkeyEntity entity = ((AbstractDonkeyEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "ChestedHorse" -> {
                     entity.setHasChest(nbt.getBoolean("ChestedHorse"));

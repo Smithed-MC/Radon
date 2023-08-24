@@ -27,8 +27,7 @@ public abstract class SpellCastingIllagerEntityMixin extends RaiderEntityMixin {
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SpellcastingIllagerEntity entity = ((SpellcastingIllagerEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("SpellTicks")) {
                 this.spellTicks = nbt.getInt("SpellTicks");
             } else {

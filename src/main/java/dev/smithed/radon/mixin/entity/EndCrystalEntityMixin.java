@@ -30,8 +30,7 @@ public abstract class EndCrystalEntityMixin extends EntityMixin {
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         EndCrystalEntity entity = ((EndCrystalEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "BeamTarget" -> {
                     if (nbt.contains("BeamTarget", 10))

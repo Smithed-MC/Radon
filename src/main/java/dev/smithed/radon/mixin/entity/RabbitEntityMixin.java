@@ -32,8 +32,7 @@ public abstract class RabbitEntityMixin extends AnimalEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         RabbitEntity entity = ((RabbitEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "RabbitType" -> entity.setVariant(RabbitEntity.RabbitType.byId(nbt.getInt("RabbitType")));
                 case "MoreCarrotTicks" -> this.moreCarrotTicks = nbt.getInt("MoreCarrotTicks");

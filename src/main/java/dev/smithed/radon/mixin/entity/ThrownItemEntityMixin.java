@@ -31,8 +31,7 @@ public abstract class ThrownItemEntityMixin extends ProjectileEntityMixin implem
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ThrownItemEntity entity = ((ThrownItemEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Item")) {
                 ItemStack itemStack = ItemStack.fromNbt(nbt.getCompound("Item"));
                 entity.setItem(itemStack);

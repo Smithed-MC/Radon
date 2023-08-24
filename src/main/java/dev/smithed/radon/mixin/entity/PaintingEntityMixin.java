@@ -36,8 +36,7 @@ public abstract class PaintingEntityMixin extends AbstractDecorationEntityMixin 
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PaintingEntity entity = ((PaintingEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("facing")) {
                 this.facing = Direction.fromHorizontal(nbt.getByte("facing"));
                 this.setFacing(this.facing);

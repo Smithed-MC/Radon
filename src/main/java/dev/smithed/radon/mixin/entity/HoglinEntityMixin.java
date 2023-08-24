@@ -40,8 +40,7 @@ public abstract class HoglinEntityMixin extends AnimalEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         HoglinEntity entity = ((HoglinEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "IsImmuneToZombification" ->
                         entity.setImmuneToZombification(nbt.getBoolean("IsImmuneToZombification"));

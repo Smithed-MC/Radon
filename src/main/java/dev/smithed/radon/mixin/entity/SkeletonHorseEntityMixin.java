@@ -30,8 +30,7 @@ public abstract class SkeletonHorseEntityMixin extends AbstractHorseEntityMixin 
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SkeletonHorseEntity entity = ((SkeletonHorseEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "SkeletonTrap" -> entity.setTrapped(nbt.getBoolean("SkeletonTrap"));
                 case "SkeletonTrapTime" -> this.trapTime = nbt.getInt("SkeletonTrapTime");

@@ -52,8 +52,7 @@ public abstract class BeeEntityMixin extends AnimalEntityMixin implements ICusto
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         BeeEntity entity = ((BeeEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "HivePos" -> {
                     this.hivePos = null;

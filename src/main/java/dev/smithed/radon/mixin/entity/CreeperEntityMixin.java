@@ -39,8 +39,7 @@ public abstract class CreeperEntityMixin extends MobEntityMixin implements ICust
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         CreeperEntity entity = ((CreeperEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "powered" -> this.dataTracker.set(CHARGED, nbt.getBoolean("powered"));
                 case "Fuse" -> {

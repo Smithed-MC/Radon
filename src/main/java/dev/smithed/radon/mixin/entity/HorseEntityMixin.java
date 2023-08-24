@@ -35,8 +35,7 @@ public abstract class HorseEntityMixin extends AbstractHorseEntityMixin implemen
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         HorseEntity entity = ((HorseEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Variant" -> this.setHorseVariant(nbt.getInt("Variant"));
                 case "ArmorItem" -> {

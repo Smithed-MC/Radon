@@ -76,8 +76,7 @@ public abstract class ArmorStandEntityMixin extends LivingEntityMixin implements
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ArmorStandEntity entity = ((ArmorStandEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             NbtList nbtList;
             switch (topLevelNbt) {
                 case "ArmorItems" -> {

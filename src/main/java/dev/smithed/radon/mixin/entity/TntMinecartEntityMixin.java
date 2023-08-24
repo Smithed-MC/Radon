@@ -28,8 +28,7 @@ public abstract class TntMinecartEntityMixin extends AbstractMinecartEntityMixin
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TntMinecartEntity entity = ((TntMinecartEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("TNTFuse")) {
                 if (nbt.contains("TNTFuse", 99))
                     this.fuseTicks = nbt.getInt("TNTFuse");

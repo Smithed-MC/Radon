@@ -28,8 +28,7 @@ public abstract class WolfEntityMixin extends TameableEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         WolfEntity entity = ((WolfEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "CollarColor" -> {
                     if (nbt.contains("CollarColor", 99))

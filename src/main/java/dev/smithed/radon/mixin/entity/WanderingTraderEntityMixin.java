@@ -36,8 +36,7 @@ public abstract class WanderingTraderEntityMixin extends MerchantEntityMixin {
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         WanderingTraderEntity entity = ((WanderingTraderEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "DespawnDelay" -> {
                     if (nbt.contains("DespawnDelay", 99))

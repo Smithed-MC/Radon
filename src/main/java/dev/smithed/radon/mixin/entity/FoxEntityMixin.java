@@ -51,8 +51,7 @@ public abstract class FoxEntityMixin extends AnimalEntityMixin implements ICusto
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         FoxEntity entity = ((FoxEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Trusted" -> {
                     NbtList nbtList = nbt.getList("Trusted", 11);

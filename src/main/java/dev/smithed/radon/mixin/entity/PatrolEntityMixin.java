@@ -38,8 +38,7 @@ public abstract class PatrolEntityMixin extends MobEntityMixin implements ICusto
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PatrolEntity entity = ((PatrolEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "PatrolTarget" -> this.patrolTarget = NbtHelper.toBlockPos(nbt.getCompound("PatrolTarget"));
                 case "PatrolLeader" -> this.patrolLeader = nbt.getBoolean("PatrolLeader");

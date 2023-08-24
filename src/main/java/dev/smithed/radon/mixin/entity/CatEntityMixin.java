@@ -32,8 +32,7 @@ public abstract class CatEntityMixin extends TameableEntityMixin implements ICus
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         CatEntity entity = ((CatEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "variant" -> {
                     CatVariant catVariant = Registries.CAT_VARIANT.get(Identifier.tryParse(nbt.getString("variant")));

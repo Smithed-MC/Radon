@@ -27,8 +27,7 @@ public abstract class IronGolemEntityMixin extends MobEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         IronGolemEntity entity = ((IronGolemEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "PlayerCreated" -> entity.setPlayerCreated(nbt.getBoolean("PlayerCreated"));
                 case "AngerTime", "AngryAt" -> entity.readAngerFromNbt(this.world, nbt);

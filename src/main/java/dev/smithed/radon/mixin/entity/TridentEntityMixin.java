@@ -36,8 +36,7 @@ public abstract class TridentEntityMixin extends PersistentProjectileEntityMixin
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TridentEntity entity = ((TridentEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Trident" -> {
                     if (nbt.contains("Trident", 10)) {

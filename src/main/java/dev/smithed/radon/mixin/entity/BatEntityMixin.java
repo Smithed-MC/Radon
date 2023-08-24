@@ -30,8 +30,7 @@ public abstract class BatEntityMixin extends MobEntityMixin implements ICustomNB
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         BatEntity entity = ((BatEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("BatFlags")) {
                 nbt.putByte("BatFlags", this.dataTracker.get(BAT_FLAGS));
             } else {

@@ -55,8 +55,7 @@ public abstract class ItemFrameEntityMixin extends AbstractDecorationEntityMixin
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ItemFrameEntity entity = ((ItemFrameEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Item" -> {
                     NbtCompound nbtCompound = nbt.getCompound("Item");

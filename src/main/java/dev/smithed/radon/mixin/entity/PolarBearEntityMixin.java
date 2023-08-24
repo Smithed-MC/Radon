@@ -26,8 +26,7 @@ public abstract class PolarBearEntityMixin extends AnimalEntityMixin implements 
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PolarBearEntity entity = ((PolarBearEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "AngryAt", "AngerTime" -> entity.readAngerFromNbt(this.world, nbt);
                 default -> {

@@ -25,8 +25,7 @@ public abstract class BoatEntityMixin extends EntityMixin implements ICustomNBTM
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         BoatEntity entity = ((BoatEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Type")) {
                 if (nbt.contains("Type", 8))
                     entity.setVariant(BoatEntity.Type.getType(nbt.getString("Type")));

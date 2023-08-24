@@ -53,8 +53,7 @@ public abstract class ItemEntityMixin extends EntityMixin implements ICustomNBTM
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ItemEntity entity = ((ItemEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Health" -> this.health = nbt.getShort("Health");
                 case "Age" -> this.itemAge = nbt.getShort("Age");

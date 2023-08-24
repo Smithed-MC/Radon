@@ -28,8 +28,7 @@ public abstract class TraderLlamaEntityMixin extends LlamaEntityMixin implements
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TraderLlamaEntity entity = ((TraderLlamaEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("DespawnDelay")) {
                 if (nbt.contains("DespawnDelay", 99))
                     this.despawnDelay = nbt.getInt("DespawnDelay");

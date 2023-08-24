@@ -40,8 +40,7 @@ public abstract class TurtleEntityMixin extends AnimalEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TurtleEntity entity = ((TurtleEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "HasEgg" -> this.setHasEgg(nbt.getBoolean("HasEgg"));
                 case "HomePosX" -> {

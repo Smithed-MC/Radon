@@ -83,8 +83,7 @@ public abstract class DisplayEntityMixin extends EntityMixin {
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         DisplayEntity entity = ((DisplayEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "transformation" -> {
                     DataResult<Pair<AffineTransformation, NbtElement>> var10000;

@@ -31,8 +31,7 @@ public abstract class DolphinEntityMixin extends MobEntityMixin implements ICust
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         DolphinEntity entity = ((DolphinEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "TreasurePosX" -> {
                     int i = nbt.getInt("TreasurePosX");

@@ -25,8 +25,7 @@ public abstract class ParrotEntityMixin extends TameableEntityMixin implements I
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ParrotEntity entity = ((ParrotEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Variant")) {
                 entity.setVariant(ParrotEntity.Variant.byIndex(nbt.getInt("Variant")));
             } else {

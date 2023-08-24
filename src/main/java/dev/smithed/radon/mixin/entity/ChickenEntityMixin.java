@@ -27,8 +27,7 @@ public abstract class ChickenEntityMixin extends AnimalEntityMixin implements IC
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ChickenEntity entity = ((ChickenEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "IsChickenJockey" -> entity.hasJockey = nbt.getBoolean("IsChickenJockey");
                 case "ChestedHorse" -> entity.eggLayTime = nbt.getInt("EggLayTime");

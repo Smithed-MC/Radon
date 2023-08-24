@@ -39,8 +39,7 @@ public abstract class ChestBoatEntityMixin extends BoatEntityMixin implements IC
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ChestBoatEntity entity = ((ChestBoatEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Items" -> entity.readInventoryFromNbt(nbt);
                 case "LootTable" -> entity.setLootTableId(new Identifier(nbt.getString("LootTable")));

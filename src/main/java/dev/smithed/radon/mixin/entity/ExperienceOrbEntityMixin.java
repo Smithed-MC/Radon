@@ -34,8 +34,7 @@ public abstract class ExperienceOrbEntityMixin extends EntityMixin implements IC
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ExperienceOrbEntity entity = ((ExperienceOrbEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Health" -> this.health = nbt.getShort("Health");
                 case "Age" -> this.orbAge = nbt.getShort("Age");

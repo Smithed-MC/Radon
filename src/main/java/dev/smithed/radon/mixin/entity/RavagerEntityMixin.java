@@ -33,8 +33,7 @@ public abstract class RavagerEntityMixin extends RaiderEntityMixin implements IC
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         RavagerEntity entity = ((RavagerEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "AttackTick" -> this.attackTick = nbt.getInt("AttackTick");
                 case "StunTick" -> this.stunTick = nbt.getInt("StunTick");

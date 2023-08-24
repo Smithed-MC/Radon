@@ -30,8 +30,7 @@ public abstract class AxolotlEntityMixin extends AnimalEntityMixin implements IC
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         AxolotlEntity entity = ((AxolotlEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Variant" -> this.setVariant(AxolotlEntity.Variant.byId(nbt.getInt("Variant")));
                 case "FromBucket" -> entity.setFromBucket(nbt.getBoolean("FromBucket"));

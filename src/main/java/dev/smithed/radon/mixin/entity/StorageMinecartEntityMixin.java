@@ -39,8 +39,7 @@ public abstract class StorageMinecartEntityMixin extends AbstractMinecartEntityM
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         StorageMinecartEntity entity = ((StorageMinecartEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Items" -> entity.readInventoryFromNbt(nbt);
                 case "LootTable" -> {

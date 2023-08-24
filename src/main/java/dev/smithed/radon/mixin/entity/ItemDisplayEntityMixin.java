@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin.entity;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
+import dev.smithed.radon.Radon;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.entity.decoration.DisplayEntity;
 import net.minecraft.item.ItemStack;
@@ -44,9 +45,8 @@ public abstract class ItemDisplayEntityMixin extends DisplayEntityMixin {
 
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
+        Radon.logDebugFormat("test = %s, %s, %s", nbt, path);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
             switch (topLevelNbt) {
                 case "item" -> this.setItemStack(ItemStack.fromNbt(nbt.getCompound("item")));
                 case "item_display" -> {

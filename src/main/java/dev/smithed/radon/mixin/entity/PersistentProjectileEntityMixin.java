@@ -52,8 +52,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PersistentProjectileEntity entity = ((PersistentProjectileEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "life" -> this.life = nbt.getShort("life");
                 case "inBlockState" -> {

@@ -50,8 +50,7 @@ public abstract class TextDisplayEntityMixin extends DisplayEntityMixin {
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         DisplayEntity.TextDisplayEntity entity = ((DisplayEntity.TextDisplayEntity) (Object) this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "line_width" -> {
                     if (nbt.contains("line_width", 99)) {

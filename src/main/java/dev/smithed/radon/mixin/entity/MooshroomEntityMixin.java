@@ -39,8 +39,7 @@ public abstract class MooshroomEntityMixin extends AnimalEntityMixin implements 
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         MooshroomEntity entity = ((MooshroomEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "EffectId" -> {
                     if (nbt.contains("EffectId", 1))

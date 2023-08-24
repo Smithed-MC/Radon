@@ -30,8 +30,7 @@ public abstract class PigEntityMixin extends AnimalEntityMixin implements ICusto
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PigEntity entity = ((PigEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Saddle")) {
                 this.saddledComponent.readNbt(nbt);
             } else {

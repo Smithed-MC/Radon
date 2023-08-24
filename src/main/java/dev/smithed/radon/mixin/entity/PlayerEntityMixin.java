@@ -97,8 +97,7 @@ public abstract class PlayerEntityMixin extends LivingEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PlayerEntity entity = ((PlayerEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Inventory" -> {
                     NbtList nbtList = nbt.getList("Inventory", 10);

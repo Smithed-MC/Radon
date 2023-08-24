@@ -53,8 +53,7 @@ public abstract class AllayEntityMixin extends MobEntityMixin implements ICustom
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         AllayEntity entity = ((AllayEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "CanDuplicate" -> this.dataTracker.set(CAN_DUPLICATE, nbt.getBoolean("CanDuplicate"));
                 case "DuplicationCooldown" -> this.duplicationCooldown = (long) nbt.getInt("DuplicationCooldown");

@@ -25,8 +25,7 @@ public abstract class SnowGolemEntityMixin extends MobEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SnowGolemEntity entity = ((SnowGolemEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Pumpkin")) {
                 entity.setHasPumpkin(nbt.getBoolean("Pumpkin"));
             } else {

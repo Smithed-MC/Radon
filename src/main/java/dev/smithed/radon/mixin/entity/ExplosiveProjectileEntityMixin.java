@@ -26,8 +26,7 @@ public abstract class ExplosiveProjectileEntityMixin extends ProjectileEntityMix
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ExplosiveProjectileEntity entity = ((ExplosiveProjectileEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("power")) {
                 if (nbt.contains("power", 9)) {
                     NbtList nbtList = nbt.getList("power", 6);

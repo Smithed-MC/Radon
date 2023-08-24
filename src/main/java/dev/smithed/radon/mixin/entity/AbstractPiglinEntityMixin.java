@@ -34,8 +34,7 @@ public abstract class AbstractPiglinEntityMixin extends MobEntityMixin implement
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         AbstractPiglinEntity entity = ((AbstractPiglinEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "IsImmuneToZombification" ->
                         entity.setImmuneToZombification(nbt.getBoolean("IsImmuneToZombification"));

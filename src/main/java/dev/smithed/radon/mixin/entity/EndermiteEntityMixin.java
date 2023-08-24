@@ -27,8 +27,7 @@ public abstract class EndermiteEntityMixin extends MobEntityMixin implements ICu
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         EndermiteEntity entity = ((EndermiteEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Lifetime")) {
                 this.lifeTime = nbt.getInt("Lifetime");
             } else {

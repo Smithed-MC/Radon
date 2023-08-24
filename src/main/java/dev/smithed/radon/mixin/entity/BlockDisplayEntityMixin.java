@@ -31,8 +31,7 @@ public abstract class BlockDisplayEntityMixin extends DisplayEntityMixin {
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         DisplayEntity.BlockDisplayEntity entity = ((DisplayEntity.BlockDisplayEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("block_state")) {
                 this.setBlockState(NbtHelper.toBlockState(this.world.createCommandRegistryWrapper(RegistryKeys.BLOCK), nbt.getCompound("block_state")));
             } else {

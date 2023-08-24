@@ -27,8 +27,7 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntityMix
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         HopperMinecartEntity entity = ((HopperMinecartEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Enabled")) {
                 this.enabled = nbt.getBoolean("Enabled");
             } else {

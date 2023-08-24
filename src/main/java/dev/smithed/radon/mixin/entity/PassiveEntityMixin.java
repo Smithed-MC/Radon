@@ -30,8 +30,7 @@ public abstract class PassiveEntityMixin extends MobEntityMixin implements ICust
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         PassiveEntity entity = ((PassiveEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "Age" -> entity.setBreedingAge(nbt.getInt("Age"));
                 case "ForcedAge" -> this.forcedAge = nbt.getInt("ForcedAge");

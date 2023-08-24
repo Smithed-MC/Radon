@@ -40,8 +40,7 @@ public abstract class ZombieEntityMixin extends MobEntityMixin implements ICusto
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         ZombieEntity entity = ((ZombieEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             switch (topLevelNbt) {
                 case "IsBaby" -> entity.setBaby(nbt.getBoolean("IsBaby"));
                 case "CanBreakDoors" -> entity.setCanBreakDoors(nbt.getBoolean("CanBreakDoors"));

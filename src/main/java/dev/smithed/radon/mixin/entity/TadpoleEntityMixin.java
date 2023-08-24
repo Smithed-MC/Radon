@@ -29,8 +29,7 @@ public abstract class TadpoleEntityMixin extends FishEntityMixin implements ICus
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         TadpoleEntity entity = ((TadpoleEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("Age")) {
                 this.setTadpoleAge(nbt.getInt("Age"));
             } else {

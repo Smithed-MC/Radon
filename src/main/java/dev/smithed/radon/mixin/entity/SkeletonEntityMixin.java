@@ -28,8 +28,7 @@ public abstract class SkeletonEntityMixin extends AbstractSkeletonEntityMixin im
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         SkeletonEntity entity = ((SkeletonEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
-            if(!nbt.contains(topLevelNbt))
-                return false;
+
             if (topLevelNbt.equals("StrayConversionTime")) {
                 if (nbt.contains("StrayConversionTime", 99) && nbt.getInt("StrayConversionTime") > -1)
                     this.setConversionTime(nbt.getInt("StrayConversionTime"));
