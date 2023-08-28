@@ -16,7 +16,12 @@ Running `execute if entity @e[type=minecraft:item_frame]` 10000 times per tick w
 
 ![selector](https://cdn.discordapp.com/attachments/507995770109165579/1012754969478307890/selector.png)
 
-## Setup
+## Usage
+Radon is experimental, and you should not develop a datapack with the expectation its users will be using Radon. AFter all, the whole point of a datapack is that it works in vanilla. If you expect users to use a mod, just make a mod.
+
+That said, if you're setting up a server with a lot of datapacks that's already using performance mods (ie. Lithium), or your computer is truely a potatoe and you need to squeeze out every drop of performance you can get, then definitly give Radon a try.
+
+### Setup
 
 Download the latest version from [Releases](https://github.com/Smithed-MC/Radon/releases) and place the mod in your [Fabric](https://fabricmc.net/) mods folder.
 
