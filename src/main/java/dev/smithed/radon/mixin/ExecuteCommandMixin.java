@@ -86,7 +86,7 @@ public class ExecuteCommandMixin {
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
     private static void testBlocksCondition(ServerWorld world, BlockPos start, BlockPos end, BlockPos destination, boolean masked, CallbackInfoReturnable<OptionalInt> cir) throws CommandSyntaxException {
-        if(world instanceof IWorldExtender mixin) {
+        if(Radon.CONFIG.fixBlockAccessForceload && world instanceof IWorldExtender mixin) {
             BlockBox blockBox = BlockBox.create(start, end);
             BlockBox blockBox2 = BlockBox.create(destination, destination.add(blockBox.getDimensions()));
             BlockPos blockPos = new BlockPos(blockBox2.getMinX() - blockBox.getMinX(), blockBox2.getMinY() - blockBox.getMinY(), blockBox2.getMinZ() - blockBox.getMinZ());
@@ -95,35 +95,42 @@ public class ExecuteCommandMixin {
                 throw BLOCKS_TOOBIG_EXCEPTION.create(32768, i);
             } else {
                 int j = 0;
-                for (int k = blockBox.getMinZ(); k <= blockBox.getMaxZ(); ++k) {
-                    for (int l = blockBox.getMinY(); l <= blockBox.getMaxY(); ++l) {
-                        for (int m = blockBox.getMinX(); m <= blockBox.getMaxX(); ++m) {
+
+                for(int k = blockBox.getMinZ(); k <= blockBox.getMaxZ(); ++k) {
+                    for(int l = blockBox.getMinY(); l <= blockBox.getMaxY(); ++l) {
+                        for(int m = blockBox.getMinX(); m <= blockBox.getMaxX(); ++m) {
                             BlockPos blockPos2 = new BlockPos(m, l, k);
                             BlockPos blockPos3 = blockPos2.add(blockPos);
+                            // INJECT
                             BlockState blockState = mixin.getBlockStateNoLoad(blockPos2);
                             if (!masked || !blockState.isOf(Blocks.AIR)) {
+                                // INJECT
                                 if (blockState != mixin.getBlockStateNoLoad(blockPos3)) {
-                                    cir.setReturnValue(OptionalInt.of(j));
+                                    cir.setReturnValue(OptionalInt.empty());
+                                    return;
                                 }
 
-                                BlockEntity blockEntity = world.getBlockEntity(blockPos2);
-                                BlockEntity blockEntity2 = world.getBlockEntity(blockPos3);
+                                //INJECT
+                                BlockEntity blockEntity = mixin.getBlockEntityNoLoad(blockPos2);
+                                BlockEntity blockEntity2 = mixin.getBlockEntityNoLoad(blockPos3);
                                 if (blockEntity != null) {
                                     if (blockEntity2 == null) {
-                                        cir.setReturnValue(OptionalInt.of(j));
+                                        cir.setReturnValue(OptionalInt.empty());
+                                        return;
                                     }
 
                                     if (blockEntity2.getType() != blockEntity.getType()) {
-                                        cir.setReturnValue(OptionalInt.of(j));
+                                        cir.setReturnValue(OptionalInt.empty());
+                                        return;
                                     }
 
                                     NbtCompound nbtCompound = blockEntity.createNbt();
                                     NbtCompound nbtCompound2 = blockEntity2.createNbt();
                                     if (!nbtCompound.equals(nbtCompound2)) {
-                                        cir.setReturnValue(OptionalInt.of(j));
+                                        cir.setReturnValue(OptionalInt.empty());
+                                        return;
                                     }
                                 }
-
                                 ++j;
                             }
                         }
@@ -133,5 +140,4 @@ public class ExecuteCommandMixin {
             }
         }
     }
-
 }
