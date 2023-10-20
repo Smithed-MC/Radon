@@ -22,7 +22,7 @@ import java.util.Objects;
 @Mixin(DisplayEntity.class)
 public abstract class DisplayEntityMixin extends EntityMixin {
 
-    @Shadow @Final static Logger field_42397;
+    @Shadow @Final static Logger LOGGER;
 
     @Shadow static AffineTransformation getTransformation(DataTracker dataTracker) { return null; }
     @Shadow abstract Brightness getBrightnessUnpacked();
@@ -48,7 +48,6 @@ public abstract class DisplayEntityMixin extends EntityMixin {
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        DisplayEntity entity = ((DisplayEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 //TODO: add billboard
@@ -81,7 +80,6 @@ public abstract class DisplayEntityMixin extends EntityMixin {
 
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        DisplayEntity entity = ((DisplayEntity)(Object)this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
 
             switch (topLevelNbt) {
@@ -90,7 +88,7 @@ public abstract class DisplayEntityMixin extends EntityMixin {
                     Logger var10002;
                     if (nbt.contains("transformation")) {
                         var10000 = AffineTransformation.ANY_CODEC.decode(NbtOps.INSTANCE, nbt.get("transformation"));
-                        var10002 = field_42397;
+                        var10002 = LOGGER;
                         Objects.requireNonNull(var10002);
                         var10000.resultOrPartial(
                                 Util.addPrefix("Display entity", var10002::error))
@@ -102,7 +100,7 @@ public abstract class DisplayEntityMixin extends EntityMixin {
                     if (nbt.contains("billboard", 8)) {
                         DataResult<Pair<DisplayEntity.BillboardMode, NbtElement>> var10000;
                         var10000 = DisplayEntity.BillboardMode.CODEC.decode(NbtOps.INSTANCE, nbt.get("billboard"));
-                        Logger var10002 = field_42397;
+                        Logger var10002 = LOGGER;
                         Objects.requireNonNull(var10002);
                         var10000.resultOrPartial(Util.addPrefix("Display entity", var10002::error)).ifPresent((pair) -> {
                             this.setBillboardMode(pair.getFirst());
@@ -112,7 +110,7 @@ public abstract class DisplayEntityMixin extends EntityMixin {
                     if (nbt.contains("brightness", 10)) {
                         DataResult<Pair<Brightness, NbtElement>> var10000;
                         var10000 = Brightness.CODEC.decode(NbtOps.INSTANCE, nbt.get("brightness"));
-                        Logger var10002 = field_42397;
+                        Logger var10002 = LOGGER;
                         Objects.requireNonNull(var10002);
                         var10000.resultOrPartial(Util.addPrefix("Display entity", var10002::error)).ifPresent((pair) -> {
                             this.setBrightness(pair.getFirst());

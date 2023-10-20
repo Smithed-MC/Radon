@@ -36,7 +36,7 @@ public abstract class DataCommandMixin {
      * @reason there does not appear to be a clean way to replace the getNbt() call with a getFilteredNbt(path) call
      */
     @Overwrite
-    private static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
+    public static NbtElement getNbt(NbtPathArgumentType.NbtPath path, DataCommandObject object) throws CommandSyntaxException {
         //inject getNbt() -> getFilteredNbt(path)
         NbtCompound nbt = null;
         if (Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin)

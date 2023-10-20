@@ -52,7 +52,7 @@ public abstract class ItemDisplayEntityMixin extends DisplayEntityMixin {
                 case "item_display" -> {
                     if (nbt.contains("item_display", 8)) {
                         DataResult<Pair<ModelTransformationMode, NbtElement>> var10000 = ModelTransformationMode.CODEC.decode(NbtOps.INSTANCE, nbt.get("item_display"));
-                        Logger var10002 = field_42397;
+                        Logger var10002 = LOGGER;
                         Objects.requireNonNull(var10002);
                         var10000.resultOrPartial(Util.addPrefix("Display entity", var10002::error)).ifPresent((mode) -> {
                             this.setTransformationMode(mode.getFirst());

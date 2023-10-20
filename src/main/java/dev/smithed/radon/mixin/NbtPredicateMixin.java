@@ -25,30 +25,28 @@ public class NbtPredicateMixin {
     @Overwrite
     public boolean test(Entity entity) {
         NbtPredicate predicate = ((NbtPredicate)(Object)this);
-        if(predicate == NbtPredicate.ANY) {
-            return true;
-        } else {
-            NbtCompound nbt = null;
-            if(Radon.CONFIG.nbtOptimizations && entity instanceof IEntityMixin mixin) {
-                nbt = new NbtCompound();
-                String[] topLevelNbt = NBTUtils.getTopLevelPaths(this.nbt);
-                for(String topNbt: topLevelNbt) {
-                    if (entity instanceof ServerPlayerEntity player && topNbt.equals("SelectedItem")) {
-                        ItemStack itemStack = player.getInventory().getMainHandStack();
-                        if (!itemStack.isEmpty()) {
-                            nbt.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
-                        }
-                    } else {
-                        nbt = mixin.writeNbtFiltered(nbt, topNbt);
-                        if (nbt == null)
-                            break;
+
+        NbtCompound nbt = null;
+        if(Radon.CONFIG.nbtOptimizations && entity instanceof IEntityMixin mixin) {
+            nbt = new NbtCompound();
+            String[] topLevelNbt = NBTUtils.getTopLevelPaths(this.nbt);
+            for(String topNbt: topLevelNbt) {
+                if (entity instanceof ServerPlayerEntity player && topNbt.equals("SelectedItem")) {
+                    ItemStack itemStack = player.getInventory().getMainHandStack();
+                    if (!itemStack.isEmpty()) {
+                        nbt.put("SelectedItem", itemStack.writeNbt(new NbtCompound()));
                     }
+                } else {
+                    nbt = mixin.writeNbtFiltered(nbt, topNbt);
+                    if (nbt == null)
+                        break;
                 }
             }
-            if(nbt == null)
-                nbt = NbtPredicate.entityToNbt(entity);
-            Radon.logDebugFormat("retrieved predicate nbt -> %s", nbt);
-            return predicate.test(nbt);
         }
+
+        if(nbt == null)
+            nbt = NbtPredicate.entityToNbt(entity);
+        Radon.logDebugFormat("retrieved predicate nbt -> %s", nbt);
+        return predicate.test(nbt);
     }
 }

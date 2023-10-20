@@ -6,6 +6,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.inventory.ContainerLock;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -17,14 +18,15 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
     @Shadow Text customName;
     @Shadow int level;
     @Shadow ContainerLock lock;
-    @Shadow static StatusEffect getPotionEffectById(int id) { return null; }
+    @Shadow static void writeStatusEffect(NbtCompound nbt, String key, @Nullable StatusEffect effect) {}
+    @Shadow static StatusEffect readStatusEffect(NbtCompound nbt, String key) { return null; }
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Primary" -> nbt.putInt("Primary", StatusEffect.getRawIdNullable(this.primary));
-                case "Secondary" -> nbt.putInt("Secondary", StatusEffect.getRawIdNullable(this.secondary));
+                case "primary_effect" -> writeStatusEffect(nbt, "primary_effect", this.primary);
+                case "secondary_effect" -> writeStatusEffect(nbt, "secondary_effect", this.secondary);
                 case "Levels" -> nbt.putInt("Levels", this.level);
                 case "CustomName" -> {
                     if (this.customName != null)
@@ -43,8 +45,8 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "Primary" -> this.primary = getPotionEffectById(nbt.getInt("Primary"));
-                case "Secondary" -> this.secondary = getPotionEffectById(nbt.getInt("Secondary"));
+                case "primary_effect" -> this.primary = readStatusEffect(nbt, "primary_effect");
+                case "secondary_effect" -> this.secondary = readStatusEffect(nbt, "secondary_effect");
                 case "CustomName" -> {
                     if (nbt.contains("CustomName", 8))
                         this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
