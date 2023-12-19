@@ -25,7 +25,7 @@ That said, if you're setting up a server with a lot of datapacks that's already 
 
 Download the latest version from [Releases](https://github.com/Smithed-MC/Radon/releases) and place the mod in your [Fabric](https://fabricmc.net/) mods folder.
 
-(WIP) Alternativly, use the [Smithed client](https://smithed.dev/), a new Minecraft launcher which includes datapack searching, automatic merging, and some performance mod options.
+(WIP) Alternativly, use the [Smithed client](https://smithed.net/), a new Minecraft launcher which includes datapack searching, automatic merging, and some performance mod options.
 
 ## Advanced Features
 Want to see the difference for yourself? Radon supports toggling optimizations on the fly using these commands. You can observe the mspt in f3, or run a profile with f3+L in single player and /perf <start/stop> in multiplayer:
