@@ -19,7 +19,7 @@ public abstract class LockableContainerBlockEntityMixin extends BlockEntityMixin
         switch (topLevelNbt) {
             case "CustomName" -> {
                 if (this.customName != null)
-                    nbt.putString("CustomName", Text.Serializer.toJson(this.customName));
+                    nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName));
             }
             case "Lock" -> this.lock.writeNbt(nbt);
             default -> {
@@ -36,7 +36,7 @@ public abstract class LockableContainerBlockEntityMixin extends BlockEntityMixin
                 case "Lock" -> this.lock = ContainerLock.fromNbt(nbt);
                 case "CustomName" -> {
                     if (nbt.contains("CustomName", 8))
-                        this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
+                        this.customName = Text.Serialization.fromJson(nbt.getString("CustomName"));
                 }
                 default -> {
                     return false;

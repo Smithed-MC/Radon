@@ -2,11 +2,8 @@ package dev.smithed.radon.mixin.block_entity;
 
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.block.entity.JukeboxBlockEntity;
-import net.minecraft.entity.mob.ZombifiedPiglinEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.collection.DefaultedList;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -16,11 +13,11 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntityMixin implement
     @Shadow long tickCount;
     @Shadow long recordStartTick;
     @Shadow boolean isPlaying;
-    @Shadow @Final DefaultedList<ItemStack> inventory;
+    @Shadow ItemStack recordStack;
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        JukeboxBlockEntity entity = ((JukeboxBlockEntity) (Object) this);
+        final JukeboxBlockEntity entity = ((JukeboxBlockEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
                 case "RecordItem" -> {
@@ -44,7 +41,7 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntityMixin implement
             switch (topLevelNbt) {
                 case "RecordItem" -> {
                     if (nbt.contains("RecordItem", 10))
-                        this.inventory.set(0, ItemStack.fromNbt(nbt.getCompound("RecordItem")));
+                        this.recordStack = ItemStack.fromNbt(nbt.getCompound("RecordItem"));
                 }
                 case "IsPlaying" -> this.isPlaying = nbt.getBoolean("IsPlaying");
                 case "RecordStartTick" -> this.recordStartTick = nbt.getLong("RecordStartTick");

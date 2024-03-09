@@ -1,6 +1,5 @@
 package dev.smithed.radon.mixin.block_entity;
 
-import com.mojang.logging.LogUtils;
 import com.mojang.serialization.DataResult;
 import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.block.entity.SignBlockEntity;
@@ -8,8 +7,6 @@ import net.minecraft.block.entity.SignText;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

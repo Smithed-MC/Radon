@@ -29,8 +29,8 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
                 case "secondary_effect" -> writeStatusEffect(nbt, "secondary_effect", this.secondary);
                 case "Levels" -> nbt.putInt("Levels", this.level);
                 case "CustomName" -> {
-                    if (this.customName != null)
-                        nbt.putString("CustomName", Text.Serializer.toJson(this.customName));
+                    if (nbt.contains("CustomName", 8))
+                        this.customName = Text.Serialization.fromJson(nbt.getString("CustomName"));
                 }
                 case "Lock" -> this.lock.writeNbt(nbt);
                 default -> {
@@ -48,8 +48,8 @@ public abstract class BeaconBlockEntityMixin extends BlockEntityMixin implements
                 case "primary_effect" -> this.primary = readStatusEffect(nbt, "primary_effect");
                 case "secondary_effect" -> this.secondary = readStatusEffect(nbt, "secondary_effect");
                 case "CustomName" -> {
-                    if (nbt.contains("CustomName", 8))
-                        this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
+                    if (this.customName != null)
+                        nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName));
                 }
                 case "Lock" -> this.lock = ContainerLock.fromNbt(nbt);
                 default -> {

@@ -31,7 +31,7 @@ public abstract class BannerBlockEntityMixin extends BlockEntityMixin implements
                 }
                 case "CustomName" -> {
                     if (this.customName != null)
-                        nbt.putString("CustomName", Text.Serializer.toJson(this.customName));
+                        nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName));
                 }
                 default -> {
                     return false;
@@ -47,7 +47,7 @@ public abstract class BannerBlockEntityMixin extends BlockEntityMixin implements
             switch (topLevelNbt) {
                 case "CustomName" -> {
                     if (nbt.contains("CustomName", 8))
-                        this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
+                        this.customName = Text.Serialization.fromJson(nbt.getString("CustomName"));
                 }
                 case "Patterns" -> {
                     this.patternListNbt = nbt.getList("Patterns", 10);

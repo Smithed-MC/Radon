@@ -19,7 +19,7 @@ public abstract class EnchantingTableBlockEntityMixin extends BlockEntityMixin i
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             if (topLevelNbt.equals("CustomName")) {
                 if (entity.hasCustomName())
-                    nbt.putString("CustomName", Text.Serializer.toJson(this.customName));
+                    nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName));
             } else {
                 return false;
             }
@@ -32,7 +32,7 @@ public abstract class EnchantingTableBlockEntityMixin extends BlockEntityMixin i
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
             if (topLevelNbt.equals("CustomName")) {
                 if (nbt.contains("CustomName", 8))
-                    this.customName = Text.Serializer.fromJson(nbt.getString("CustomName"));
+                    this.customName = Text.Serialization.fromJson(nbt.getString("CustomName"));
             } else {
                 return false;
             }
