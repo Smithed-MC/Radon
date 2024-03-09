@@ -2,6 +2,7 @@ package dev.smithed.radon.mixin.entity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.registry.Registries;
@@ -20,6 +21,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
     @Shadow boolean inGround;
     @Shadow double damage;
     @Shadow SoundEvent sound;
+    @Shadow ItemStack stack;
     @Shadow abstract SoundEvent getHitSound();
 
     @Override
@@ -40,6 +42,7 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
                 case "PierceLevel" -> nbt.putByte("PierceLevel", entity.getPierceLevel());
                 case "SoundEvent" -> nbt.putString("SoundEvent", Registries.SOUND_EVENT.getId(this.sound).toString());
                 case "ShotFromCrossbow" -> nbt.putBoolean("ShotFromCrossbow", entity.isShotFromCrossbow());
+                case "item" -> nbt.put("item", this.stack.writeNbt(new NbtCompound()));
                 default -> {
                     return false;
                 }
@@ -74,6 +77,11 @@ public abstract class PersistentProjectileEntityMixin extends ProjectileEntityMi
                         this.sound = Registries.SOUND_EVENT.getOrEmpty(new Identifier(nbt.getString("SoundEvent"))).orElse(this.getHitSound());
                 }
                 case "ShotFromCrossbow" -> entity.setShotFromCrossbow(nbt.getBoolean("ShotFromCrossbow"));
+                case "item" -> {
+                    if (nbt.contains("item", 10)) {
+                        this.stack = ItemStack.fromNbt(nbt.getCompound("item"));
+                    }
+                }
                 default -> {
                     return false;
                 }

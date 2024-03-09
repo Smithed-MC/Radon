@@ -1,6 +1,5 @@
 package dev.smithed.radon.mixin;
 
-import com.mojang.brigadier.ResultConsumer;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import dev.smithed.radon.Radon;
@@ -10,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.command.DataCommandObject;
+import net.minecraft.command.ReturnValueConsumer;
 import net.minecraft.command.argument.NbtPathArgumentType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -27,13 +27,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.OptionalInt;
-import java.util.function.BinaryOperator;
 import java.util.function.IntFunction;
 
 @Mixin(ExecuteCommand.class)
 public class ExecuteCommandMixin {
 
-    @Shadow @Final static BinaryOperator<ResultConsumer<ServerCommandSource>> BINARY_RESULT_CONSUMER;
     @Shadow @Final static Dynamic2CommandExceptionType BLOCKS_TOOBIG_EXCEPTION;
 
     /**
@@ -55,30 +53,31 @@ public class ExecuteCommandMixin {
 
     /**
      * @author ImCoolYeah105
-     * reroute getNbt() -> getNbtFiltered(path), then cancel main function is successful.
+     * reroute getNbt() -> getNbtFiltered(path), then cancel main function if successful.
      */
     @Inject(
             method = "executeStoreData(Lnet/minecraft/server/command/ServerCommandSource;Lnet/minecraft/command/DataCommandObject;Lnet/minecraft/command/argument/NbtPathArgumentType$NbtPath;Ljava/util/function/IntFunction;Z)Lnet/minecraft/server/command/ServerCommandSource;",
             at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION
     )
     private static void radon_executeStoreData(ServerCommandSource source, DataCommandObject object, NbtPathArgumentType.NbtPath path, IntFunction<NbtElement> nbtSetter, boolean requestResult, CallbackInfoReturnable<ServerCommandSource> cir) {
-        ServerCommandSource source2 = source.mergeConsumers((context, success, result) -> {
-            int i = requestResult ? result : (success ? 1 : 0);
-            if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
+        if(Radon.CONFIG.nbtOptimizations && object instanceof IDataCommandObjectMixin mixin) {
+            ServerCommandSource source2 = source.mergeReturnValueConsumers((successful, returnValue) -> {
+                int i = requestResult ? returnValue : (successful ? 1 : 0);
                 try {
                     NbtCompound nbtCompound = mixin.getNbtFiltered(path.toString());
                     path.put(nbtCompound, nbtSetter.apply(i));
                     if(mixin.setNbtFiltered(nbtCompound, path.toString()))
                         return;
                 } catch (CommandSyntaxException ignored) {}
-            }
-            try {
-                NbtCompound nbtCompound = object.getNbt();
-                path.put(nbtCompound, nbtSetter.apply(i));
-                object.setNbt(nbtCompound);
-            } catch (CommandSyntaxException ignored) {}
-        }, BINARY_RESULT_CONSUMER);
-        cir.setReturnValue(source2);
+                // use standard method if filtered version failed
+                try {
+                    NbtCompound nbtCompound = object.getNbt();
+                    path.put(nbtCompound, nbtSetter.apply(i));
+                    object.setNbt(nbtCompound);
+                } catch (CommandSyntaxException ignored) {}
+            }, ReturnValueConsumer::chain);
+            cir.setReturnValue(source2);
+        }
     }
 
     @Inject(

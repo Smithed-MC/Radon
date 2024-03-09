@@ -81,7 +81,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
      * Remove entity from tag cache when a tag is removed
      */
     @Overwrite
-    public boolean removeScoreboardTag(String tag) {
+    public boolean removeCommandTag(String tag) {
         if(this.commandTags.remove(tag)) {
             if(this.world instanceof IServerWorldExtender world && world.getEntityIndex() instanceof IEntityIndexExtender index)
                 index.removeEntityFromTagMap(tag, (Entity)(Object)this);
@@ -168,7 +168,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
                 case "CustomName":
                     Text text = entity.getCustomName();
                     if (text != null) {
-                        nbt.putString("CustomName", Text.Serializer.toJson(text));
+                        nbt.putString("CustomName", Text.Serialization.toJsonString(text));
                     }
                     break;
                 case "CustomNameVisible":
@@ -301,7 +301,7 @@ public abstract class EntityMixin implements IEntityMixin, ICustomNBTMixin {
                 case "CustomName" -> {
                     String string = nbt.getString("CustomName");
                     try {
-                        entity.setCustomName(Text.Serializer.fromJson(string));
+                        entity.setCustomName(Text.Serialization.fromJson(string));
                     } catch (Exception var16) {
                         Radon.LOGGER.warn("Failed to parse entity custom name {}", string, var16);
                     }

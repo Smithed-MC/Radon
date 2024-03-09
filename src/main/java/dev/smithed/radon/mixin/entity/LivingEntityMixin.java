@@ -6,7 +6,6 @@ import dev.smithed.radon.mixin_interface.ICustomNBTMixin;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
-import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
@@ -112,8 +111,8 @@ public abstract class LivingEntityMixin extends EntityMixin implements ICustomNB
             case "Team" -> {
                 if (nbt.contains("Team", 8)) {
                     String string = nbt.getString("Team");
-                    Team team = this.world.getScoreboard().getTeam(string);
-                    boolean bl = team != null && this.world.getScoreboard().addPlayerToTeam(entity.getUuidAsString(), team);
+                    Team team = entity.getWorld().getScoreboard().getTeam(string);
+                    boolean bl = team != null && entity.getWorld().getScoreboard().addScoreHolderToTeam(entity.getUuidAsString(), team);
                     if (!bl) {
                         LOGGER.warn("Unable to add mob to team \"{}\" (that team probably doesn't exist)", string);
                     }

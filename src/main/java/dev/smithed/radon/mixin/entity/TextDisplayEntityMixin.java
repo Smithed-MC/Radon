@@ -22,10 +22,9 @@ public abstract class TextDisplayEntityMixin extends DisplayEntityMixin {
 
     @Override
     public boolean writeCustomDataToNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        DisplayEntity.TextDisplayEntity entity = ((DisplayEntity.TextDisplayEntity) (Object) this);
         if (!super.writeCustomDataToNbtFiltered(nbt, path, topLevelNbt)) {
             switch (topLevelNbt) {
-                case "text" -> nbt.putString("text", Text.Serializer.toJson(this.getText()));
+                case "text" -> nbt.putString("text", Text.Serialization.toJsonString(this.getText()));
                 case "line_width" -> nbt.putInt("line_width", this.getLineWidth());
                 case "background" -> nbt.putInt("background", this.getBackground());
                 case "text_opacity" -> nbt.putByte("text_opacity", this.getTextOpacity());
@@ -48,7 +47,6 @@ public abstract class TextDisplayEntityMixin extends DisplayEntityMixin {
 
     @Override
     public boolean readCustomDataFromNbtFiltered(NbtCompound nbt, String path, String topLevelNbt) {
-        DisplayEntity.TextDisplayEntity entity = ((DisplayEntity.TextDisplayEntity) (Object) this);
         if (!super.readCustomDataFromNbtFiltered(nbt, path, topLevelNbt)) {
 
             switch (topLevelNbt) {

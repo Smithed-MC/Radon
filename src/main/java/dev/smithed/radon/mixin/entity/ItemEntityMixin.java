@@ -16,7 +16,7 @@ public abstract class ItemEntityMixin extends EntityMixin implements ICustomNBTM
     @Shadow int itemAge;
     @Shadow int pickupDelay;
     @Shadow int health;
-    @Shadow UUID thrower;
+    @Shadow UUID throwerUuid;
     @Shadow UUID owner;
 
     @Override
@@ -28,8 +28,8 @@ public abstract class ItemEntityMixin extends EntityMixin implements ICustomNBTM
             case "Age" -> nbt.putShort("Age", (short)this.itemAge);
             case "PickupDelay" -> nbt.putShort("PickupDelay", (short)this.pickupDelay);
             case "Thrower" -> {
-                if (this.thrower != null) {
-                    nbt.putUuid("Thrower", this.thrower);
+                if (this.throwerUuid != null) {
+                    nbt.putUuid("Thrower", this.throwerUuid);
                 }
             }
             case "Owner" -> {
@@ -59,7 +59,7 @@ public abstract class ItemEntityMixin extends EntityMixin implements ICustomNBTM
                 case "Age" -> this.itemAge = nbt.getShort("Age");
                 case "PickupDelay" -> this.pickupDelay = nbt.getShort("PickupDelay");
                 case "Owner" -> this.owner = nbt.getUuid("Owner");
-                case "Thrower" -> this.thrower = nbt.getUuid("Thrower");
+                case "Thrower" -> this.throwerUuid = nbt.getUuid("Thrower");
                 case "Item" -> {
                     NbtCompound nbtCompound = nbt.getCompound("Item");
                     entity.setStack(ItemStack.fromNbt(nbtCompound));
